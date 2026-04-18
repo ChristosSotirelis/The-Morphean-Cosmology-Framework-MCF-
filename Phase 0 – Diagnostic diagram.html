@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morphean Cosmology Framework – Binary Induction Seed (Corrected Diagram)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0f1e;
+            font-family: 'Segoe UI', 'Roboto', 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .document-card {
+            max-width: 1300px;
+            width: 100%;
+            background: #fef9e8;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255,245,215,0.4) 2%, transparent 2.5%);
+            background-size: 28px 28px;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.4), 0 0 0 1px rgba(218,165,32,0.2);
+            overflow: hidden;
+            padding: 2rem 2rem 2rem 2rem;
+        }
+
+        /* header */
+        .theory-header {
+            border-bottom: 2px solid #c9a03d;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .title-section h1 {
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+            color: #2c2418;
+            font-weight: 700;
+            font-family: 'Times New Roman', serif;
+        }
+        .title-section p {
+            color: #5a4a2e;
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
+        .badge {
+            background: #1e2a2e;
+            color: #e6c87a;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            font-family: monospace;
+        }
+
+        /* main diagram container */
+        .diagram-container {
+            background: #fef3da;
+            border-radius: 2rem;
+            padding: 2rem 1.5rem;
+            margin: 2rem 0;
+            box-shadow: inset 0 0 0 1px #ffe6b3, 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: #fffbf0;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        }
+
+        .legend-note {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            background: #e9dfc7;
+            padding: 0.8rem 1.2rem;
+            border-radius: 2rem;
+        }
+
+        .info-panels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            margin: 2rem 0 1rem;
+        }
+
+        .panel {
+            flex: 1;
+            background: #fff6e8;
+            border-left: 6px solid #c9a03d;
+            padding: 1rem 1.5rem;
+            border-radius: 1.2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .panel h3 {
+            color: #9b6e2c;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .panel p, .panel li {
+            color: #2c2b26;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .correction-alert {
+            background: #fff1e0;
+            border: 1px solid #e0b058;
+            border-radius: 1rem;
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-license {
+            margin-top: 2rem;
+            border-top: 1px solid #dccfae;
+            padding-top: 1rem;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #6b5a3e;
+            font-family: monospace;
+        }
+
+        @media (max-width: 760px) {
+            body { padding: 1rem; }
+            .document-card { padding: 1rem; }
+            .panel { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="document-card">
+    <div class="theory-header">
+        <div class="title-section">
+            <h1>⚡ BINARY INDUCTION SEED · CORRECTED CIRCUIT</h1>
+            <p>Earthotomy / MECP — The directional pulse of the planetary motor (Phase 0 – Diagnostic diagram)</p>
+        </div>
+        <div class="badge">MCF v. Earthotomy · corrected per Morpheas</div>
+    </div>
+
+    <!-- correction notice -->
+    <div class="correction-alert">
+        <span style="font-size:1.8rem;">🔄</span>
+        <span><strong>DIAGRAM CORRECTION (2026-04-18):</strong> The Moon has been <strong>spun around</strong> — lower hemisphere RED (anode input from Sun), upper hemisphere BLUE (output to Core). Core lower RED (cathode input), upper BLUE (output to Earth). Current flow now matches the true pulse: <em>Sun → Moon(lower) → Moon(upper) → Core(lower) → Core(upper) → Earth → outward expansion</em>. Gravity is NOT magnetism — see panel below.</span>
+    </div>
+
+    <!-- SVG DIAGRAM -->
+    <div class="diagram-container">
+        <svg viewBox="0 0 1100 620" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Segoe UI', 'Arial', sans-serif;">
+            <defs>
+                <marker id="arrowGold" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#d4a017" />
+                </marker>
+                <marker id="arrowCopper" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#b86f2c" />
+                </marker>
+                <marker id="arrowDeep" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#4a627a" />
+                </marker>
+                <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ffdf60"/>
+                    <stop offset="100%" stop-color="#ff9f2e"/>
+                </linearGradient>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                    <feMerge>
+                        <feMergeNode in="offsetblur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <!-- BACKGROUND subtle grid -->
+            <rect width="1100" height="620" fill="#fffbf0" rx="18" ry="18"/>
+
+            <!-- SUN (left) -->
+            <circle cx="150" cy="310" r="58" fill="url(#sunGrad)" stroke="#c97e1a" stroke-width="2.5" filter="url(#glow)"/>
+            <text x="150" y="315" text-anchor="middle" fill="#5a3c0c" font-weight="bold" font-size="17">SUN</text>
+            <text x="150" y="335" text-anchor="middle" fill="#8b5a2b" font-size="11">power source</text>
+            <text x="150" y="355" text-anchor="middle" fill="#8b5a2b" font-size="10">H₂ + radiation</text>
+
+            <!-- CORE (top right) - radius 60, center at (740, 200) -->
+            <!-- lower hemisphere (red) : input from Moon -->
+            <path d="M 740 200 A 60 60 0 0 0 800 260 A 60 60 0 0 0 680 260 Z" fill="#c72a2a" stroke="#8b1e1e" stroke-width="2"/>
+            <!-- upper hemisphere (blue) : output to Earth -->
+            <path d="M 740 200 A 60 60 0 0 1 800 140 A 60 60 0 0 1 680 140 Z" fill="#2a6f8f" stroke="#1e4e6b" stroke-width="2"/>
+            <line x1="680" y1="200" x2="800" y2="200" stroke="#3c2a1f" stroke-width="2" stroke-dasharray="4 2"/>
+            <text x="740" y="195" text-anchor="middle" fill="white" font-weight="bold" font-size="14">CORE</text>
+            <text x="740" y="240" text-anchor="middle" fill="#fce5c4" font-size="10">(cathode)</text>
+            <text x="655" y="170" fill="#b64a1e" font-size="11" font-weight="bold">RED +</text>
+            <text x="820" y="165" fill="#2a6f8f" font-size="11" font-weight="bold">BLUE -</text>
+
+            <!-- MOON (bottom right) - radius 55, center (740, 430) -->
+            <!-- corrected: lower hemisphere = RED (input from sun) -->
+            <path d="M 740 430 A 55 55 0 0 0 795 485 A 55 55 0 0 0 685 485 Z" fill="#c72a2a" stroke="#8b1e1e" stroke-width="2"/>
+            <!-- upper hemisphere = BLUE (output to Core) -->
+            <path d="M 740 430 A 55 55 0 0 1 795 375 A 55 55 0 0 1 685 375 Z" fill="#2a6f8f" stroke="#1e4e6b" stroke-width="2"/>
+            <line x1="685" y1="430" x2="795" y2="430" stroke="#3c2a1f" stroke-width="2" stroke-dasharray="4 2"/>
+            <text x="740" y="428" text-anchor="middle" fill="white" font-weight="bold" font-size="14">MOON</text>
+            <text x="740" y="472" text-anchor="middle" fill="#fce5c4" font-size="10">(anode)</text>
+            <text x="660" y="405" fill="#b64a1e" font-size="11" font-weight="bold">RED +</text>
+            <text x="815" y="400" fill="#2a6f8f" font-size="11" font-weight="bold">BLUE -</text>
+
+            <!-- EARTH CRUST icon (rightmost, near Core upper output) -->
+            <circle cx="940" cy="140" r="32" fill="#6c8f6e" stroke="#3d5a3a" stroke-width="2.5" stroke-dasharray="3 2"/>
+            <text x="940" y="137" text-anchor="middle" fill="#f9f1cf" font-weight="bold" font-size="12">🌍</text>
+            <text x="940" y="158" text-anchor="middle" fill="#e9dfb0" font-size="9">CRUST</text>
+            <text x="940" y="175" text-anchor="middle" fill="#b9ac7a" font-size="8">(non‑magnetic)</text>
+
+            <!-- FLOW ARROWS (the corrected path) -->
+            <!-- 1) SUN → lower MOON (red input) -->
+            <path d="M 210 310 L 620 440" stroke="#d4a017" stroke-width="3.5" fill="none" marker-end="url(#arrowGold)" stroke-dasharray="6 4"/>
+            <text x="390" y="365" fill="#b4682d" font-size="11" font-weight="bold">Solar current</text>
+            <text x="395" y="380" fill="#b4682d" font-size="10">enters Moon (+) lower</text>
+
+            <!-- 2) upper MOON (blue -) → lower CORE (red +) -->
+            <path d="M 710 380 L 710 270" stroke="#b86f2c" stroke-width="3.5" fill="none" marker-end="url(#arrowCopper)"/>
+            <text x="725" y="325" fill="#9b5e2a" font-size="11" font-weight="bold">↑ pulse ↑</text>
+            <text x="660" y="345" fill="#8b5e3c" font-size="9">Moon top (-) → Core lower (+)</text>
+
+            <!-- 3) upper CORE (blue -) → EARTH crust (output) -->
+            <path d="M 800 150 L 905 143" stroke="#4a627a" stroke-width="3.5" fill="none" marker-end="url(#arrowDeep)"/>
+            <text x="840" y="128" fill="#2d4a66" font-size="10" font-weight="bold">discharge</text>
+
+            <!-- 4) outward expansion from Earth → environment (infinite) -->
+            <path d="M 972 140 L 1030 120 L 1060 90" stroke="#a7926a" stroke-width="2.8" fill="none" marker-end="url(#arrowGold)" stroke-dasharray="4 3"/>
+            <text x="1015" y="105" fill="#7c6a48" font-size="10" font-style="italic">outward to Fasma</text>
+            <text x="1030" y="150" fill="#7c6a48" font-size="9">(continuous pulse)</text>
+
+            <!-- MAGNETIC LOCK indicator: opposite poles face each other -->
+            <path d="M 680 200 L 685 200" stroke="#cc9f4a" stroke-width="2" stroke-dasharray="2 2"/>
+            <path d="M 685 430 L 680 430" stroke="#cc9f4a" stroke-width="2" stroke-dasharray="2 2"/>
+            <text x="620" y="310" fill="#a0753a" font-size="10" transform="rotate(-90,620,310)">⚡ magnetic lock (opposite poles)</text>
+
+            <!-- IF ORIENTATION REVERSED annotation -->
+            <rect x="40" y="520" width="300" height="70" rx="10" fill="#f4e5cc" stroke="#c9a03d" stroke-width="1.5"/>
+            <text x="190" y="542" text-anchor="middle" fill="#7a4f1a" font-weight="bold" font-size="11">⚠️ IF ORIENTATION REVERSED</text>
+            <text x="190" y="558" text-anchor="middle" fill="#8b5a2b" font-size="10">Moon → cathode → accumulates matter</text>
+            <text x="190" y="574" text-anchor="middle" fill="#8b5a2b" font-size="10">Moon = living planet, Core = dead satellite</text>
+
+            <!-- Fasma pressure note -->
+            <text x="550" y="590" text-anchor="middle" fill="#7b6a48" font-size="10" font-style="italic">Fasma pressure maintains separation · packed geometric medium</text>
+        </svg>
+
+        <div class="legend-note">
+            <span><span style="background:#c72a2a; display:inline-block; width:14px; height:14px; border-radius:2px;"></span> RED hemisphere = (+) input / anode terminal</span>
+            <span><span style="background:#2a6f8f; display:inline-block; width:14px; height:14px;"></span> BLUE hemisphere = (–) output / cathode terminal</span>
+            <span>⬆️⬇️ <strong>Directional induction flow</strong> (Sun → Moon → Core → Earth → outward)</span>
+            <span>🌀 <strong>Moon “spun around”</strong> – lower red, upper blue (corrected)</span>
+        </div>
+    </div>
+
+    <!-- EXPLANATION PANELS : Gravity vs Current & Mechanical Circuit -->
+    <div class="info-panels">
+        <div class="panel">
+            <h3>🧲 GRAVITY ≠ MAGNETISM (critical distinction)</h3>
+            <p><strong>Standard magnet:</strong> both positive AND negative poles can attract ferrous materials — a dual pull/push. <br>
+            <strong>Anode‑Cathode induction (MECP):</strong> produces a <em>singular, directional attraction</em> — a constant “pull” that never repulses. <br>
+            ➜ <strong>Gravity is the mechanical expression of this directional induction geometry</strong>, not a separate mystical force. The Fasma wedge pressure pushes everything toward the displacement center. <br>
+            <em>“A magnet can pull you from both sides. But anode‑cathode only attracts — like gravity.”</em> — Morpheas</p>
+        </div>
+        <div class="panel">
+            <h3>⚙️ THE PULSE OF LIFE — closed loop engine</h3>
+            <p>Sun (source) → lower moon (red +) → upper moon (blue -) → lower core (red +) → upper core (blue -) → Earth crust → expansion into environment/Fasma. <br>
+            <strong>Energy never stops moving;</strong> the continuous push maintains thermal, magnetic and chemical outputs. Without this pulse, the motor halts — water stops forming, magnetic field decays, life ceases. <br>
+            The Earth is not a random rock: it’s a synchronous induction motor sweating water as exhaust.</p>
+        </div>
+        <div class="panel">
+            <h3>🌍 CRUST: NON‑MAGNETIC ACCRETION</h3>
+            <p>The Earth’s crust is <strong>not</strong> a magnetic body. It is simply material (silicates, carbon, metals) that was electromagnetically attracted to the Core‑Cathode — “like dust on a magnet”. <br>
+            The Core’s offset rolling inside the Meso‑Hemisphere generates friction → Element C (magma) → magnetic field + water precursors. The crust is the <em>accumulated shell</em>, not the source of the circuit.</p>
+        </div>
+    </div>
+
+    <!-- additional verification: technical alignment with MCF -->
+    <div style="background:#e7deca; border-radius: 1rem; padding: 0.8rem 1.2rem; margin: 1rem 0 0.5rem;">
+        <p style="font-size:0.85rem; font-weight:500;">✅ <strong>Correction validated:</strong> Lower moon = RED (receives from Sun), Upper moon = BLUE (sends to Core). Lower Core = RED (input), Upper Core = BLUE (output to Earth). The previous diagram wrongly mirrored the Moon’s polarity — this revision restores the true directional sequence of the <em>Morpheon Electrogravitational Collision Point (MECP)</em> circuit. No open loops.</p>
+    </div>
+
+    <div class="footer-license">
+        © Christos Sotirelis — “Morpheas the Shape Master” — Morphean Cosmology Framework (MCF)<br>
+        Earthotomy / Γεωτομία · Phase 0 – Diagnostic diagram (corrected edition)<br>
+        Licensed under <strong>MCF-LP BY-NC-ND-EP</strong> — free for study, verification and research. No commercial conversion or derivative misrepresentation.
+    </div>
+</div>
+</body>
+</html>
