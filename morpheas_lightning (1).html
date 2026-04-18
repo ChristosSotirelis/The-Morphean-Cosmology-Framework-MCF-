@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morpheas Lightning</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050508;font-family:'Courier New',monospace;overflow:hidden;width:100vw;height:100vh;display:flex;flex-direction:column}
+#header{color:rgba(180,160,255,0.6);font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:5px 0 2px;text-align:center;flex-shrink:0}
+#main{display:flex;flex:1;overflow:hidden;min-height:0}
+#wrap{position:relative;flex:1;min-width:0}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+#panel{width:195px;flex-shrink:0;background:rgba(8,6,18,0.97);border-left:1px solid rgba(100,60,200,0.2);padding:8px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:9px}
+.sec{display:flex;flex-direction:column;gap:4px}
+.sec-title{color:rgba(160,120,255,0.55);font-size:7px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(100,60,200,0.15);padding-bottom:3px}
+.row{display:flex;flex-direction:column;gap:1px}
+.lbl{display:flex;justify-content:space-between}
+.lbl span:first-child{color:rgba(180,150,255,0.5);font-size:7px;letter-spacing:.08em;text-transform:uppercase}
+.lbl span:last-child{color:rgba(220,200,255,0.75);font-size:8px;min-width:32px;text-align:right}
+input[type=range]{width:100%;height:3px;-webkit-appearance:none;appearance:none;background:rgba(100,60,200,0.22);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:rgba(160,100,255,0.85);border:1px solid rgba(200,160,255,0.4)}
+button{background:rgba(80,50,160,0.18);border:1px solid rgba(150,100,255,0.22);color:rgba(200,170,255,0.7);font-family:'Courier New',monospace;font-size:7px;letter-spacing:.15em;padding:5px 8px;cursor:pointer;border-radius:2px;text-transform:uppercase;transition:all .2s;width:100%}
+button:hover{background:rgba(120,70,220,0.38);border-color:rgba(200,150,255,0.5);color:#fff}
+button.on{background:rgba(120,50,220,0.38);border-color:rgba(180,120,255,0.55);color:#fff}
+#info{position:absolute;top:6px;left:8px;font-size:7px;color:rgba(150,120,255,0.32);letter-spacing:.08em;line-height:1.9;z-index:20;pointer-events:none}
+#legend{position:absolute;bottom:8px;left:8px;font-size:7px;color:rgba(150,120,255,0.32);letter-spacing:.08em;line-height:2;z-index:20;pointer-events:none}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div id="header">⚡ MORPHEAS — NANOPARTICLE HIGHWAY · BRANCHING DISCHARGE ⚡</div>
+<div id="main">
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="info">
+    <div id="ipath">PATH: —</div>
+    <div id="istrike">STRIKES: 0</div>
+    <div id="ibranch">BRANCHES: —</div>
+    <div id="ifps">FPS: —</div>
+  </div>
+  <div id="legend">
+    <div><span class="dot" style="background:#cc55aa"></span>INSULATOR</div>
+    <div><span class="dot" style="background:#aaee33"></span>CONDUCTOR</div>
+    <div><span class="dot" style="background:#ffffff"></span>PLASMA STATE</div>
+    <div><span class="dot" style="background:rgba(180,100,255,0.6)"></span>DEAD BRANCH</div>
+  </div>
+</div>
+<div id="panel">
+  <div class="sec">
+    <div class="sec-title">⚡ Current</div>
+    <div class="row"><div class="lbl"><span>Strength</span><span id="vStr">5</span></div><input type="range" id="sStr" min="1" max="10" step="0.1" value="5"></div>
+    <div class="row"><div class="lbl"><span>Arc Width</span><span id="vWid">1.5</span></div><input type="range" id="sWid" min="0.3" max="6" step="0.1" value="1.5"></div>
+    <div class="row"><div class="lbl"><span>Seek Radius</span><span id="vSeek">8</span>%</div><input type="range" id="sSeek" min="1" max="22" step="0.5" value="8"></div>
+    <div class="row"><div class="lbl"><span>Down Bias</span><span id="vDown">0.70</span></div><input type="range" id="sDown" min="0.2" max="2.0" step="0.05" value="0.70"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">🌿 Branching</div>
+    <div class="row"><div class="lbl"><span>Branch Count</span><span id="vBr">3</span></div><input type="range" id="sBr" min="1" max="8" step="1" value="3"></div>
+    <div class="row"><div class="lbl"><span>Branch Thresh</span><span id="vBrT">0.60</span></div><input type="range" id="sBrT" min="0.3" max="0.95" step="0.05" value="0.60"></div>
+    <div class="row"><div class="lbl"><span>Dead Fade</span><span id="vFade">400</span>ms</div><input type="range" id="sFade" min="80" max="1200" step="20" value="400"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">🔵 Particles</div>
+    <div class="row"><div class="lbl"><span>Count</span><span id="vCnt">800</span></div><input type="range" id="sCnt" min="100" max="10000" step="100" value="800"></div>
+    <div class="row"><div class="lbl"><span>Size</span><span id="vSz">0.8</span></div><input type="range" id="sSz" min="0.1" max="3.5" step="0.05" value="0.8"></div>
+    <div class="row"><div class="lbl"><span>Speed</span><span id="vSpd">1.0</span></div><input type="range" id="sSpd" min="0.0" max="8" step="0.1" value="1.0"></div>
+    <div class="row"><div class="lbl"><span>Conductor %</span><span id="vCond">65</span>%</div><input type="range" id="sCond" min="10" max="90" step="5" value="65"></div>
+    <div class="row"><div class="lbl"><span>Turbulence</span><span id="vTurb">0</span></div><input type="range" id="sTurb" min="0" max="3" step="0.05" value="0"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">💡 Plasma</div>
+    <div class="row"><div class="lbl"><span>Glow Radius</span><span id="vGlow">5</span></div><input type="range" id="sGlow" min="1" max="14" step="0.5" value="5"></div>
+    <div class="row"><div class="lbl"><span>Flash Duration</span><span id="vFlash">300</span>ms</div><input type="range" id="sFlash" min="40" max="900" step="10" value="300"></div>
+    <div class="row"><div class="lbl"><span>Cool Time</span><span id="vCool">550</span>ms</div><input type="range" id="sCool" min="80" max="1500" step="50" value="550"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">🌩 Timing</div>
+    <div class="row"><div class="lbl"><span>Step Delay</span><span id="vDelay">15</span>ms</div><input type="range" id="sDelay" min="1" max="80" step="1" value="15"></div>
+    <div class="row"><div class="lbl"><span>Auto Interval</span><span id="vAuto">3.0</span>s</div><input type="range" id="sAuto" min="0.4" max="8" step="0.2" value="3.0"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">🎛 Actions</div>
+    <button id="btnStrike">⚡ STRIKE NOW</button>
+    <button id="btnAuto">AUTO: OFF</button>
+    <button id="btnReset">RESET FIELD</button>
+  </div>
+</div>
+</div>
+<script>
+const canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
+const wrap=document.getElementById('wrap');
+let W,H,strikes=0,autoMode=false,autoTimeout=null,activeLightning=[];
+
+const P={
+  str:5,wid:1.5,seek:8,down:0.70,
+  br:3,brT:0.60,fade:400,
+  cnt:800,sz:0.8,spd:1.0,cond:65,turb:0,
+  glow:5,flash:300,cool:550,
+  delay:15,autoInt:3.0
+};
+
+// ── Typed arrays for performance ─────────────────────────────
+const MAX_P=10000;
+const px   =new Float32Array(MAX_P);
+const py   =new Float32Array(MAX_P);
+const pvx  =new Float32Array(MAX_P);
+const pvy  =new Float32Array(MAX_P);
+const pcond=new Float32Array(MAX_P);
+const pplasma   =new Float32Array(MAX_P);
+const precov    =new Float32Array(MAX_P);
+const ptw  =new Float32Array(MAX_P);
+const pts  =new Float32Array(MAX_P);
+let   pCount=0;
+
+function bind(sid,key,vid,dec=1){
+  const s=document.getElementById(sid),v=document.getElementById(vid);
+  s.addEventListener('input',()=>{
+    P[key]=parseFloat(s.value);
+    v.textContent=parseFloat(s.value).toFixed(dec);
+    if(key==='cnt') rebuildParticles();
+  });
+}
+bind('sStr','str','vStr',1); bind('sWid','wid','vWid',1);
+bind('sSeek','seek','vSeek',1); bind('sDown','down','vDown',2);
+bind('sBr','br','vBr',0); bind('sBrT','brT','vBrT',2); bind('sFade','fade','vFade',0);
+bind('sCnt','cnt','vCnt',0); bind('sSz','sz','vSz',2);
+bind('sSpd','spd','vSpd',1); bind('sCond','cond','vCond',0);
+bind('sTurb','turb','vTurb',2); bind('sGlow','glow','vGlow',1);
+bind('sFlash','flash','vFlash',0); bind('sCool','cool','vCool',0);
+bind('sDelay','delay','vDelay',0); bind('sAuto','autoInt','vAuto',1);
+
+function resize(){ W=canvas.width=wrap.clientWidth; H=canvas.height=wrap.clientHeight; }
+resize(); window.addEventListener('resize',()=>{ resize(); rebuildParticles(); });
+
+function rebuildParticles(){
+  const n=Math.min(P.cnt,MAX_P);
+  pCount=n;
+  for(let i=0;i<n;i++){
+    px[i]=Math.random()*W; py[i]=Math.random()*H;
+    const sp=0.12+Math.random()*0.45;
+    pvx[i]=(Math.random()-.5)*sp; pvy[i]=(Math.random()-.5)*sp;
+    const c=Math.random()*100<P.cond;
+    pcond[i]=c?0.55+Math.random()*0.45:Math.random()*0.34;
+    pplasma[i]=0; precov[i]=0;
+    ptw[i]=Math.random()*Math.PI*2; pts[i]=0.004+Math.random()*0.012;
+  }
+}
+rebuildParticles();
+
+// ── Spatial grid for fast neighbor lookup ────────────────────
+let grid=null, gridCols=0, gridRows=0, cellSize=0;
+
+function buildGrid(linkR){
+  cellSize=linkR;
+  gridCols=Math.ceil(W/cellSize)+1;
+  gridRows=Math.ceil(H/cellSize)+1;
+  const total=gridCols*gridRows;
+  // Each cell: array of particle indices
+  grid=new Array(total);
+  for(let i=0;i<total;i++) grid[i]=[];
+  for(let i=0;i<pCount;i++){
+    const cx=Math.floor(px[i]/cellSize);
+    const cy=Math.floor(py[i]/cellSize);
+    const ci=cy*gridCols+cx;
+    if(ci>=0&&ci<total) grid[ci].push(i);
+  }
+}
+
+function getNeighbors(ix,iy,linkR){
+  const cx=Math.floor(ix/cellSize);
+  const cy=Math.floor(iy/cellSize);
+  const result=[];
+  for(let dy=-1;dy<=1;dy++){
+    for(let dx=-1;dx<=1;dx++){
+      const nx=cx+dx,ny=cy+dy;
+      if(nx<0||ny<0||nx>=gridCols||ny>=gridRows) continue;
+      const cell=grid[ny*gridCols+nx];
+      for(let k=0;k<cell.length;k++) result.push(cell[k]);
+    }
+  }
+  return result;
+}
+
+// ── Pathfinder ───────────────────────────────────────────────
+function findPaths(){
+  const n=pCount;
+  const linkR=W*(P.seek/100);
+  buildGrid(linkR);
+
+  const seeds=[],targets=new Set();
+  for(let i=0;i<n;i++){
+    if(py[i]<H*0.17) seeds.push(i);
+    if(py[i]>H*0.81) targets.add(i);
+  }
+  if(!seeds.length||!targets.size) return null;
+
+  const dist=new Float32Array(n).fill(1e9);
+  const prev=new Int32Array(n).fill(-1);
+  const vis=new Uint8Array(n);
+  for(const s of seeds) dist[s]=0;
+
+  // Simple priority queue using a min-heap
+  const heap=[];
+  const hPush=(i,d)=>{ heap.push({i,d}); heapUp(heap.length-1); };
+  const hPop=()=>{ const top=heap[0]; heap[0]=heap[heap.length-1]; heap.pop(); heapDown(0); return top; };
+  function heapUp(k){ while(k>0){ const p=(k-1)>>1; if(heap[p].d<=heap[k].d)break; [heap[p],heap[k]]=[heap[k],heap[p]]; k=p; } }
+  function heapDown(k){ const n=heap.length; while(true){ let s=k,l=2*k+1,r=2*k+2; if(l<n&&heap[l].d<heap[s].d)s=l; if(r<n&&heap[r].d<heap[s].d)s=r; if(s===k)break; [heap[s],heap[k]]=[heap[k],heap[s]]; k=s; } }
+
+  for(const s of seeds) hPush(s,0);
+
+  let mainEnd=-1;
+  while(heap.length){
+    const {i:u,d}=hPop();
+    if(vis[u]) continue; vis[u]=1;
+    if(d>dist[u]) continue;
+    if(targets.has(u)){ mainEnd=u; break; }
+    const nbrs=getNeighbors(px[u],py[u],linkR);
+    for(let k=0;k<nbrs.length;k++){
+      const v=nbrs[k];
+      if(vis[v]) continue;
+      const dx=px[v]-px[u],dy=py[v]-py[u];
+      const distE=Math.sqrt(dx*dx+dy*dy);
+      if(distE>linkR||distE<0.001) continue;
+      const ca=(pcond[u]+pcond[v])/2+0.001;
+      const yF=py[v]>py[u]?P.down:(py[v]<py[u]?1.85:1.15);
+      const cost=distE*yF/ca;
+      const nd=d+cost;
+      if(nd<dist[v]){ dist[v]=nd; prev[v]=u; hPush(v,nd); }
+    }
+  }
+  if(mainEnd===-1) return null;
+
+  const mainSet=new Set();
+  const main=[];
+  let c=mainEnd;
+  while(c!==-1){ main.push(c); mainSet.add(c); c=prev[c]; }
+  main.reverse();
+
+  // Branches
+  const branches=[];
+  const usedStarts=new Set();
+  const step=Math.max(1,Math.floor(main.length/(P.br+1)));
+  for(let b=0;b<P.br;b++){
+    const fromIdx=main[Math.min(Math.floor((b+0.5)*step),main.length-2)];
+    const nbrs=getNeighbors(px[fromIdx],py[fromIdx],linkR);
+    let bestNbr=-1,bestScore=-1;
+    for(let k=0;k<nbrs.length;k++){
+      const v=nbrs[k];
+      if(mainSet.has(v)||usedStarts.has(v)) continue;
+      const dx=px[v]-px[fromIdx],dy=py[v]-py[fromIdx];
+      if(dx*dx+dy*dy>linkR*linkR) continue;
+      if(pcond[v]<P.brT) continue;
+      const score=pcond[v]-(Math.abs(dy)/linkR)*0.3;
+      if(score>bestScore){ bestScore=score; bestNbr=v; }
+    }
+    if(bestNbr===-1) continue;
+    usedStarts.add(bestNbr);
+
+    const branch=[fromIdx,bestNbr];
+    const brSet=new Set([...mainSet,bestNbr]);
+    let cur=bestNbr;
+    const maxLen=Math.floor(main.length*0.55);
+    for(let s2=0;s2<maxLen;s2++){
+      const nbrs2=getNeighbors(px[cur],py[cur],linkR);
+      let nxt=-1,nxtScore=-1;
+      for(let k=0;k<nbrs2.length;k++){
+        const v=nbrs2[k];
+        if(brSet.has(v)) continue;
+        const dx=px[v]-px[cur],dy=py[v]-py[cur];
+        const distE2=dx*dx+dy*dy;
+        if(distE2>linkR*linkR) continue;
+        if(pcond[v]<P.brT*0.75) continue;
+        if(py[v]>H*0.80) continue;
+        const distEr=Math.sqrt(distE2);
+        const yF=py[v]>py[cur]?0.9:1.3;
+        const score=pcond[v]/(distEr*yF+0.001);
+        if(score>nxtScore){ nxtScore=score; nxt=v; }
+      }
+      if(nxt===-1) break;
+      branch.push(nxt); brSet.add(nxt); cur=nxt;
+    }
+    if(branch.length>2) branches.push(branch);
+  }
+  return {main,branches};
+}
+
+// ── Strike ────────────────────────────────────────────────────
+function strike(){
+  const result=findPaths();
+  if(!result) return;
+  const {main,branches}=result;
+  strikes++;
+  document.getElementById('istrike').textContent=`STRIKES: ${strikes}`;
+  document.getElementById('ipath').textContent=`MAIN: ${main.length} nodes`;
+  document.getElementById('ibranch').textContent=`BRANCHES: ${branches.length}`;
+
+  let delay=0;
+  for(let k=0;k<main.length;k++){
+    const idx=main[k],d=delay;
+    setTimeout(()=>{ pplasma[idx]=P.flash; precov[idx]=0; },d);
+    delay+=P.delay+Math.random()*P.delay*0.5;
+  }
+  setTimeout(()=>{
+    for(let k=0;k<main.length;k++){
+      setTimeout(()=>{ pplasma[main[k]]=P.flash*0.5; precov[main[k]]=0; },k*4);
+    }
+  },delay+30);
+
+  for(let b=0;b<branches.length;b++){
+    const br=branches[b];
+    const brStart=Math.floor(Math.random()*delay*0.4);
+    let bd=brStart;
+    for(let k=0;k<br.length;k++){
+      const idx=br[k],d=bd;
+      setTimeout(()=>{ pplasma[idx]=P.flash*0.5; precov[idx]=0; },d);
+      bd+=P.delay*0.8+Math.random()*P.delay*0.4;
+    }
+  }
+
+  activeLightning.push({main,branches,born:performance.now(),mainDur:delay+300,branchDur:P.fade});
+}
+
+// ── Render ────────────────────────────────────────────────────
+let last=performance.now(), fpsTime=0, fpsCnt=0, fpsVal=0;
+
+function loop(now){
+  const dt=Math.min(now-last,50); last=now;
+  fpsCnt++; fpsTime+=dt;
+  if(fpsTime>500){ fpsVal=Math.round(fpsCnt/(fpsTime/1000)); fpsCnt=0; fpsTime=0;
+    document.getElementById('ifps').textContent=`FPS: ${fpsVal}`; }
+
+  ctx.fillStyle='rgba(5,5,12,0.87)'; ctx.fillRect(0,0,W,H);
+
+  // Field zones
+  const tg=ctx.createLinearGradient(0,0,0,H*0.17);
+  tg.addColorStop(0,'rgba(70,35,170,0.08)'); tg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=tg; ctx.fillRect(0,0,W,H*0.17);
+  const bg=ctx.createLinearGradient(0,H*0.83,0,H);
+  bg.addColorStop(0,'rgba(0,0,0,0)'); bg.addColorStop(1,'rgba(55,25,130,0.08)');
+  ctx.fillStyle=bg; ctx.fillRect(0,H*0.83,W,H*0.17);
+
+  ctx.strokeStyle='rgba(100,60,220,0.09)'; ctx.lineWidth=1; ctx.setLineDash([3,9]);
+  ctx.beginPath(); ctx.moveTo(0,H*0.14); ctx.lineTo(W,H*0.14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,H*0.84); ctx.lineTo(W,H*0.84); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Update + draw particles
+  const spd=P.spd, turb=P.turb, sz=P.sz;
+  for(let i=0;i<pCount;i++){
+    ptw[i]+=pts[i];
+
+    // SPEED: direct velocity scaling
+    let vx=pvx[i]*spd;
+    let vy=pvy[i]*spd;
+
+    // TURBULENCE: random per-frame kick — scales independently
+    if(turb>0){
+      vx+=(Math.random()-.5)*turb*0.25;
+      vy+=(Math.random()-.5)*turb*0.25;
+    }
+
+    px[i]+=vx; py[i]+=vy;
+    if(px[i]<0)px[i]=W; if(px[i]>W)px[i]=0;
+    if(py[i]<0)py[i]=H; if(py[i]>H)py[i]=0;
+
+    if(pplasma[i]>0){ pplasma[i]-=dt; if(pplasma[i]<=0){pplasma[i]=0;precov[i]=P.cool;} }
+    if(precov[i]>0) precov[i]-=dt;
+
+    const r=Math.max(0.15, sz*(pcond[i]>0.55?0.9:0.65));
+
+    if(pplasma[i]>0){
+      const t=Math.max(0,pplasma[i]/P.flash);
+      const gr=Math.max(0.5,P.glow*sz*0.85);
+      const gR=gr*P.str*0.6;
+      const g=ctx.createRadialGradient(px[i],py[i],0,px[i],py[i],gR);
+      g.addColorStop(0,'rgba(255,255,255,0.95)');
+      g.addColorStop(0.12,`rgba(210,185,255,${0.78*t})`);
+      g.addColorStop(0.5,`rgba(120,60,255,${0.3*t*P.str*0.2})`);
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(px[i],py[i],gR,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+      ctx.beginPath(); ctx.arc(px[i],py[i],Math.max(0.3,r*1.8),0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${t})`; ctx.fill();
+    } else if(precov[i]>0){
+      const t=precov[i]/P.cool;
+      ctx.beginPath(); ctx.arc(px[i],py[i],Math.max(0.2,r*(1+t*0.8)),0,Math.PI*2);
+      ctx.fillStyle=pcond[i]>0.55
+        ?`rgba(${~~(140+80*t)},${~~(220-30*t)},${~~(170-80*t)},${0.38+t*0.36})`
+        :`rgba(${~~(195+55*t)},${~~(65+30*t)},${~~(145+55*t)},${0.36+t*0.3})`;
+      ctx.fill();
+    } else {
+      const tw=0.4+0.13*Math.sin(ptw[i]);
+      const rr=Math.max(0.15,r);
+      if(pcond[i]>0.55){
+        const h=68+pcond[i]*22;
+        ctx.beginPath(); ctx.arc(px[i],py[i],rr,0,Math.PI*2);
+        ctx.fillStyle=`hsla(${h},70%,${40+pcond[i]*22}%,${tw})`; ctx.fill();
+        if(pcond[i]>0.82&&sz>0.5){
+          const gl=ctx.createRadialGradient(px[i],py[i],0,px[i],py[i],rr*3.2);
+          gl.addColorStop(0,`hsla(${h},80%,65%,0.07)`); gl.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.beginPath(); ctx.arc(px[i],py[i],rr*3.2,0,Math.PI*2); ctx.fillStyle=gl; ctx.fill();
+        }
+      } else {
+        ctx.beginPath(); ctx.arc(px[i],py[i],rr,0,Math.PI*2);
+        ctx.fillStyle=`hsla(${315+pcond[i]*22},48%,${36+pcond[i]*16}%,${tw*0.6})`; ctx.fill();
+      }
+    }
+  }
+
+  // Draw arcs
+  const nowT=performance.now();
+  activeLightning=activeLightning.filter(l=>nowT-l.born<Math.max(l.mainDur,l.branchDur)+400);
+  for(const l of activeLightning){
+    const age=nowT-l.born;
+    const mA=Math.max(0,1-age/l.mainDur)*P.str*0.18;
+    if(mA>0.01&&l.main.length>1){
+      ctx.save(); ctx.globalAlpha=Math.min(1,mA);
+      ctx.strokeStyle='rgba(210,180,255,0.95)'; ctx.lineWidth=P.wid;
+      ctx.shadowColor='rgba(180,130,255,1)'; ctx.shadowBlur=10*P.str*0.28;
+      ctx.beginPath();
+      ctx.moveTo(px[l.main[0]],py[l.main[0]]);
+      for(let k=1;k<l.main.length;k++) ctx.lineTo(px[l.main[k]],py[l.main[k]]);
+      ctx.stroke(); ctx.restore();
+    }
+    for(const br of l.branches){
+      const bA=Math.max(0,1-age/l.branchDur)*P.str*0.09;
+      if(bA<0.01||br.length<2) continue;
+      ctx.save(); ctx.globalAlpha=Math.min(0.7,bA);
+      ctx.strokeStyle='rgba(180,100,255,0.7)'; ctx.lineWidth=Math.max(0.3,P.wid*0.5);
+      ctx.shadowColor='rgba(160,80,255,0.8)'; ctx.shadowBlur=6*P.str*0.22;
+      ctx.setLineDash([2,3]);
+      ctx.beginPath();
+      ctx.moveTo(px[br[0]],py[br[0]]);
+      for(let k=1;k<br.length;k++) ctx.lineTo(px[br[k]],py[br[k]]);
+      ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+    }
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+document.getElementById('btnStrike').addEventListener('click',()=>strike());
+document.getElementById('btnAuto').addEventListener('click',function(){
+  autoMode=!autoMode;
+  this.textContent=`AUTO: ${autoMode?'ON':'OFF'}`;
+  this.classList.toggle('on',autoMode);
+  clearTimeout(autoTimeout);
+  if(autoMode){
+    const go=()=>{ strike(); autoTimeout=setTimeout(go,P.autoInt*1000+Math.random()*800); };
+    go();
+  }
+});
+document.getElementById('btnReset').addEventListener('click',()=>{
+  activeLightning=[]; rebuildParticles(); strikes=0;
+  document.getElementById('istrike').textContent='STRIKES: 0';
+  document.getElementById('ipath').textContent='PATH: —';
+  document.getElementById('ibranch').textContent='BRANCHES: —';
+});
+canvas.addEventListener('click',(e)=>{
+  const r=canvas.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*(W/r.width), my=(e.clientY-r.top)*(H/r.height);
+  for(let i=0;i<12;i++){
+    if(pCount>=MAX_P) break;
+    const j=pCount++;
+    px[j]=mx+(Math.random()-.5)*28; py[j]=my+(Math.random()-.5)*28;
+    pvx[j]=(Math.random()-.5)*0.3; pvy[j]=(Math.random()-.5)*0.3;
+    pcond[j]=0.72+Math.random()*0.28;
+    pplasma[j]=0; precov[j]=0;
+    ptw[j]=Math.random()*Math.PI*2; pts[j]=0.005+Math.random()*0.01;
+  }
+});
+</script>
+</body>
+</html>
