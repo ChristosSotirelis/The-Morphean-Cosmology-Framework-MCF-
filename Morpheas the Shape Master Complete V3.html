@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MORPHEAS V3 · Integrated Human Support Architecture</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0f1a;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+      color: #eef2ff;
+      line-height: 1.5;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #0f1420;
+      border-radius: 2rem;
+      overflow: hidden;
+      box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5);
+      border: 1px solid #1e2a3a;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0b1120 0%, #111827 100%);
+      padding: 2.5rem 2rem;
+      border-bottom: 1px solid #2d3a4e;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #c0e0ff, #7aa2f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero .sub {
+      color: #9ab3d5;
+      font-size: 1.1rem;
+      border-top: 1px solid #2d3a4e;
+      display: inline-block;
+      padding-top: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1.5rem 0 0;
+    }
+
+    .badge {
+      background: #1e293b;
+      padding: 0.3rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #b9e0ff;
+      border: 1px solid #334155;
+    }
+
+    .content {
+      padding: 2rem;
+    }
+
+    section {
+      margin-bottom: 2.5rem;
+      background: #111827;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid #1f2a3c;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 1rem 0 0.75rem;
+      color: #cbd5e6;
+    }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 1.2rem;
+      margin: 1.2rem 0;
+    }
+
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+    .card {
+      background: #0f172a;
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      border: 1px solid #25344a;
+    }
+
+    .card h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #90cdf4;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.7rem;
+      border-bottom: 1px solid #25344a;
+    }
+
+    th {
+      background: #0a0f1a;
+      color: #b9e0ff;
+      font-weight: 600;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed #25344a;
+      padding: 0.5rem 0;
+    }
+
+    .tag {
+      background: #1e3a5f;
+      color: #bbdef5;
+      border-radius: 1rem;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .footnote {
+      font-size: 0.8rem;
+      color: #8aa0bc;
+      margin-top: 0.8rem;
+      border-top: 1px solid #1e2a3a;
+      padding-top: 0.8rem;
+    }
+
+    hr {
+      border-color: #1e2a3a;
+      margin: 1rem 0;
+    }
+
+    .license {
+      background: #0b0f17;
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 700px) {
+      .content { padding: 1rem; }
+      .hero h1 { font-size: 2rem; }
+      h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>MORPHEAS V3</h1>
+    <div>INTEGRATED DUAL‑LAYER HUMAN SUPPORT ARCHITECTURE</div>
+    <div class="badge-container">
+      <span class="badge">0g · Microgravity</span>
+      <span class="badge">30–150 kg Load Range</span>
+      <span class="badge">±1 kg Force Resolution</span>
+      <span class="badge">500 Hz Control Loop</span>
+      <span class="badge">&lt;2s Emergency Egress</span>
+      <span class="badge">≤35 kg System Mass</span>
+    </div>
+    <div class="sub">Christos Sotirelis — “Morpheas the Shape Master” · Morpheas Cosmology Framework</div>
+  </div>
+
+  <div class="content">
+    <!-- Overview -->
+    <section>
+      <h2>Why This Exists</h2>
+      <p>No current system aboard any space station combines adaptive body‑conformal rest with programmable axial skeletal loading. Morpheas solves both in one <strong>rigid‑shell or free‑floating sack architecture</strong> with a breathable mesh and intelligent pneumatic matrix. ISS treadmill exercise generates ground reaction forces 75–77% below Earth walking — insufficient to prevent bone loss. Current sleeping bags do not support neutral body posture, causing pressure points and CO₂ pooling. <strong>Morpheas is the first integrated solution</strong> for rest, passive bone loading, active training, and medical monitoring.</p>
+    </section>
+
+    <!-- System A – Adaptive Comfort Shell -->
+    <section>
+      <h2>System A — Adaptive Comfort Shell (Hoodie‑Sack)</h2>
+      <p><strong>Rigid outer frame (or free‑floating military canvas) + 3D mesh inner liner + full‑body hexagonal inflatable matrix.</strong> The design integrates ergonomic head opening, hoodie, dynamic arm slots, and dedicated neck support.</p>
+      
+      <div class="grid-3">
+        <div class="card">
+          <h4>Layer 1 · Outer Mechanical Ground</h4>
+          <div class="spec-row"><span>Material:</span><span>6061‑T6 Alu frame OR heavy military canvas (non‑stretch)</span></div>
+          <div class="spec-row"><span>Cover:</span><span>18 oz vinyl‑coated polyester / καραβόπανο</span></div>
+          <div class="spec-row"><span>Mass:</span><span>≤9 kg (frame) / ≤4 kg (soft sack)</span></div>
+          <div class="spec-row"><span>Front opening:</span><span>Jacket‑style split, full lateral entry</span></div>
+        </div>
+        <div class="card">
+          <h4>Layer 2 · Inner Mesh Liner (The Net)</h4>
+          <div class="spec-row"><span>Material:</span><span>Double‑Raschel 3D Spacer Mesh, copper‑infused</span></div>
+          <div class="spec-row"><span>Air gap:</span><span>8‑10 mm permanent, 360° airflow</span></div>
+          <div class="spec-row"><span>CO₂ elimination:</span><span>Passive, cabin fans draw air</span></div>
+          <div class="spec-row"><span>Antimicrobial:</span><span>Copper‑ion treatment</span></div>
+        </div>
+        <div class="card">
+          <h4>Layer 3 · Hexagonal Inflatable Matrix (Hive)</h4>
+          <div class="spec-row"><span>Material:</span><span>Medical‑grade TPU 0.2 mm, interconnected cells</span></div>
+          <div class="spec-row"><span>Geometry:</span><span>Hexagonal tessellation → half‑hemisphere bubbles</span></div>
+          <div class="spec-row"><span>Coverage:</span><span>360° full body (chest, back, limbs, sides)</span></div>
+          <div class="spec-row"><span>Inflation pressure:</span><span>10–30 kPa (comfort) / up to 40 kPa (axial)</span></div>
+        </div>
+      </div>
+
+      <h3>Ergonomic features</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Head opening + Hoodie</h4>
+          <p>The sack does <strong>not</strong> enclose the face. A dedicated jacket‑style split at the head region allows the astronaut’s head to remain <strong>completely outside</strong> the enclosure. A soft hoodie structure (matching outer canvas) gently frames the top and back of the head, providing light containment and comfort. No transparent window needed – direct visibility and communication.</p>
+          <p><span class="tag">Neck support pod</span> integrated behind the neck (not skull) to relax cervical muscles and enable proper spinal stretching.</p>
+        </div>
+        <div class="card">
+          <h4>Dynamic Arm Slots</h4>
+          <p>Longitudinal openings from shoulder to lower torso. <strong>Velcro strap at elbow</strong> locks arm inside during sleep; released for activity. <strong>Inflatable lips</strong> on slot edges can seal around the arm (inflated) or deflate to allow easy exit. Provides both security and freedom.</p>
+        </div>
+      </div>
+      <div class="footnote">All access points support instant emergency release (mechanical pull‑cord & full deflation). The system never traps the user.</div>
+    </section>
+
+    <!-- Dual Pneumatic Loading -->
+    <section>
+      <h2>Dual‑Mode Pneumatic Loading (A1 + A2)</h2>
+      <p>The hexagonal matrix is divided into two independently controlled pneumatic subsystems, enabling both conformal comfort and true axial gravity simulation.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h4>System A1 · Conformal Comfort</h4>
+          <p><strong>Target zones:</strong> Torso, arms, legs (non‑axial regions)<br>
+          <strong>Pressure:</strong> Low (10–20 kPa)<br>
+          <strong>Function:</strong> Eliminates drift anxiety, maintains neutral body posture (NBP), provides proprioceptive feedback, enables thermal regulation (slight over‑inflation closes mesh gaps for warmth).</p>
+        </div>
+        <div class="card">
+          <h4>System A2 · Axial Gravity Simulation</h4>
+          <p><strong>Target zones:</strong> Hoodie top‑of‑head pod, shoulder yoke, foot boot (soles)<br>
+          <strong>Pressure:</strong> Higher (up to 40 kPa)<br>
+          <strong>Function:</strong> Creates top‑down / bottom‑up compression → simulates Earth gravity (1g = 9.81 m/s²). Protects spine, prevents bone loss, provides “grounded” sensation.</p>
+          <p><strong>Force distribution (critical):</strong><br>
+          Shoulders & feet: <strong>100%</strong> reference load.<br>
+          Top of head: <strong>85% less</strong> than shoulders (only 15% load) → protects cranium while maintaining axial tension through spine.</p>
+        </div>
+      </div>
+      <div class="footnote">Both systems share the same TPU honeycomb but are isolated via independent valves and pressure sensors. The rigid outer shell (or non‑stretch canvas) provides the mechanical ground that converts internal pressure into net body force.</div>
+    </section>
+
+    <!-- System B – Mechanical Load Simulator -->
+    <section>
+      <h2>System B — Mechanical Load Simulator (MLSS, optional)</h2>
+      <p>For active high‑intensity training (Mode 2) and precise inertial mass measurement, segmented sector actuators apply calibrated axial load 30–150 kg equivalent. Closed‑loop PID at 500 Hz, DLC‑coated steel sectors, BLDC servomotors.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h4>MLSS specifications</h4>
+          <div class="spec-row"><span>Force range:</span><span>294 N – 1472 N (30–150 kg eq)</span></div>
+          <div class="spec-row"><span>Control:</span><span>PID 500 Hz, Kp 0.8, Ki 0.15, Kd 0.05</span></div>
+          <div class="spec-row"><span>Resolution:</span><span>±1 kg</span></div>
+          <div class="spec-row"><span>Asymmetry monitor:</span><span>&gt;5% diff → auto‑equalize</span></div>
+        </div>
+        <div class="card">
+          <h4>Safety & KERS (optional)</h4>
+          <div class="spec-row"><span>Force exceed 200%:</span><span>Immediate deactivation</span></div>
+          <div class="spec-row"><span>KERS:</span><span>Motor as generator → feeds station battery</span></div>
+          <div class="spec-row"><span>Power loss:</span><span>Springs return to zero; NC valves hold inflation</span></div>
+        </div>
+      </div>
+      <p class="footnote">For the <strong>free‑floating soft sack version</strong>, System A2 (pneumatic axial loading) fully replaces MLSS, drastically reducing mass and complexity while retaining gravity simulation.</p>
+    </section>
+
+    <!-- Operational Modes -->
+    <section>
+      <h2>Operational Modes</h2>
+      <table>
+        <thead>
+          <tr><th>Mode</th><th>Name</th><th>A1 (comfort)</th><th>A2 (axial)</th><th>MLSS</th><th>Use case</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>Rest</td><td>Inflated</td><td>Zero</td><td>Off</td><td>Sleep, reading, passive CO₂ removal</td></tr>
+          <tr><td>1</td><td>Passive Loading</td><td>Inflated</td><td>30–50 kg eq</td><td>Off</td><td>Nightly bone stimulation (6‑8h)</td></tr>
+          <tr><td>2</td><td>Active Training</td><td>Inflated</td><td>50–150 kg</td><td>Engaged</td><td>Exercise, KERS recovery</td></tr>
+          <tr><td>3</td><td>Measurement</td><td>Inflated</td><td>Pulsed ref load</td><td>Off</td><td>Inertial balance → Earth‑kg mass</td></tr>
+          <tr><td>4</td><td>Medical / Rehab</td><td>Asymmetric</td><td>Asymmetric load</td><td>Off/On</td><td>Physician‑supervised therapy</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Biometrics, thermal, mass measurement -->
+    <section>
+      <h2>Biometrics · Thermal Control · Mass Measurement</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Sensors (integrated into mesh & pods)</h4>
+          <ul style="margin-left: 1.2rem;">
+            <li>ECG (dry electrodes) – heart rate, arrhythmia</li>
+            <li>Respiration – strain‑sensitive fibre band</li>
+            <li>Skin temperature – 8 thermistor points</li>
+            <li>Contact pressure map – piezoresistive film (shoulder/hip)</li>
+            <li>SpO₂ (optional optical clip)</li>
+            <li>CO₂ proximity – NDIR head‑zone sensor</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Thermal & wellness</h4>
+          <p><strong>Thermal comfort mode:</strong> Slight over‑inflation closes mesh gaps, reduces airflow → retains body heat. No electric heater. Hot air can be circulated through the bladder for rapid warming.</p>
+          <p><strong>Inertial mass measurement:</strong> User fully immobilised by inflated cells → small pulsed axial force (foot boot) → measure displacement vs canvas spring rate → m = F/a → displayed as Earth‑equivalent kilograms (±1 kg accuracy).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emergency egress & safety -->
+    <section>
+      <h2>Emergency Egress & Safety Architecture</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Certified release paths</h4>
+          <p><strong>Electronic:</strong> Single button → all NC solenoid valves open → self‑vent through mesh → free in ≤4 seconds.<br>
+          <strong>Mechanical backup (zero electronics):</strong> Pull‑cord at collar zone physically unseats burst‑disk valve → full pressure dump in &lt;2 seconds. Operable in darkness, one‑handed, no tools.</p>
+        </div>
+        <div class="card">
+          <h4>Safety thresholds</h4>
+          <ul>
+            <li>Force &gt;200% target → full deactivation</li>
+            <li>Shoulder asymmetry &gt;5% → auto‑equalize</li>
+            <li>Power loss → NC valves hold inflation, springs return to zero</li>
+            <li>ECG cardiac alarm → automatic load reduction to Mode 0</li>
+            <li>All sensors failed → manual pull‑tab release</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Army‑grade, low‑cost build -->
+    <section>
+      <h2>Army‑Grade, Low‑Cost Build (DIY / Prototype)</h2>
+      <p>Morpheas is designed for <strong>democratic space technology</strong>. Using industrial / military surplus materials, the entire soft‑sack version can be built for <strong>under $500</strong> (excluding optional MLSS).</p>
+      <table>
+        <thead><tr><th>Component</th><th>Material / Source</th><th>Est. cost (USD)</th></tr></thead>
+        <tbody>
+          <tr><td>Outer canvas (non‑stretch)</td><td>18 oz vinyl‑coated polyester / army tarp</td><td>$150</td></tr>
+          <tr><td>Inner TPU bladder + hex stitch</td><td>Medical TPU 0.2 mm, heat‑welded</td><td>$80</td></tr>
+          <tr><td>Valves & fittings (NC solenoids + burst disk)</td><td>Industrial pneumatics</td><td>$60</td></tr>
+          <tr><td>BLDC centrifugal blower</td><td>≤35 dBA, 24V</td><td>$40</td></tr>
+          <tr><td>Controller + sensors (ECG, pressure, temp)</td><td>STM32 / Raspberry Pi Pico + generic medical</td><td>$115</td></tr>
+          <tr><td>Velcro, webbing, mesh, thread</td><td>Military surplus / tactical</td><td>$30</td></tr>
+          <tr><td><strong>Total (soft sack, fully functional)</strong></td><td></td><td><strong>~$475</strong></td></tr>
+        </tbody>
+      </table>
+      <p>Field repairable: all components replaceable with hex keys, wrench, needle and thread. Pod patches heat‑welded in 10 minutes.</p>
+    </section>
+
+    <!-- Medical & wellness applications -->
+    <section>
+      <h2>Medical, Wellness & Human Factors</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Direct health benefits</h4>
+          <ul>
+            <li>Bone & muscle preservation (passive nightly axial stimulation)</li>
+            <li>Thermal & CO₂ management (open mesh + CO₂ alert)</li>
+            <li>Psychological wellbeing – “Hammock Effect”: gentle envelopment eliminates drift anxiety</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Medical rehabilitation scenarios</h4>
+          <ul>
+            <li>Post‑EVA fatigue recovery (Mode 4)</li>
+            <li>Muscle strain rehab – asymmetric loading</li>
+            <li>Cardiac event recovery (Mode 1+4 with ECG ceiling)</li>
+            <li>Returning Earth acclimation (progressive load, Mode 2)</li>
+            <li>Insomnia / sleep disorders (Mode 0 + ECG monitoring)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prototype path -->
+    <section>
+      <h2>Prototype Path</h2>
+      <div class="grid-3">
+        <div class="card"><strong>Phase 1</strong><br>Ground bench testing (6‑12 mo): frame section, actuator bench, human pressure mapping, integrated system</div>
+        <div class="card"><strong>Phase 2</strong><br>Microgravity analog: parabolic flight, neutral buoyancy, egress validation</div>
+        <div class="card"><strong>Phase 3</strong><br>ISS concept review package: FMEA, mass/power budgets, ISS interface compliance</div>
+      </div>
+    </section>
+
+    <!-- License -->
+    <div class="license">
+      <strong>MCF‑LP BY‑NC‑ND‑EP</strong><br>
+      Christos Sotirelis — “Morpheas the Shape Master”<br>
+      This work is released for study, research, and non‑commercial use with attribution. No derivatives, no commercial exploitation. Ethics preservation: any use contrary to human welfare (weaponization, coercive restraint) is prohibited.<br>
+      <span style="color:#6c86a3;">Permitted: Study, reference, educational use with attribution. Prohibited: Selling, licensing, derivatives, misrepresentation.</span><br>
+      Attribution: Christos Sotirelis — Morpheas Cosmology Framework · MCF‑LP BY‑NC‑ND‑EP
+    </div>
+
+    <div class="footnote" style="text-align:center; margin-top:1rem;">
+      MORPHEAS V3 · DUAL‑LAYER HUMAN SUPPORT ARCHITECTURE · COMPLETE ENGINEERING REFERENCE<br>
+      CREATOR: CHRISTOS SOTIRELIS · “MORPHEAS THE SHAPE MASTER” · MORPHEAS COSMOLOGY FRAMEWORK<br>
+      LOGIC · BALANCE · RESPECT FOR LIFE
+    </div>
+  </div>
+</div>
+</body>
+</html>
