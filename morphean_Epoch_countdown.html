@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morphean Epoch Countdown</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Raleway:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    color: #e8d5a0;
+    font-family: 'Raleway', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Starfield */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--dur) infinite alternate;
+    opacity: var(--op);
+  }
+  @keyframes twinkle {
+    from { opacity: var(--op); transform: scale(1); }
+    to   { opacity: calc(var(--op) * 0.2); transform: scale(0.5); }
+  }
+
+  /* Moon orbit */
+  .moon-orbit {
+    position: fixed;
+    top: 50%; left: 50%;
+    width: 600px; height: 600px;
+    margin: -300px 0 0 -300px;
+    border: 1px solid rgba(180,150,80,0.08);
+    border-radius: 50%;
+    animation: orbit 40s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .moon {
+    position: absolute;
+    top: -8px; left: 50%;
+    margin-left: -8px;
+    width: 16px; height: 16px;
+    background: radial-gradient(circle at 35% 35%, #fffde0, #c8a84b);
+    border-radius: 50%;
+    box-shadow: 0 0 12px 4px rgba(200,168,75,0.4);
+  }
+
+  /* Pulse ring */
+  .pulse-ring {
+    position: fixed;
+    top: 50%; left: 50%;
+    width: 500px; height: 500px;
+    margin: -250px 0 0 -250px;
+    border: 1px solid rgba(180,150,80,0.05);
+    border-radius: 50%;
+    animation: pulse-expand 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes pulse-expand {
+    0%   { transform: scale(0.8); opacity: 0.3; }
+    50%  { transform: scale(1.3); opacity: 0.05; }
+    100% { transform: scale(0.8); opacity: 0.3; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  /* Header */
+  .title-block { margin-bottom: 8px; }
+  .pre-title {
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: #c8a84b;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 4vw, 42px);
+    font-weight: 900;
+    color: #f0e0a0;
+    letter-spacing: 4px;
+    text-shadow: 0 0 30px rgba(200,168,75,0.4);
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: #8a7040;
+    margin-top: 10px;
+    font-weight: 300;
+  }
+
+  /* Gold divider */
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c8a84b, transparent);
+    margin: 20px auto;
+  }
+  .divider-sm {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c8a84b60, transparent);
+    margin: 12px auto;
+  }
+
+  /* Epoch label */
+  .epoch-label {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(11px, 1.8vw, 15px);
+    color: #c8a84b;
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+  }
+
+  /* Main countdown grid */
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 0 auto 30px;
+    max-width: 700px;
+  }
+
+  .unit-block {
+    background: linear-gradient(145deg, rgba(30,24,10,0.95), rgba(15,12,5,0.98));
+    border: 1px solid rgba(200,168,75,0.25);
+    border-radius: 4px;
+    padding: 20px 10px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .unit-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,168,75,0.6), transparent);
+  }
+  .unit-block::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,168,75,0.2), transparent);
+  }
+
+  .unit-number {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 900;
+    color: #f5e8b0;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(200,168,75,0.5);
+    letter-spacing: 2px;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  .unit-number.tick {
+    text-shadow: 0 0 40px rgba(200,168,75,0.9);
+    color: #fff8d0;
+  }
+
+  .unit-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: #8a7040;
+    text-transform: uppercase;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  .unit-sublabel {
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: #5a4828;
+    margin-top: 3px;
+    font-weight: 300;
+  }
+
+  /* Secondary row - Morphean units */
+  .morphean-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto 28px;
+  }
+
+  .morph-block {
+    background: rgba(20,16,5,0.6);
+    border: 1px solid rgba(200,168,75,0.12);
+    border-radius: 3px;
+    padding: 14px 8px 10px;
+  }
+  .morph-number {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 700;
+    color: #c8a84b;
+    text-shadow: 0 0 12px rgba(200,168,75,0.3);
+  }
+  .morph-label {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #6a5830;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* Progress bar */
+  .progress-section {
+    max-width: 600px;
+    margin: 0 auto 24px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #5a4828;
+    margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 3px;
+    background: rgba(200,168,75,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8a6010, #c8a84b, #f0d070);
+    border-radius: 2px;
+    transition: width 1s linear;
+    box-shadow: 0 0 8px rgba(200,168,75,0.4);
+  }
+
+  /* Framework tags */
+  .framework-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .tag {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #6a5030;
+    border: 1px solid rgba(200,168,75,0.12);
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Cycle indicators */
+  .cycle-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .cycle-item {
+    text-align: center;
+  }
+  .cycle-val {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: #c8a84b80;
+    font-weight: 700;
+  }
+  .cycle-lbl {
+    font-size: 7px;
+    letter-spacing: 3px;
+    color: #4a3818;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Footer */
+  .footer {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #3a2c10;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  /* UTC clock */
+  .utc-clock {
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #5a4828;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  /* Phi symbol decoration */
+  .phi-deco {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: rgba(200,168,75,0.2);
+    letter-spacing: 8px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="moon-orbit"><div class="moon"></div></div>
+<div class="pulse-ring"></div>
+
+<div class="container">
+
+  <div class="pre-title">Morphean Cosmology Framework</div>
+  <h1>EPOCH COUNTDOWN</h1>
+  <div class="subtitle">YEAR 1 · MONTH 1 · DAY 1</div>
+
+  <div class="divider"></div>
+
+  <div class="epoch-label">DECEMBER 23, 2031 · 00:00:00 UTC</div>
+
+  <div class="utc-clock" id="utcClock">UTC: --:--:-- · --/--/----</div>
+
+  <!-- Main countdown -->
+  <div class="countdown-grid">
+    <div class="unit-block">
+      <span class="unit-number" id="d">----</span>
+      <div class="unit-label">Days</div>
+      <div class="unit-sublabel">Morphean Days</div>
+    </div>
+    <div class="unit-block">
+      <span class="unit-number" id="h">--</span>
+      <div class="unit-label">Hours</div>
+      <div class="unit-sublabel">of current day</div>
+    </div>
+    <div class="unit-block">
+      <span class="unit-number" id="m">--</span>
+      <div class="unit-label">Minutes</div>
+      <div class="unit-sublabel">of current hour</div>
+    </div>
+    <div class="unit-block">
+      <span class="unit-number" id="s">--</span>
+      <div class="unit-label">Seconds</div>
+      <div class="unit-sublabel">of current minute</div>
+    </div>
+  </div>
+
+  <!-- Morphean time units -->
+  <div class="morphean-row">
+    <div class="morph-block">
+      <div class="morph-number" id="synodic">--</div>
+      <div class="morph-label">Synodic Months</div>
+    </div>
+    <div class="morph-block">
+      <div class="morph-number" id="hemi">--</div>
+      <div class="morph-label">Hemi-Months</div>
+    </div>
+    <div class="morph-block">
+      <div class="morph-number" id="mecp">--</div>
+      <div class="morph-label">MECP Months</div>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-section">
+    <div class="progress-label">
+      <span>TODAY</span>
+      <span id="pct">--.--%</span>
+      <span>EPOCH</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="pbar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Cycle references -->
+  <div class="cycle-row">
+    <div class="cycle-item">
+      <div class="cycle-val">2,737</div>
+      <div class="cycle-lbl">Grand Year (yrs)</div>
+    </div>
+    <div class="cycle-item">
+      <div class="cycle-val">200</div>
+      <div class="cycle-lbl">Harmony Cycle (yrs)</div>
+    </div>
+    <div class="cycle-item">
+      <div class="cycle-val">36</div>
+      <div class="cycle-lbl">Grand Dissect (yrs)</div>
+    </div>
+    <div class="cycle-item">
+      <div class="cycle-val">19</div>
+      <div class="cycle-lbl">Metonic (yrs)</div>
+    </div>
+    <div class="cycle-item">
+      <div class="cycle-val">27.37</div>
+      <div class="cycle-lbl">MECP Month (days)</div>
+    </div>
+    <div class="cycle-item">
+      <div class="cycle-val">29.53</div>
+      <div class="cycle-lbl">Synodic Month (days)</div>
+    </div>
+  </div>
+
+  <div class="divider-sm"></div>
+
+  <div class="framework-tags">
+    <span class="tag">MECP</span>
+    <span class="tag">MIDAS</span>
+    <span class="tag">MHCT</span>
+    <span class="tag">Fasma</span>
+    <span class="tag">38° Giza</span>
+    <span class="tag">φ = 1.618</span>
+    <span class="tag">Code M</span>
+    <span class="tag">Dissect I</span>
+  </div>
+
+  <div class="phi-deco">φ · φ² · φ³</div>
+
+  <div class="footer">Christos Sotirelis "Morpheas The Shape Master" · MCF-LP BY-NC-ND-EP</div>
+
+</div>
+
+<script>
+  // Generate stars
+  const starContainer = document.getElementById('stars');
+  for (let i = 0; i < 200; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const sz = Math.random() * 2 + 0.5;
+    const op = Math.random() * 0.6 + 0.1;
+    star.style.cssText = `
+      width:${sz}px; height:${sz}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --dur:${(Math.random()*4+2).toFixed(1)}s;
+      --op:${op.toFixed(2)};
+    `;
+    starContainer.appendChild(star);
+  }
+
+  // Epoch: December 23, 2031 00:00:00 UTC
+  const EPOCH = Date.UTC(2031, 11, 23, 0, 0, 0);
+
+  // Reference start for progress bar: Feb 25, 2026 (today)
+  const START = Date.UTC(2026, 1, 25, 0, 0, 0);
+  const TOTAL_MS = EPOCH - START;
+
+  const SYNODIC = 29.530589;
+  const MECP_MONTH = 27.37;
+  const HEMI = SYNODIC / 2;
+
+  const pad = (n, w=2) => String(Math.floor(n)).padStart(w, '0');
+
+  function update() {
+    const now = Date.now();
+    const diff = EPOCH - now;
+
+    // UTC clock
+    const u = new Date(now);
+    const utcStr = `UTC: ${pad(u.getUTCHours())}:${pad(u.getUTCMinutes())}:${pad(u.getUTCSeconds())} · ${pad(u.getUTCDate())}/${pad(u.getUTCMonth()+1)}/${u.getUTCFullYear()}`;
+    document.getElementById('utcClock').textContent = utcStr;
+
+    if (diff <= 0) {
+      document.getElementById('d').textContent = '0000';
+      document.getElementById('h').textContent = '00';
+      document.getElementById('m').textContent = '00';
+      document.getElementById('s').textContent = '00';
+      document.getElementById('pct').textContent = '100.00%';
+      document.getElementById('pbar').style.width = '100%';
+      return;
+    }
+
+    const totalSec = Math.floor(diff / 1000);
+    const days  = Math.floor(totalSec / 86400);
+    const hrs   = Math.floor((totalSec % 86400) / 3600);
+    const mins  = Math.floor((totalSec % 3600) / 60);
+    const secs  = totalSec % 60;
+
+    document.getElementById('d').textContent = pad(days, 4);
+    document.getElementById('h').textContent = pad(hrs);
+    document.getElementById('m').textContent = pad(mins);
+    document.getElementById('s').textContent = pad(secs);
+
+    // Tick flash on seconds change
+    const secEl = document.getElementById('s');
+    secEl.classList.add('tick');
+    setTimeout(() => secEl.classList.remove('tick'), 300);
+
+    // Morphean units (fractional — how many remain)
+    const totalDays = diff / 86400000;
+    document.getElementById('synodic').textContent = (totalDays / SYNODIC).toFixed(2);
+    document.getElementById('hemi').textContent    = (totalDays / HEMI).toFixed(2);
+    document.getElementById('mecp').textContent    = (totalDays / MECP_MONTH).toFixed(2);
+
+    // Progress bar (% elapsed from start to epoch)
+    const elapsed = now - START;
+    const pct = Math.min(100, Math.max(0, (elapsed / TOTAL_MS) * 100));
+    document.getElementById('pct').textContent = pct.toFixed(2) + '%';
+    document.getElementById('pbar').style.width = pct.toFixed(3) + '%';
+  }
+
+  update();
+  setInterval(update, 1000);
+</script>
+</body>
+</html>

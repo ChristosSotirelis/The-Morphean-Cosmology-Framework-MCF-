@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Morphean Complete Orrery</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#02020a;color:#e8d5a0;font-family:'Georgia',serif;overflow:hidden;width:100vw;height:100vh;display:flex;flex-direction:column}
+#hdr{text-align:center;padding:2px 10px 1px;flex-shrink:0}
+#hdr h1{font-size:clamp(6px,1.1vw,10px);letter-spacing:2px;color:#f0e0a0;text-transform:uppercase;font-weight:normal}
+#hdr .sub{font-size:5px;letter-spacing:1.5px;color:#3a2210;text-transform:uppercase}
+#tcbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:3px;padding:2px 6px;background:rgba(4,3,1,0.97);border-bottom:1px solid rgba(200,168,75,0.1);flex-shrink:0}
+.tcg{display:flex;align-items:center;gap:3px}
+.tclbl{font-size:6px;letter-spacing:1px;color:#8a7040;text-transform:uppercase;white-space:nowrap}
+.tcinp{background:#0a0806;border:1px solid rgba(200,168,75,0.28);color:#f0e0a0;font-size:9px;padding:1px 3px;border-radius:2px;outline:none}
+.tcinp.w96{width:90px}.tcinp.w50{width:46px}
+.tcbtn{background:#0d0a04;border:1px solid rgba(200,168,75,0.35);color:#c8a84b;font-size:8px;padding:2px 6px;cursor:pointer;border-radius:2px;letter-spacing:1px;transition:all 0.12s;white-space:nowrap;font-family:'Georgia',serif}
+.tcbtn:hover{background:#1e1606;border-color:rgba(200,168,75,0.7)}
+.tcbtn.active{background:#251b05;border-color:#c8a84b;color:#f5e0a0}
+.tcbtn.red{border-color:rgba(200,100,40,0.5);color:#c86030}
+#spSlider{-webkit-appearance:none;appearance:none;width:70px;height:3px;background:linear-gradient(to right,#3a2810,#c8a84b);border-radius:2px;outline:none;cursor:pointer}
+#spSlider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;background:#c8a84b;border-radius:50%}
+#spLbl{font-size:8px;color:#c8a84b;min-width:38px}
+.tsep{width:1px;height:14px;background:rgba(200,168,75,0.12)}
+#badge{font-size:6px;letter-spacing:1.5px;padding:1px 4px;border:1px solid rgba(200,168,75,0.2);border-radius:2px;color:#8a7040;background:rgba(10,8,2,0.8)}
+#main{flex:1;display:flex;overflow:hidden}
+#cw{flex:1;position:relative;overflow:hidden;cursor:grab}
+#cw:active{cursor:grabbing}
+canvas{position:absolute;top:0;left:0}
+#rpanel{width:148px;flex-shrink:0;background:rgba(3,2,1,0.97);border-left:1px solid rgba(200,168,75,0.1);display:flex;flex-direction:column;overflow:hidden}
+.rph{font-size:6px;letter-spacing:2px;color:#5a4820;text-transform:uppercase;padding:5px 8px 2px;border-bottom:1px solid rgba(200,168,75,0.08)}
+#followList{padding:4px 5px;display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.fobj{display:flex;align-items:center;gap:4px;padding:3px 6px;cursor:pointer;border-radius:2px;border:1px solid rgba(200,168,75,0.08);transition:all 0.15s}
+.fobj:hover{background:rgba(30,20,5,0.8);border-color:rgba(200,168,75,0.3)}
+.fobj.selected{background:rgba(40,28,6,0.9);border-color:rgba(200,168,75,0.6)}
+.fsym{font-size:13px;width:18px;text-align:center}
+.fname{font-size:7px;letter-spacing:1px;color:#c8a880;text-transform:uppercase}
+#viewCtrl{padding:5px 7px;border-top:1px solid rgba(200,168,75,0.08);flex-shrink:0}
+.vrow{display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.vbtn{background:#0d0a04;border:1px solid rgba(200,168,75,0.25);color:#c8a84b;font-size:8px;padding:2px 5px;cursor:pointer;border-radius:2px;font-family:'Georgia',serif;flex:1;text-align:center}
+.vbtn:hover{background:#1e1606}
+.vbtn.active{background:#251b05;border-color:#c8a84b}
+.vslider{-webkit-appearance:none;appearance:none;width:100%;height:3px;background:linear-gradient(to right,#3a2810,#c8a84b);border-radius:2px;outline:none;cursor:pointer;margin-top:2px}
+.vslider::-webkit-slider-thumb{-webkit-appearance:none;width:9px;height:9px;background:#c8a84b;border-radius:50%}
+#traceOpts{padding:5px 7px;border-top:1px solid rgba(200,168,75,0.08)}
+.trlbl{font-size:6px;letter-spacing:1.5px;color:#5a4820;text-transform:uppercase;margin-bottom:3px}
+#panel{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;padding:2px 5px 3px;flex-shrink:0}
+.box{background:rgba(8,6,2,0.95);border:1px solid rgba(200,168,75,0.12);border-radius:2px;padding:2px 4px;text-align:center;min-width:52px}
+.bv{font-size:clamp(7px,0.9vw,10px);color:#f5e8b0}
+.bl{font-size:5px;letter-spacing:1.5px;color:#3a2410;text-transform:uppercase;margin-top:1px}
+#legend{position:absolute;top:5px;left:6px;font-size:6px;line-height:1.8;pointer-events:none;z-index:5;background:rgba(2,2,10,0.78);padding:4px 7px;border-radius:3px;border:1px solid rgba(200,168,75,0.08)}
+.leg{display:flex;align-items:center;gap:4px}
+.ld{width:16px;height:2px;border-radius:1px;flex-shrink:0}
+#vlabel{position:absolute;bottom:14px;left:6px;font-size:6px;letter-spacing:1.5px;color:#3a2810;text-transform:uppercase;pointer-events:none}
+#licbar{position:absolute;bottom:0;left:0;width:100%;font-size:5px;text-align:center;color:#2a1a08;letter-spacing:0.8px;pointer-events:none;padding:1px}
+#baryinfo{position:absolute;bottom:22px;right:4px;font-size:6px;color:#a07030;text-transform:uppercase;pointer-events:none;text-align:right;line-height:1.6;background:rgba(2,2,10,0.7);padding:3px 5px;border-radius:2px;border:1px solid rgba(200,168,75,0.08)}
+#zbtns{position:absolute;top:5px;right:5px;display:flex;flex-direction:column;gap:2px;z-index:30}
+.zb{background:rgba(12,8,2,0.92);border:1px solid rgba(200,168,75,0.2);color:#c8a84b;font-size:10px;width:22px;height:22px;cursor:pointer;border-radius:2px;display:flex;align-items:center;justify-content:center}
+.zb:hover{background:rgba(35,25,5,0.95)}
+</style>
+</head>
+<body>
+<div id="hdr">
+  <h1>Morphean Complete Orrery · MECP · Rings spin at gear ratio · Collision point fixed at circle intersection</h1>
+  <div class="sub">MCF — Christos Sotirelis "Morpheas The Shape Master" · Earth ring: 365.25×/yr · Moon ring: 13.345×/yr · ⚡ collision point stays fixed where circles meet</div>
+</div>
+<div id="tcbar">
+  <div class="tcg">
+    <button class="tcbtn" id="btnRew">◀◀</button>
+    <button class="tcbtn" id="btnPlay">▶ PLAY</button>
+    <button class="tcbtn" id="btnFwd">▶▶</button>
+  </div>
+  <div class="tsep"></div>
+  <div class="tcg"><span class="tclbl">SPD</span><input type="range" id="spSlider" min="0" max="100" value="50"><span id="spLbl">1d/s</span></div>
+  <div class="tsep"></div>
+  <div class="tcg">
+    <span class="tclbl">DATE</span><input type="text" class="tcinp w96" id="inDate" placeholder="YYYY-MM-DD">
+    <span class="tclbl">UTC</span><input type="text" class="tcinp w50" id="inTime" placeholder="HH:MM">
+    <button class="tcbtn" id="btnGo">▶ GO</button>
+  </div>
+  <div class="tsep"></div>
+  <div class="tcg">
+    <button class="tcbtn red" id="btnReset">↺ LIVE</button>
+    <span id="badge">LIVE</span>
+  </div>
+</div>
+<div id="main">
+  <div id="cw">
+    <canvas id="c"></canvas>
+    <div id="legend">
+      <div class="leg"><div class="ld" style="background:rgba(255,220,60,.9)"></div><span style="color:#ffd840">Earth MECP R_C 408,262km — ring spins 365.25×/yr</span></div>
+      <div class="leg"><div class="ld" style="background:rgba(255,140,40,.7)"></div><span style="color:#ff9030">Earth MECP R_D (Sun outer field)</span></div>
+      <div class="leg"><div class="ld" style="background:rgba(160,210,255,.9)"></div><span style="color:#a0d0ff">Moon MECP R_A 11,200,445km — ring spins 13.345×/yr</span></div>
+      <div class="leg"><div class="ld" style="background:rgba(100,190,255,.7)"></div><span style="color:#78c8ff">Moon MECP R_B (Sun-centered)</span></div>
+      <div class="leg"><div class="ld" style="background:rgba(255,255,80,1)"></div><span style="color:#ffff50">⚡ collision point — fixed at circle intersection</span></div>
+      <div class="leg"><div class="ld" style="background:rgba(255,120,200,.8)"></div><span style="color:#ff80c0">⦿ Barycenter</span></div>
+      <div class="leg"><div class="ld" style="background:rgba(255,200,100,.4)"></div><span style="color:#ffc864">Earth barycentric wave path</span></div>
+      <div class="leg"><div class="ld" style="background:linear-gradient(90deg,#a040ff,#4080ff,#40ff80)"></div><span style="color:#c090ff">Moon heliocentric trace</span></div>
+    </div>
+    <div id="zbtns">
+      <button class="zb" id="zi">+</button>
+      <button class="zb" id="zo">−</button>
+      <button class="zb" id="zr" style="font-size:7px">⌂</button>
+      <button class="zb" id="ze" style="font-size:8px">🌍</button>
+    </div>
+    <div id="vlabel">Full solar system</div>
+    <div id="licbar">Morphean Orrery · Morphean Cosmology Framework (MCF) · Morpheas The Shape Master (Christos Sotirelis) · All Rights Reserved © 2024–2026 · MCF-LP BY-NC-ND-EP</div>
+    <div id="baryinfo">Bary: <span id="baryDist">4,709</span>km · 13.345 lobes/yr</div>
+  </div>
+  <div id="rpanel">
+    <div class="rph">◎ Follow Object</div>
+    <div id="followList"></div>
+    <div id="viewCtrl">
+      <div class="rph" style="padding:0 0 3px 0">⊞ View Mode</div>
+      <div class="vrow">
+        <button class="vbtn active" id="vFree">Free</button>
+        <button class="vbtn" id="vTop">Top</button>
+        <button class="vbtn" id="vEcl">Ecliptic</button>
+      </div>
+      <div class="trlbl">View Tilt</div>
+      <input type="range" class="vslider" id="tiltSlider" min="0" max="90" value="0">
+      <div class="trlbl" style="margin-top:4px">View Rotation</div>
+      <input type="range" class="vslider" id="rotSlider" min="0" max="360" value="0">
+    </div>
+    <div id="traceOpts">
+      <div class="trlbl">Moon Trace Years</div>
+      <input type="range" class="vslider" id="traceYears" min="0" max="10" value="1" step="0.5">
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        <span id="traceYrLbl" style="font-size:6px;color:#c8a84b">1 yr</span>
+      </div>
+      <div style="margin-top:4px" class="trlbl">Earth Wave Path</div>
+      <div class="vrow" style="margin-top:2px">
+        <button class="vbtn active" id="waveOn">Show</button>
+        <button class="vbtn" id="waveOff">Hide</button>
+      </div>
+      <div style="margin-top:4px" class="trlbl">Constellations</div>
+      <div class="vrow" style="margin-top:2px">
+        <button class="vbtn active" id="consOn">Show</button>
+        <button class="vbtn" id="consOff">Hide</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="panel">
+  <div class="box"><div class="bv" id="pUTC">--:--</div><div class="bl">UTC</div></div>
+  <div class="box"><div class="bv" id="pDate">--/--/----</div><div class="bl">Date</div></div>
+  <div class="box"><div class="bv" id="pDOY">-/-</div><div class="bl">Day/Yr</div></div>
+  <div class="box"><div class="bv" id="pRot">---°</div><div class="bl">Earth Rot</div></div>
+  <div class="box"><div class="bv" id="pMoon">---</div><div class="bl">Moon Phase</div></div>
+  <div class="box"><div class="bv" id="pSyn">--d</div><div class="bl">Synodic</div></div>
+  <div class="box"><div class="bv" id="pMECPm">--</div><div class="bl">MECP Month</div></div>
+  <div class="box"><div class="bv" id="pSeason">--</div><div class="bl">Season</div></div>
+  <div class="box"><div class="bv" id="pZoom">1×</div><div class="bl">Zoom</div></div>
+</div>
+
+<script>
+// ================================================================
+// MCF CONSTANTS
+// ================================================================
+const AU=149597870.7, R_C=408262.3, R_D=149189608.4;
+const MOON_GEAR=13.345, R_A=AU/MOON_GEAR, R_B=AU-R_A;
+const MOON_ORBIT=384400, EARTH_R=6371, SYNODIC=29.530589, MECP_MO=27.37;
+const J2000_JD=2451545.0, REF_NM=2451550.26;
+const M_EARTH=5.972e24, M_MOON=7.342e22, M_CORE=1.0e23;
+const BARY_BASE=(M_MOON*MOON_ORBIT+M_CORE*1221)/(M_EARTH+M_MOON+M_CORE);
+const M_MONTHS=['Morphean','Electron','Node','Pyramid','Harmony','Core','Lunar','Solar','Aether','Precess','Dissect','Node II','Sync'];
+
+// ================================================================
+// SPINNING DASHED RING — the key technique
+// Instead of ctx.setLineDash which can't rotate, we draw the dashes
+// manually around the circle at a rotated phase offset.
+// dashPhase accumulates at the body's spin rate, making the ring
+// appear to rotate while the collision point stays fixed at Sun-ward.
+// ================================================================
+function drawSpinningRing(cx, cy, r, dashPhase, color, lineWidth, dashLen, gapLen) {
+  if(r < 1) return;
+  const circumference = 2 * Math.PI * r;
+  const dashAng = (dashLen / circumference) * 2 * Math.PI;
+  const gapAng  = (gapLen  / circumference) * 2 * Math.PI;
+  const period   = dashAng + gapAng;
+  // Start angle = dashPhase (in radians), wraps naturally
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  let a = dashPhase % (2 * Math.PI);
+  // Draw each dash segment around the full circle
+  let total = 0;
+  while(total < 2 * Math.PI) {
+    const start = a;
+    const end   = a + dashAng;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, start, Math.min(end, start + 2*Math.PI));
+    ctx.stroke();
+    a += period;
+    total += period;
+  }
+}
+
+// Glow ring (solid, non-spinning — used for the glow underneath)
+function glowRing(cx, cy, r, r1, g1, b1, layers) {
+  if(r < 1) return;
+  for(let w = layers; w >= 1; w--) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(${r1},${g1},${b1},${0.022*w})`;
+    ctx.lineWidth = w * 3;
+    ctx.stroke();
+  }
+}
+
+// Fixed collision dot — always at angle toward Sun from body center
+function drawCollisionDot(cx, cy, r, sunX, sunY, r1, g1, b1, label) {
+  if(r < 2) return;
+  const dx = sunX - cx, dy = sunY - cy, d = Math.hypot(dx, dy);
+  if(d === 0) return;
+  const ux = dx/d, uy = dy/d;
+  const dotX = cx + ux * r, dotY = cy + uy * r;
+  // Glow layers
+  for(let w = 5; w >= 1; w--) {
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, w * 2.2, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${r1},${g1},${b1},${0.07*w})`;
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 5, 0, Math.PI*2);
+  ctx.fillStyle = `rgba(${r1},${g1},${b1},0.95)`;
+  ctx.fill();
+  if(label && r > 70) {
+    ctx.font = 'bold 8px Georgia';
+    ctx.fillStyle = `rgba(${r1},${g1},${b1},0.82)`;
+    ctx.textAlign = 'left';
+    ctx.fillText(label, dotX + 7, dotY - 2);
+  }
+}
+
+// Planets
+const PLANETS=[
+  {n:'Mercury',sym:'\u263F',c:'#b0a080',P:87.969, a:0.387,L0:252.251,sz:3,  rotPerOrbit:0},
+  {n:'Venus',  sym:'♀',    c:'#e8c860',P:224.701,a:0.723,L0:181.979,sz:4.5,rotPerOrbit:0},
+  {n:'Earth',  sym:'⊕',    c:'#4488ff',P:365.25, a:1.000,L0:100.464,sz:5.5,rotPerOrbit:365.25,isEarth:true},
+  {n:'Mars',   sym:'♂',    c:'#c04820',P:686.971,a:1.524,L0:355.453,sz:3.5,rotPerOrbit:668.6},
+  {n:'Jupiter',sym:'♃',    c:'#c88040',P:4332.59,a:5.203,L0:34.396, sz:9,  rotPerOrbit:10476},
+  {n:'Saturn', sym:'♄',    c:'#d4b060',P:10759.22,a:9.537,L0:50.078,sz:8,  rotPerOrbit:24491,ring:true},
+  {n:'Uranus', sym:'♅',    c:'#80d0d0',P:30688.5,a:19.19,L0:314.055,sz:6,  rotPerOrbit:42718},
+  {n:'Neptune',sym:'♆',    c:'#4060e0',P:60195.0,a:30.07,L0:304.348,sz:6,  rotPerOrbit:89666},
+];
+
+function planetMECP(p){
+  if(p.rotPerOrbit<=0) return null;
+  const r = (p.a*AU) / p.rotPerOrbit;
+  const idx = PLANETS.indexOf(p);
+  const frac = 1 - (idx/7)*0.88;
+  const cols=['rgba(255,240,200','rgba(255,220,160','rgba(255,220,60','rgba(255,180,60','rgba(255,140,40','rgba(220,100,40','rgba(180,80,40','rgba(140,60,40'];
+  return{r, frac, col:cols[Math.min(idx,7)], idx};
+}
+
+// Spin phase accumulators — these grow continuously with simulated time
+// so the ring dash pattern rotates at the exact correct rate
+let earthRingPhase = 0;  // radians, grows at 365.25 rot/yr = 1 rot/day
+let moonRingPhase  = 0;  // radians, grows at 13.345 rot/yr
+const planetRingPhase = new Array(8).fill(0);
+
+const SATS=[
+  {n:'ISS',    alt:408,       P_min:92.68, c:'#00ff88'},
+  {n:'Hubble', alt:547,       P_min:95.47, c:'#66ffcc'},
+  {n:'Iridium',alt:780,       P_min:100.4, c:'#99ffaa'},
+  {n:'ME01',   alt:2000,      P_min:127.2, c:'#44ffff'},
+  {n:'O3b',    alt:8063,      P_min:287.9, c:'#44ccff'},
+  {n:'GLONASS',alt:19100,     P_min:676.0, c:'#ffaa44'},
+  {n:'GPS',    alt:20200,     P_min:717.9, c:'#ffcc44'},
+  {n:'GEO',    alt:35786,     P_min:1436.0,c:'#ff88ff'},
+  {n:'Molniya',alt:39724,     P_min:717.8, c:'#dd88ff'},
+  {n:'Moon',   alt:MOON_ORBIT,P_min:39343, c:'#ddddcc',isMoon:true},
+];
+const ZODIAC=['♈ Ari','♉ Tau','♊ Gem','♋ Can','♌ Leo','♍ Vir','♎ Lib','♏ Sco','♐ Sgr','♑ Cap','♒ Aqr','♓ Psc'];
+const TRACE_COLS=[[160,100,255],[100,160,255],[60,220,160],[255,200,60],[255,120,60],[255,60,120],[180,255,80],[60,200,255],[255,80,200],[200,140,255]];
+
+const CONST_STARS_RAW=[
+  [2.12,23.46,2.0,0],[1.91,19.29,2.64,0],[2.83,27.26,3.63,0],
+  [4.60,16.51,0.85,1],[3.79,24.11,2.87,1],[5.43,28.61,2.97,1],[4.47,15.62,3.54,1],[3.41,9.73,3.65,1],
+  [7.76,28.03,1.16,2],[7.58,31.89,1.93,2],[6.63,16.40,2.98,2],[6.75,12.90,3.06,2],[7.34,21.98,3.36,2],
+  [8.74,18.15,3.52,3],[9.19,11.86,3.53,3],[8.97,11.86,3.94,3],
+  [10.14,11.97,1.35,4],[10.33,19.84,2.14,4],[11.24,15.43,2.56,4],[10.12,16.76,3.44,4],[9.76,26.00,3.52,4],
+  [13.42,-11.16,0.98,5],[12.69,-1.45,2.74,5],[13.04,10.96,3.38,5],[14.77,1.89,3.59,5],
+  [14.85,-16.04,2.61,6],[15.28,-9.38,2.75,6],[15.07,-25.28,3.91,6],
+  [16.49,-26.43,0.96,7],[17.56,-37.10,1.87,7],[17.47,-43.24,1.63,7],[16.00,-22.62,2.32,7],
+  [19.04,-29.88,1.85,8],[18.35,-29.83,2.70,8],[18.92,-26.30,2.81,8],[18.47,-25.42,2.89,8],
+  [20.30,-14.78,3.57,9],[21.10,-17.23,3.05,9],[21.08,-17.23,3.08,9],
+  [22.10,-0.32,2.95,10],[22.36,-1.39,2.91,10],[22.90,-15.82,3.27,10],[22.83,1.31,3.65,10],
+  [1.52,15.35,3.70,11],[0.81,7.58,4.53,11],[23.47,6.38,3.82,11],
+  [5.92,7.41,0.12,12],[5.24,-8.20,0.50,12],[5.68,-1.94,0.45,12],
+  [13.79,49.31,1.77,13],[12.90,55.96,2.37,13],[11.03,56.38,2.44,13],[12.26,57.03,2.44,13],
+  [0.68,56.54,2.23,14],[1.43,60.24,2.27,14],[0.16,59.15,2.68,14],
+  [5.28,45.99,0.08,15],[7.66,5.22,0.40,12],[6.40,-52.70,-0.72,16],[14.66,61.75,1.86,13],[22.96,29.62,2.49,17],
+];
+function raDec2xyz(ra_h,dec_deg){const ra=ra_h/24*2*Math.PI,dec=dec_deg*Math.PI/180;return[Math.cos(dec)*Math.cos(ra),Math.cos(dec)*Math.sin(ra),Math.sin(dec)];}
+const CONST_STARS=CONST_STARS_RAW.map(s=>({xyz:raDec2xyz(s[0],s[1]),mag:s[2],ci:s[3]}));
+const CONST_NAMES=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpius','Sagittarius','Capricornus','Aquarius','Pisces','Orion','Ursa Major','Cassiopeia','Capella','Canis Major','Pegasus'];
+const CONST_LABELS=[];const seen=new Set();
+CONST_STARS.forEach(s=>{if(!seen.has(s.ci)){seen.add(s.ci);CONST_LABELS.push(s);}});
+
+// ================================================================
+// STATE
+// ================================================================
+let simMs=Date.now(),playing=false,playDir=1,speedMult=1,lastRAF=null,isLive=true;
+let lastSimMs=Date.now(); // to compute delta for phase update
+let zoom=1,panX=0,panY=0;
+let followTarget=null;
+let viewTilt=0,viewRot=0;
+let traceYears=1,showWave=true,showCons=true;
+const MOON_TRACE=[],EARTH_WAVE=[];
+let lastTracedJD=null,lastWaveJD=null;
+
+const FOLLOW_OBJECTS=[
+  {id:'sun',sym:'☀',name:'Sun',color:'#ffe060'},
+  {id:'mercury',sym:'☿',name:'Mercury',color:'#b0a080'},
+  {id:'venus',sym:'♀',name:'Venus',color:'#e8c860'},
+  {id:'earth',sym:'⊕',name:'Earth',color:'#4488ff'},
+  {id:'moon',sym:'🌕',name:'Moon',color:'#ddddcc'},
+  {id:'mars',sym:'♂',name:'Mars',color:'#c04820'},
+  {id:'jupiter',sym:'♃',name:'Jupiter',color:'#c88040'},
+  {id:'saturn',sym:'♄',name:'Saturn',color:'#d4b060'},
+  {id:'uranus',sym:'♅',name:'Uranus',color:'#80d0d0'},
+  {id:'neptune',sym:'♆',name:'Neptune',color:'#4060e0'},
+];
+const fl=document.getElementById('followList');
+FOLLOW_OBJECTS.forEach(o=>{
+  const d=document.createElement('div');d.className='fobj';d.dataset.id=o.id;
+  d.innerHTML=`<span class="fsym" style="color:${o.color}">${o.sym}</span><div><div class="fname" style="color:${o.color}">${o.name}</div></div>`;
+  d.addEventListener('click',()=>{
+    document.querySelectorAll('.fobj').forEach(x=>x.classList.remove('selected'));
+    if(followTarget===o.id){followTarget=null;}
+    else{d.classList.add('selected');followTarget=o.id;snapCamera();}
+  });
+  fl.appendChild(d);
+});
+
+const cw=document.getElementById('cw'),cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W,H,BASE;
+function resize(){W=cw.clientWidth;H=cw.clientHeight;cv.width=W;cv.height=H;BASE=Math.min(W,H)*0.43;}
+resize();window.addEventListener('resize',resize);
+
+function w2s(wx,wy){
+  const tilt=viewTilt*Math.PI/180,rot=viewRot*Math.PI/180;
+  const rx=wx*Math.cos(rot)-wy*Math.sin(rot),ry=wx*Math.sin(rot)+wy*Math.cos(rot);
+  return[W/2+(rx+panX)*BASE*zoom,H/2+(ry*Math.cos(tilt)+panY)*BASE*zoom];
+}
+function s2w(sx,sy){
+  const rot=-viewRot*Math.PI/180;
+  const dx=(sx-W/2)/(BASE*zoom),dy=(sy-H/2)/(BASE*zoom);
+  const rx=dx*Math.cos(rot)-dy*Math.sin(rot),ry=dx*Math.sin(rot)+dy*Math.cos(rot);
+  return[rx-panX,ry-panY];
+}
+function px(km){return km/AU*BASE*zoom;}
+
+function getTargetWorldPos(id,jd,bx,by,mAng){
+  if(id==='sun')return{x:0,y:0};
+  if(id==='earth')return{x:bx,y:by};
+  if(id==='moon'){const r=MOON_ORBIT/AU;return{x:bx+r*Math.cos(mAng),y:by+r*Math.sin(mAng)};}
+  const p=PLANETS.find(p=>p.n.toLowerCase()===id);
+  if(p){const a=lonToAngle(planetLon(p,jd));return{x:p.a*Math.cos(a),y:p.a*Math.sin(a)};}
+  return{x:0,y:0};
+}
+function snapCamera(){
+  if(!followTarget)return;
+  const jd=msToJD(simMs);
+  const{bx,by,mAng}=earthHelioPos(jd);
+  const tp=getTargetWorldPos(followTarget,jd,bx,by,mAng);
+  panX=-tp.x;panY=-tp.y;
+}
+
+let drag=false,ds=[0,0],ps=[0,0];
+cv.addEventListener('mousedown',e=>{drag=true;ds=[e.clientX,e.clientY];ps=[panX,panY];});
+window.addEventListener('mouseup',()=>drag=false);
+window.addEventListener('mousemove',e=>{
+  if(!drag)return;
+  panX=ps[0]+(e.clientX-ds[0])/(BASE*zoom);
+  panY=ps[1]+(e.clientY-ds[1])/(BASE*zoom);
+  if(followTarget){followTarget=null;document.querySelectorAll('.fobj').forEach(x=>x.classList.remove('selected'));}
+});
+cv.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const f=e.deltaY<0?1.18:0.85;
+  const[wx,wy]=s2w(e.clientX,e.clientY);
+  zoom=Math.max(0.04,Math.min(zoom*f,80000));
+  panX=(e.clientX-W/2)/(BASE*zoom)-wx;
+  panY=(e.clientY-H/2)/(BASE*zoom)-wy;
+},{passive:false});
+let lt=null;
+cv.addEventListener('touchstart',e=>{lt=e.touches;},{passive:false});
+cv.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(e.touches.length===1&&lt){panX+=(e.touches[0].clientX-lt[0].clientX)/(BASE*zoom);panY+=(e.touches[0].clientY-lt[0].clientY)/(BASE*zoom);}
+  else if(e.touches.length===2&&lt&&lt.length===2){
+    const d0=Math.hypot(lt[0].clientX-lt[1].clientX,lt[0].clientY-lt[1].clientY),d1=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    zoom=Math.max(0.04,Math.min(zoom*(d1/d0),80000));
+  }
+  lt=e.touches;
+},{passive:false});
+
+document.getElementById('zi').onclick=()=>zoom=Math.min(zoom*1.5,80000);
+document.getElementById('zo').onclick=()=>zoom=Math.max(zoom/1.5,0.04);
+document.getElementById('zr').onclick=()=>{zoom=1;panX=0;panY=0;followTarget=null;document.querySelectorAll('.fobj').forEach(x=>x.classList.remove('selected'));};
+document.getElementById('ze').onclick=()=>{
+  const jd=msToJD(simMs),ep=PLANETS[2],ang=lonToAngle(planetLon(ep,jd));
+  zoom=Math.min(W,H)*0.35/(R_C/AU*BASE);
+  panX=-ep.a*Math.cos(ang);panY=-ep.a*Math.sin(ang);
+};
+
+document.getElementById('tiltSlider').addEventListener('input',e=>{viewTilt=+e.target.value;});
+document.getElementById('rotSlider').addEventListener('input',e=>{viewRot=+e.target.value;});
+['vFree','vTop','vEcl'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',()=>{
+    document.querySelectorAll('.vbtn').forEach(b=>{if(['vFree','vTop','vEcl'].includes(b.id))b.classList.remove('active');});
+    document.getElementById(id).classList.add('active');
+    if(id==='vTop'){viewTilt=0;viewRot=0;document.getElementById('tiltSlider').value=0;document.getElementById('rotSlider').value=0;}
+    if(id==='vEcl'){viewTilt=60;viewRot=0;document.getElementById('tiltSlider').value=60;document.getElementById('rotSlider').value=0;}
+  });
+});
+document.getElementById('traceYears').addEventListener('input',e=>{
+  traceYears=+e.target.value;
+  document.getElementById('traceYrLbl').textContent=traceYears===0?'OFF':traceYears+' yr'+(traceYears!==1?'s':'');
+});
+document.getElementById('waveOn').addEventListener('click',()=>{showWave=true;document.getElementById('waveOn').classList.add('active');document.getElementById('waveOff').classList.remove('active');});
+document.getElementById('waveOff').addEventListener('click',()=>{showWave=false;document.getElementById('waveOff').classList.add('active');document.getElementById('waveOn').classList.remove('active');});
+document.getElementById('consOn').addEventListener('click',()=>{showCons=true;document.getElementById('consOn').classList.add('active');document.getElementById('consOff').classList.remove('active');});
+document.getElementById('consOff').addEventListener('click',()=>{showCons=false;document.getElementById('consOff').classList.add('active');document.getElementById('consOn').classList.remove('active');});
+
+// ================================================================
+// TIME ENGINE
+// ================================================================
+function msToJD(ms){return ms/86400000+2440587.5;}
+function sliderToSpeed(v){return v===0?0:Math.pow(10,(v-50)/20);}
+function updateSpLbl(v){
+  const s=sliderToSpeed(v);
+  if(s===0){document.getElementById('spLbl').textContent='STOP';return;}
+  if(s<0.1)document.getElementById('spLbl').textContent=(s*24).toFixed(1)+'h/s';
+  else if(s<1)document.getElementById('spLbl').textContent=s.toFixed(2)+'d/s';
+  else if(s<30)document.getElementById('spLbl').textContent=s.toFixed(1)+'d/s';
+  else if(s<365)document.getElementById('spLbl').textContent=(s/30).toFixed(1)+'mo/s';
+  else document.getElementById('spLbl').textContent=(s/365).toFixed(1)+'yr/s';
+}
+document.getElementById('spSlider').addEventListener('input',e=>{speedMult=sliderToSpeed(+e.target.value);updateSpLbl(+e.target.value);});
+speedMult=sliderToSpeed(50);updateSpLbl(50);
+
+function setBadge(t){document.getElementById('badge').textContent=t;}
+function pausePlay(){playing=false;document.getElementById('btnPlay').classList.remove('active');document.getElementById('btnRew').classList.remove('active');setBadge('PAUSED');}
+document.getElementById('btnPlay').onclick=()=>{
+  const b=document.getElementById('btnPlay');
+  if(playing&&playDir===1){pausePlay();b.textContent='▶ PLAY';}
+  else{playing=true;playDir=1;isLive=false;b.classList.add('active');document.getElementById('btnRew').classList.remove('active');b.textContent='⏸';setBadge('FWD ▶');}
+};
+document.getElementById('btnRew').onclick=()=>{
+  const b=document.getElementById('btnRew');
+  if(playing&&playDir===-1){pausePlay();}
+  else{playing=true;playDir=-1;isLive=false;b.classList.add('active');document.getElementById('btnPlay').classList.remove('active');document.getElementById('btnPlay').textContent='▶ PLAY';setBadge('◀ REV');}
+};
+document.getElementById('btnFwd').onclick=()=>{
+  const sl=document.getElementById('spSlider');sl.value=Math.min(100,+sl.value+15);speedMult=sliderToSpeed(+sl.value);updateSpLbl(+sl.value);
+  playing=true;playDir=1;isLive=false;document.getElementById('btnPlay').classList.add('active');document.getElementById('btnPlay').textContent='⏸';setBadge('FWD▶▶');
+};
+document.getElementById('btnReset').onclick=()=>{
+  simMs=Date.now();isLive=true;playing=false;
+  document.getElementById('btnPlay').textContent='▶ PLAY';
+  document.getElementById('btnPlay').classList.remove('active');document.getElementById('btnRew').classList.remove('active');
+  document.getElementById('spSlider').value=50;speedMult=sliderToSpeed(50);updateSpLbl(50);
+  setBadge('LIVE');document.getElementById('inDate').value='';document.getElementById('inTime').value='';
+  MOON_TRACE.length=0;EARTH_WAVE.length=0;lastTracedJD=null;lastWaveJD=null;
+  earthRingPhase=0;moonRingPhase=0;planetRingPhase.fill(0);
+};
+document.getElementById('btnGo').onclick=()=>{
+  const dv=document.getElementById('inDate').value.trim(),tv=document.getElementById('inTime').value.trim()||'00:00';
+  if(!dv){alert('Enter date YYYY-MM-DD');return;}
+  const p=new Date(`${dv}T${tv}:00Z`);if(isNaN(p.getTime())){alert('Invalid date/time');return;}
+  simMs=p.getTime();isLive=false;playing=true;playDir=1;
+  document.getElementById('btnPlay').textContent='⏸';document.getElementById('btnPlay').classList.add('active');
+  setBadge('CUSTOM ▶');MOON_TRACE.length=0;EARTH_WAVE.length=0;lastTracedJD=null;lastWaveJD=null;
+};
+
+// ================================================================
+// ASTRONOMY
+// ================================================================
+function getDOY(d){return Math.floor((d-new Date(Date.UTC(d.getUTCFullYear(),0,0)))/86400000);}
+function isLeap(y){return(y%4===0&&y%100!==0)||y%400===0;}
+function planetLon(p,jd){return((p.L0+360/p.P*(jd-J2000_JD))%360+360)%360;}
+function lonToAngle(l){return l*Math.PI/180-Math.PI/2;}
+function moonLon(jd){return((218.316+13.176396*(jd-J2000_JD))%360+360)%360;}
+function synodicDay(jd){return((jd-REF_NM)%SYNODIC+SYNODIC)%SYNODIC;}
+function moonPhName(d){const f=d/SYNODIC;if(f<0.033||f>0.967)return'New 🌑';if(f<0.25)return'Wax.Cresc 🌒';if(f<0.283)return'1st Qtr 🌓';if(f<0.5)return'Wax.Gib 🌔';if(f<0.533)return'Full 🌕';if(f<0.75)return'Wan.Gib 🌖';if(f<0.783)return'Last Qtr 🌗';return'Wan.Cresc 🌘';}
+function getSeason(d){if(d<80||d>355)return'Winter❄';if(d<172)return'Spring🌱';if(d<266)return'Summer☀';return'Autumn🍂';}
+function earthHelioPos(jd){
+  const ep=PLANETS[2],ang=lonToAngle(planetLon(ep,jd));
+  const mAng=lonToAngle(moonLon(jd));
+  const baryAU=BARY_BASE/AU;
+  return{bx:ep.a*Math.cos(ang)+baryAU*Math.cos(mAng+Math.PI),by:ep.a*Math.sin(ang)+baryAU*Math.sin(mAng+Math.PI),ang,mAng};
+}
+
+const STARS=[];
+for(let i=0;i<220;i++){
+  let x,y,z,dec;
+  do{x=Math.random()*2-1;y=Math.random()*2-1;z=Math.random()*2-1;dec=Math.asin(z/Math.sqrt(x*x+y*y+z*z||1))*180/Math.PI;}
+  while(Math.abs(dec)<18&&Math.random()<0.7);
+  STARS.push({x:Math.random(),y:Math.random(),r:Math.random()*1.1+0.2,a:Math.random()*0.45+0.05});
+}
+
+function projectConstellationStar(xyz){
+  const rot=(viewRot-90)*Math.PI/180;
+  const[sx_,sz_,sy_]=xyz;
+  const rx=sx_*Math.cos(rot)-sz_*Math.sin(rot);
+  const rz=sx_*Math.sin(rot)+sz_*Math.cos(rot);
+  const R_sky=Math.min(W,H)*0.48;
+  const tilt=viewTilt*Math.PI/180;
+  const ty=sy_*Math.cos(tilt)-rz*Math.sin(tilt);
+  const tz=sy_*Math.sin(tilt)+rz*Math.cos(tilt);
+  if(tz<-0.1)return null;
+  const[ssx,ssy]=w2s(0,0);
+  return{sx:ssx+rx*R_sky,sy:ssy+ty*R_sky};
+}
+
+function drawMoonBody(x,y,r,synFrac,moonAngle){
+  ctx.save();ctx.translate(x,y);
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+  ctx.beginPath();ctx.arc(0,0,r,moonAngle-Math.PI/2,moonAngle+Math.PI/2,false);ctx.lineTo(0,0);ctx.closePath();ctx.fillStyle='#1a3a7a';ctx.fill();
+  ctx.beginPath();ctx.arc(0,0,r,moonAngle+Math.PI/2,moonAngle+Math.PI*1.5,false);ctx.lineTo(0,0);ctx.closePath();ctx.fillStyle='#7a1a1a';ctx.fill();
+  const lg=ctx.createRadialGradient(0,0,0,0,0,r);
+  lg.addColorStop(0,'rgba(255,255,255,0.45)');lg.addColorStop(0.5,'rgba(255,255,255,0.08)');lg.addColorStop(1,'rgba(0,0,0,0.55)');
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=lg;ctx.fill();
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.strokeStyle='rgba(200,180,240,0.5)';ctx.lineWidth=0.8;ctx.stroke();
+  ctx.restore();
+}
+
+function drawEarthCore(ex,ey,earthR,moonAngle,sunFromEarth){
+  const coreR=Math.max(4,Math.min(earthR*0.28,earthR*0.55));
+  const cavR=coreR*1.55;
+  const off=Math.min(px(BARY_BASE),Math.max(0,cavR-coreR-1));
+  const cx=ex+Math.cos(moonAngle)*off,cy=ey+Math.sin(moonAngle)*off;
+  ctx.save();ctx.beginPath();ctx.arc(ex,ey,cavR,0,Math.PI*2);
+  const cavG=ctx.createRadialGradient(ex,ey,0,ex,ey,cavR);
+  cavG.addColorStop(0,'rgba(1,1,8,0.96)');cavG.addColorStop(0.7,'rgba(2,2,14,0.88)');cavG.addColorStop(1,'rgba(5,5,20,0)');
+  ctx.fillStyle=cavG;ctx.fill();ctx.restore();
+  ctx.save();ctx.translate(cx,cy);ctx.beginPath();ctx.arc(0,0,coreR,0,Math.PI*2);ctx.clip();
+  ctx.beginPath();ctx.arc(0,0,coreR,moonAngle-Math.PI/2,moonAngle+Math.PI/2,false);ctx.lineTo(0,0);ctx.closePath();ctx.fillStyle='#1a3a7a';ctx.fill();
+  ctx.beginPath();ctx.arc(0,0,coreR,moonAngle+Math.PI/2,moonAngle+Math.PI*1.5,false);ctx.lineTo(0,0);ctx.closePath();ctx.fillStyle='#8a2a1a';ctx.fill();
+  const lg2=ctx.createRadialGradient(Math.cos(sunFromEarth)*coreR*0.3,Math.sin(sunFromEarth)*coreR*0.3,0,0,0,coreR);
+  lg2.addColorStop(0,'rgba(255,255,255,0.4)');lg2.addColorStop(0.6,'rgba(255,150,50,0.1)');lg2.addColorStop(1,'rgba(0,0,0,0.5)');
+  ctx.beginPath();ctx.arc(0,0,coreR,0,Math.PI*2);ctx.fillStyle=lg2;ctx.fill();
+  ctx.beginPath();ctx.arc(0,0,coreR,0,Math.PI*2);ctx.strokeStyle='rgba(255,120,30,0.7)';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.restore();
+  if(coreR>6){ctx.font=`${Math.max(6,coreR*0.5)}px Georgia`;ctx.fillStyle='rgba(255,150,50,0.6)';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('Core',cx,cy+coreR+2);}
+}
+
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function yearCol(yr,a){const c=TRACE_COLS[Math.abs(yr)%10];return`rgba(${c[0]},${c[1]},${c[2]},${a})`;}
+
+// ================================================================
+// MAIN DRAW
+// ================================================================
+function draw(deltaDays){
+  const jd=msToJD(simMs);
+  const now=new Date(simMs);
+  const doy=getDOY(now),diy=isLeap(now.getUTCFullYear())?366:365;
+  const dayFrac=(now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds())/86400;
+  const synD=synodicDay(jd);
+  const mecpMon=Math.floor(((jd-J2000_JD)%MECP_MO+MECP_MO)%MECP_MO/MECP_MO*13);
+  const{bx,by,ang:earthAng,mAng}=earthHelioPos(jd);
+  const maxTraceDays=traceYears*365.25;
+
+  // ── UPDATE RING SPIN PHASES ──
+  // deltaDays = simulated days elapsed this frame (signed, includes reverse)
+  // Earth MECP ring: 365.25 full rotations per year = 365.25/365.25 per day = 1 rot/day = 2π/day
+  earthRingPhase += deltaDays * 2*Math.PI * (365.25/365.25); // = 2π per sim-day
+  // Moon MECP ring: 13.345 rotations per year = 13.345/365.25 rot/day
+  moonRingPhase  += deltaDays * 2*Math.PI * (13.345/365.25);
+  // Per-planet rings
+  PLANETS.forEach((p,i)=>{
+    if(p.rotPerOrbit>0) planetRingPhase[i] += deltaDays * 2*Math.PI * (p.rotPerOrbit/p.P);
+  });
+
+  if(followTarget)snapCamera();
+
+  if(traceYears>0){
+    if(lastTracedJD===null||Math.abs(jd-lastTracedJD)>=0.4){
+      const rMo=MOON_ORBIT/AU,mhx=bx+rMo*Math.cos(mAng),mhy=by+rMo*Math.sin(mAng);
+      const yr=Math.floor((jd-J2000_JD)/365.25);
+      MOON_TRACE.push({jd,x:mhx,y:mhy,yr});
+      while(MOON_TRACE.length>0&&jd-MOON_TRACE[0].jd>maxTraceDays)MOON_TRACE.shift();
+      lastTracedJD=jd;
+    }
+  }
+  if(lastWaveJD===null||Math.abs(jd-lastWaveJD)>=0.8){
+    EARTH_WAVE.push({jd,x:bx,y:by});
+    while(EARTH_WAVE.length>0&&jd-EARTH_WAVE[0].jd>365.25)EARTH_WAVE.shift();
+    lastWaveJD=jd;
+  }
+
+  ctx.clearRect(0,0,W,H);
+  const bg=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.75);
+  bg.addColorStop(0,'#040412');bg.addColorStop(1,'#010108');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  STARS.forEach(s=>{ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.a})`;ctx.fill();});
+
+  const[sx,sy]=w2s(0,0);
+  const[ex,ey]=w2s(bx,by);
+  const rMoonOrb=px(MOON_ORBIT);
+  const mLon=moonLon(jd),mAngFull=lonToAngle(mLon);
+  const sunDirFromEarth=Math.atan2(sy-ey,sx-ex);
+
+  // Constellations
+  if(showCons){
+    CONST_STARS.forEach(s=>{
+      const proj=projectConstellationStar(s.xyz);if(!proj)return;
+      const sz=Math.max(1.5,Math.min(5,4.5-s.mag*0.45)),alp=Math.max(0.25,Math.min(0.85,0.9-s.mag*0.09));
+      ctx.beginPath();ctx.arc(proj.sx,proj.sy,sz,0,Math.PI*2);ctx.fillStyle=`rgba(210,225,255,${alp})`;ctx.fill();
+    });
+    CONST_LABELS.forEach(s=>{
+      const proj=projectConstellationStar(s.xyz);if(!proj)return;
+      const name=CONST_NAMES[s.ci]||'';if(!name)return;
+      ctx.font='bold 9px Georgia';ctx.fillStyle='rgba(180,200,255,0.55)';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(name,proj.sx,proj.sy-7);
+    });
+  }
+
+  // Zodiac
+  const rzod=px(AU*33);
+  if(rzod>55){
+    for(let i=0;i<12;i++){
+      const a0=lonToAngle(i*30),a1=lonToAngle((i+1)*30),am=lonToAngle(i*30+15);
+      ctx.beginPath();ctx.arc(sx,sy,rzod*0.97,a0,a1);ctx.strokeStyle=`rgba(200,168,75,${i%2===0?0.05:0.03})`;ctx.lineWidth=10;ctx.stroke();
+      ctx.beginPath();ctx.moveTo(sx+Math.cos(a0)*rzod*0.93,sy+Math.sin(a0)*rzod*0.93);ctx.lineTo(sx+Math.cos(a0)*rzod,sy+Math.sin(a0)*rzod);ctx.strokeStyle='rgba(200,168,75,0.18)';ctx.lineWidth=0.6;ctx.stroke();
+      if(rzod>130){ctx.save();ctx.translate(sx+Math.cos(am)*rzod*0.965,sy+Math.sin(am)*rzod*0.965);ctx.rotate(am+Math.PI/2);ctx.font=`${Math.max(7,Math.min(12,rzod*0.03))}px Georgia`;ctx.fillStyle='rgba(200,168,75,0.35)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(ZODIAC[i],0,0);ctx.restore();}
+    }
+  }
+
+  // R_D, R_B (Sun-centered, static — these are the Sun's field boundaries)
+  const rDp=px(R_D);
+  if(rDp>4){glowRing(sx,sy,rDp,255,140,30,3);drawSpinningRing(sx,sy,rDp,0,'rgba(255,140,30,0.3)',0.9,10,6);if(rDp>80){ctx.font=`${Math.max(6,Math.min(9,rDp*0.005))}px Georgia`;ctx.fillStyle='rgba(255,140,30,0.4)';ctx.textAlign='center';ctx.fillText('Earth MECP R_D=149,189,608km (Sun)',sx,sy-rDp-4);}}
+  const rBp=px(R_B);
+  if(rBp>4){glowRing(sx,sy,rBp,100,190,255,3);drawSpinningRing(sx,sy,rBp,0,'rgba(100,190,255,0.4)',0.9,12,6);if(rBp>80){ctx.font=`${Math.max(6,Math.min(9,rBp*0.004))}px Georgia`;ctx.fillStyle='rgba(100,190,255,0.4)';ctx.textAlign='center';ctx.fillText('Moon MECP R_B (Sun-centered)',sx,sy-rBp-4);}}
+
+  // Planet orbits
+  PLANETS.forEach(p=>{if(!p.isEarth){ctx.beginPath();ctx.arc(sx,sy,px(p.a*AU),0,Math.PI*2);ctx.strokeStyle='rgba(200,168,75,0.06)';ctx.lineWidth=0.6;ctx.stroke();}});
+  ctx.beginPath();ctx.arc(sx,sy,px(AU),0,Math.PI*2);ctx.strokeStyle='rgba(255,200,60,0.07)';ctx.lineWidth=0.7;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);
+
+  // ── PER-PLANET MECP: spinning dashed ring + fixed collision dot ──
+  PLANETS.forEach((p,idx)=>{
+    const mcp=planetMECP(p);if(!mcp)return;
+    const ang=lonToAngle(planetLon(p,jd));
+    let ppx_,ppy_;
+    if(p.isEarth){ppx_=ex;ppy_=ey;}
+    else{ppx_=sx+Math.cos(ang)*px(p.a*AU);ppy_=sy+Math.sin(ang)*px(p.a*AU);}
+    const rMp=px(mcp.r);if(rMp<1.5)return;
+    const frac=mcp.frac, col=mcp.col;
+    // Glow
+    for(let w=3;w>=1;w--){
+      ctx.beginPath();ctx.arc(ppx_,ppy_,rMp,0,Math.PI*2);
+      ctx.strokeStyle=`${col},${0.03*w*frac})`;ctx.lineWidth=w*3;ctx.stroke();
+    }
+    // SPINNING dashed ring
+    drawSpinningRing(ppx_,ppy_,rMp,planetRingPhase[idx],`${col},${frac*0.65})`,Math.max(0.6,1.2*frac),8,5);
+    if(rMp>50&&idx<=3){
+      ctx.font=`${Math.max(5,Math.min(8,rMp*0.04))}px Georgia`;
+      ctx.fillStyle=`${col},${frac*0.55})`;ctx.textAlign='center';
+      ctx.fillText(`${p.n} MECP ${(mcp.r).toFixed(0)}km`,ppx_,ppy_-rMp-3);
+    }
+    // FIXED collision dot — toward Sun
+    if(rMp>20){
+      const cc=col.slice(5).split(',').map(Number);
+      drawCollisionDot(ppx_,ppy_,rMp,sx,sy,cc[0]||255,cc[1]||200,cc[2]||60,idx<=3?`⚡ ${p.n}`:null);
+    }
+  });
+
+  ctx.beginPath();ctx.arc(sx,sy,px(AU),0,Math.PI*2);ctx.strokeStyle='rgba(255,200,60,0.10)';ctx.lineWidth=0.9;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);
+
+  // Earth wave
+  if(showWave&&EARTH_WAVE.length>1){
+    ctx.beginPath();
+    const[wpx0,wpy0]=w2s(EARTH_WAVE[0].x,EARTH_WAVE[0].y);ctx.moveTo(wpx0,wpy0);
+    for(let i=1;i<EARTH_WAVE.length;i++){const[wxi,wyi]=w2s(EARTH_WAVE[i].x,EARTH_WAVE[i].y);ctx.lineTo(wxi,wyi);}
+    ctx.strokeStyle='rgba(255,200,100,0.30)';ctx.lineWidth=1.0;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);
+  }
+
+  // SUN
+  const rSun=Math.max(10,Math.min(px(696340),W*0.07));
+  const sg=ctx.createRadialGradient(sx,sy,0,sx,sy,rSun*3.2);
+  sg.addColorStop(0,'#fffce0');sg.addColorStop(0.2,'#ffe050');sg.addColorStop(0.6,'#ff9020');sg.addColorStop(1,'rgba(255,70,0,0)');
+  ctx.beginPath();ctx.arc(sx,sy,rSun*3.2,0,Math.PI*2);ctx.fillStyle=sg;ctx.fill();
+  ctx.beginPath();ctx.arc(sx,sy,rSun,0,Math.PI*2);ctx.fillStyle='#fffcd0';ctx.fill();
+  ctx.font=`${Math.max(8,rSun*0.65)}px Georgia`;ctx.fillStyle='rgba(80,50,0,0.7)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('☀',sx,sy);
+
+  // PLANETS
+  PLANETS.forEach(p=>{
+    if(p.isEarth)return;
+    const a=lonToAngle(planetLon(p,jd)),r=px(p.a*AU);
+    const ppx=sx+Math.cos(a)*r,ppy=sy+Math.sin(a)*r;
+    const sz=Math.max(p.sz*0.5,Math.min(p.sz*Math.sqrt(zoom)*0.45,p.sz*4));
+    const gg=ctx.createRadialGradient(ppx,ppy,0,ppx,ppy,sz*3);gg.addColorStop(0,p.c+'aa');gg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.beginPath();ctx.arc(ppx,ppy,sz*3,0,Math.PI*2);ctx.fillStyle=gg;ctx.fill();
+    ctx.beginPath();ctx.arc(ppx,ppy,sz,0,Math.PI*2);ctx.fillStyle=p.c;ctx.fill();
+    if(p.ring){ctx.beginPath();ctx.ellipse(ppx,ppy,sz*2.3,sz*0.65,a,0,Math.PI*2);ctx.strokeStyle='rgba(212,176,96,0.5)';ctx.lineWidth=1.8;ctx.stroke();}
+    if(zoom>0.4){ctx.font=`${Math.max(6,Math.min(10,8*zoom*0.25+6))}px Georgia`;ctx.fillStyle=p.c+'cc';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(p.sym+' '+p.n,ppx,ppy+sz+2);}
+  });
+
+  // ── R_C (Earth-centered): SPINNING ring + FIXED collision dot ──
+  const rCp=px(R_C);
+  if(rCp>2){
+    glowRing(ex,ey,rCp,255,220,60,5);
+    // Spinning dashed ring at Earth's 365.25 rot/yr rate
+    drawSpinningRing(ex,ey,rCp,earthRingPhase,'rgba(255,220,60,0.75)',1.2,7,4);
+    if(rCp>50){ctx.font=`${Math.max(6,Math.min(9,rCp*0.06))}px Georgia`;ctx.fillStyle='rgba(255,220,60,0.6)';ctx.textAlign='center';ctx.fillText('Earth MECP R_C=408,262km  [365.25×/yr]',ex,ey-rCp-4);}
+    // Fixed collision dot toward Sun
+    if(rCp>20) drawCollisionDot(ex,ey,rCp,sx,sy,255,255,80,'⚡ Earth MECP');
+  }
+
+  // ── R_A (Earth-centered): SPINNING ring + FIXED collision dot ──
+  const rAp=px(R_A);
+  if(rAp>2){
+    glowRing(ex,ey,rAp,160,210,255,4);
+    // Spinning dashed ring at Moon MECP 13.345 rot/yr rate
+    drawSpinningRing(ex,ey,rAp,moonRingPhase,'rgba(160,210,255,0.6)',1.1,9,5);
+    if(rAp>60){ctx.font=`${Math.max(6,Math.min(9,rAp*0.005))}px Georgia`;ctx.fillStyle='rgba(160,210,255,0.55)';ctx.textAlign='center';ctx.fillText(`Moon MECP R_A=${(R_A/1000).toFixed(0)}k km  [13.345×/yr]`,ex,ey-rAp-4);}
+    // Fixed collision dot toward Sun
+    if(rAp>20) drawCollisionDot(ex,ey,rAp,sx,sy,140,210,255,'⚡ Moon MECP');
+  }
+
+  // Moon orbit ring
+  if(rMoonOrb>2){
+    ctx.beginPath();ctx.arc(ex,ey,rMoonOrb,0,Math.PI*2);ctx.strokeStyle='rgba(160,140,210,0.25)';ctx.lineWidth=0.7;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);
+    if(rMoonOrb>40){ctx.font=`${Math.max(5,Math.min(7,rMoonOrb*0.05))}px Georgia`;ctx.fillStyle='rgba(160,140,210,0.3)';ctx.textAlign='center';ctx.fillText('Moon orbit 384,400km',ex,ey+rMoonOrb+6);}
+  }
+
+  // SCCL zones
+  [{alt:450,col:'rgba(80,255,140,0.18)',lbl:'SCCL 400km'},{alt:10200,col:'rgba(80,200,255,0.12)',lbl:'SCCL ~10k'},{alt:20200,col:'rgba(255,200,80,0.12)',lbl:'SCCL-GPS'},{alt:35786,col:'rgba(255,80,255,0.09)',lbl:'SCCL-GEO'}].forEach(z=>{
+    const rz=px(EARTH_R+z.alt);if(rz<2)return;
+    ctx.beginPath();ctx.arc(ex,ey,rz,0,Math.PI*2);ctx.strokeStyle=z.col;ctx.lineWidth=Math.max(1,Math.min(6,rz*0.01));ctx.stroke();
+    if(rz>26){ctx.font=`${Math.max(5,Math.min(7,rz*0.025+4))}px Georgia`;ctx.fillStyle=z.col.replace(/[\d.]+\)$/,'0.5)');ctx.textAlign='center';ctx.fillText(z.lbl,ex,ey-rz-3);}
+  });
+
+  // Moon trace
+  if(traceYears>0){
+    const jdRef=Math.floor((jd-J2000_JD)/365.25);
+    for(let i=0;i<MOON_TRACE.length;i++){
+      const t=MOON_TRACE[i];const age=jd-t.jd;const yearDiff=jdRef-t.yr;
+      const alpha=Math.max(0,(1-age/maxTraceDays)*0.75);
+      const[tpx,tpy]=w2s(t.x,t.y);
+      const tr=Math.max(1,Math.min(2.5,2.2*(1-age/maxTraceDays)+0.8));
+      ctx.beginPath();ctx.arc(tpx,tpy,tr,0,Math.PI*2);ctx.fillStyle=yearCol(yearDiff,alpha);ctx.fill();
+    }
+  }
+
+  // Satellites
+  SATS.forEach((sat,i)=>{
+    const r_km=sat.isMoon?MOON_ORBIT:(EARTH_R+sat.alt);
+    const rSat=px(r_km);if(rSat<1.5)return;
+    if(!sat.isMoon){ctx.beginPath();ctx.arc(ex,ey,rSat,0,Math.PI*2);ctx.strokeStyle=sat.c+'40';ctx.lineWidth=0.5;ctx.stroke();}
+    const satPd=sat.P_min/1440;
+    const satAng=sat.isMoon?mAngFull:(jd/satPd+i*0.618)*Math.PI*2;
+    const satX=ex+Math.cos(satAng)*rSat,satY=ey+Math.sin(satAng)*rSat;
+    const satSz=sat.isMoon?Math.max(4,Math.min(14,rSat*0.13)):Math.max(2,Math.min(5,rSat*0.035+2));
+    if(sat.isMoon){
+      drawMoonBody(satX,satY,satSz,synD/SYNODIC,mAngFull);
+      if(satSz>5){ctx.font=`${Math.max(6,Math.min(9,satSz*0.6))}px Georgia`;ctx.fillStyle='rgba(200,180,240,0.6)';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('Moon',satX,satY+satSz+3);}
+    } else {
+      const sg2=ctx.createRadialGradient(satX,satY,0,satX,satY,satSz*2.5);sg2.addColorStop(0,sat.c+'88');sg2.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath();ctx.arc(satX,satY,satSz*2.5,0,Math.PI*2);ctx.fillStyle=sg2;ctx.fill();
+      ctx.beginPath();ctx.arc(satX,satY,satSz,0,Math.PI*2);ctx.fillStyle=sat.c;ctx.fill();
+      if(rSat>16){ctx.font=`${Math.max(6,Math.min(8,rSat*0.04+5))}px Georgia`;ctx.fillStyle=sat.c+'cc';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(sat.n,satX,satY+satSz+2);if(rSat>40){ctx.font='6px Georgia';ctx.fillStyle=sat.c+'77';ctx.fillText(sat.alt+'km',satX,satY+satSz+9);}}
+    }
+  });
+
+  // Earth
+  const rE=Math.max(5,Math.min(px(EARTH_R)*8,W*0.055));
+  const spinAng=dayFrac*Math.PI*2;
+  const eg2=ctx.createRadialGradient(ex,ey,0,ex,ey,rE*2.5);eg2.addColorStop(0,'rgba(80,160,255,0.3)');eg2.addColorStop(1,'rgba(80,160,255,0)');
+  ctx.beginPath();ctx.arc(ex,ey,rE*2.5,0,Math.PI*2);ctx.fillStyle=eg2;ctx.fill();
+  if(rE>8)drawEarthCore(ex,ey,rE,mAngFull,sunDirFromEarth);
+  ctx.beginPath();ctx.arc(ex,ey,rE,0,Math.PI*2);
+  const ef=ctx.createRadialGradient(ex+Math.cos(sunDirFromEarth)*rE*0.3,ey+Math.sin(sunDirFromEarth)*rE*0.3,0,ex,ey,rE);
+  ef.addColorStop(0,'rgba(30,100,200,0.82)');ef.addColorStop(0.6,'rgba(15,70,160,0.85)');ef.addColorStop(1,'rgba(5,40,100,0.88)');
+  ctx.fillStyle=ef;ctx.fill();ctx.strokeStyle='#5ab0ff';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex+Math.cos(spinAng)*rE*0.85,ey+Math.sin(spinAng)*rE*0.85);ctx.strokeStyle='#a0e0ff';ctx.lineWidth=1.3;ctx.stroke();
+  ctx.font=`${Math.max(6,Math.min(9,rE*0.55))}px Georgia`;ctx.fillStyle='#80c8ff';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('⊕ Earth',ex,ey+rE+2);
+
+  // Barycenter
+  const bx2=ex+Math.cos(mAngFull)*Math.min(px(BARY_BASE),rE*0.85);
+  const by2=ey+Math.sin(mAngFull)*Math.min(px(BARY_BASE),rE*0.85);
+  for(let w=4;w>=1;w--){ctx.beginPath();ctx.arc(bx2,by2,w*2,0,Math.PI*2);ctx.fillStyle=`rgba(255,120,200,${0.1*w})`;ctx.fill();}
+  ctx.beginPath();ctx.arc(bx2,by2,2.5,0,Math.PI*2);ctx.fillStyle='rgba(255,120,200,0.9)';ctx.fill();
+
+  if(px(AU)>20){ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.strokeStyle='rgba(255,220,50,0.04)';ctx.lineWidth=0.6;ctx.stroke();}
+
+  // Labels
+  const kmpx=AU/BASE/zoom;
+  const vl=zoom<0.12?'Outer solar system':zoom<0.45?'Inner+outer system':zoom<2?'Inner solar system':zoom<80?'Earth-Sun — MECP visible':zoom<800?'Earth zone':zoom<8000?'Earth-Moon':'Near-space';
+  const scl=kmpx>1e6?(kmpx/1e6).toFixed(0)+'M km/px':kmpx>1e3?(kmpx/1e3).toFixed(0)+'k km/px':kmpx.toFixed(0)+' km/px';
+  set('vlabel',vl+' · '+scl);set('baryDist',BARY_BASE.toFixed(0));
+
+  const H_=String(now.getUTCHours()).padStart(2,'0'),Mi=String(now.getUTCMinutes()).padStart(2,'0'),S_=String(now.getUTCSeconds()).padStart(2,'0');
+  set('pUTC',`${H_}:${Mi}:${S_}`);
+  set('pDate',`${String(now.getUTCDate()).padStart(2,'0')}/${String(now.getUTCMonth()+1).padStart(2,'0')}/${now.getUTCFullYear()}`);
+  set('pDOY',`${doy}/${diy}`);set('pRot',(dayFrac*360.997).toFixed(2)+'°');
+  set('pMoon',moonPhName(synD));set('pSyn',synD.toFixed(3)+'d');
+  set('pMECPm',M_MONTHS[mecpMon%13]);set('pSeason',getSeason(doy));
+  set('pZoom',zoom<1?zoom.toFixed(2)+'×':zoom<100?zoom.toFixed(1)+'×':zoom.toFixed(0)+'×');
+}
+
+// ================================================================
+// LOOP
+// ================================================================
+function loop(ts){
+  let deltaDays = 0;
+  if(isLive){
+    simMs=Date.now();
+    deltaDays=(simMs-lastSimMs)/86400000; // real seconds → days
+  } else if(playing&&lastRAF!==null){
+    deltaDays=(ts-lastRAF)/1000*speedMult*playDir; // sim-days this frame
+    simMs+=deltaDays*86400000;
+  }
+  lastSimMs=simMs;
+  lastRAF=ts;
+  draw(deltaDays);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
