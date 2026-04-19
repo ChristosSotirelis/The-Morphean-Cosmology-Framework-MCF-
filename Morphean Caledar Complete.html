@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Morphean Calendar · Complete Reference | Epoch 2031</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Raleway:wght@300;400;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    color: #e8d5a0;
+    font-family: 'Raleway', sans-serif;
+    overflow-x: auto;
+    position: relative;
+  }
+  /* starfield & ornaments */
+  .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--dur) infinite alternate; opacity: var(--op); }
+  @keyframes twinkle { from { opacity: var(--op); transform: scale(1); } to { opacity: calc(var(--op) * 0.2); transform: scale(0.5); } }
+  .moon-orbit { position: fixed; top: 50%; left: 50%; width: 600px; height: 600px; margin: -300px 0 0 -300px; border: 1px solid rgba(180,150,80,0.08); border-radius: 50%; animation: orbit 40s linear infinite; pointer-events: none; z-index: 0; }
+  @keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .moon { position: absolute; top: -8px; left: 50%; margin-left: -8px; width: 16px; height: 16px; background: radial-gradient(circle at 35% 35%, #fffde0, #c8a84b); border-radius: 50%; box-shadow: 0 0 12px 4px rgba(200,168,75,0.4); }
+  .pulse-ring { position: fixed; top: 50%; left: 50%; width: 500px; height: 500px; margin: -250px 0 0 -250px; border: 1px solid rgba(180,150,80,0.05); border-radius: 50%; animation: pulse-expand 6s ease-in-out infinite; pointer-events: none; z-index: 0; }
+  @keyframes pulse-expand { 0% { transform: scale(0.8); opacity: 0.3; } 50% { transform: scale(1.3); opacity: 0.05; } 100% { transform: scale(0.8); opacity: 0.3; } }
+  .container { position: relative; z-index: 10; max-width: 1400px; margin: 0 auto; padding: 20px 24px 40px; backdrop-filter: blur(1px); }
+  h1, h2, h3 { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 2px; color: #f0e0a0; }
+  h1 { font-size: clamp(26px, 6vw, 52px); text-shadow: 0 0 20px rgba(200,168,75,0.3); }
+  .divider { width: 180px; height: 1px; background: linear-gradient(90deg, transparent, #c8a84b, transparent); margin: 16px auto; }
+  .epoch-badge { background: rgba(20,12,3,0.8); border: 1px solid rgba(200,168,75,0.4); border-radius: 40px; padding: 6px 20px; display: inline-block; font-size: 14px; letter-spacing: 2px; margin: 10px 0; }
+  .countdown-panel { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 25px 0; }
+  .cd-card { background: linear-gradient(145deg, rgba(30,24,10,0.9), rgba(15,12,5,0.96)); border: 1px solid rgba(200,168,75,0.3); border-radius: 12px; padding: 16px 20px; min-width: 100px; text-align: center; }
+  .cd-number { font-family: 'Cinzel', serif; font-size: 48px; font-weight: 900; color: #f5e8b0; text-shadow: 0 0 12px #c8a84b; line-height: 1; }
+  .cd-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #b89040; margin-top: 8px; }
+  .cycle-row { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 30px 0 20px; }
+  .cycle-card { background: rgba(8,6,2,0.7); border: 1px solid rgba(200,168,75,0.25); border-radius: 12px; padding: 12px 18px; width: 220px; backdrop-filter: blur(3px); }
+  .progress-bar { background: #2a2418; height: 6px; border-radius: 6px; overflow: hidden; margin: 8px 0; }
+  .progress-fill { background: linear-gradient(90deg, #c8a84b, #f0d070); width: 0%; height: 100%; border-radius: 6px; }
+  .section-title { font-size: 18px; border-left: 4px solid #c8a84b; padding-left: 15px; margin: 30px 0 15px; }
+  table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.5); border-radius: 8px; overflow: hidden; margin: 20px 0; font-size: 12px; }
+  th, td { border: 1px solid rgba(200,168,75,0.2); padding: 8px 6px; text-align: left; vertical-align: top; }
+  th { background: #1a1508; color: #e8c860; font-weight: 600; letter-spacing: 1px; }
+  .moon-icon { font-size: 14px; }
+  .node { background: rgba(200,100,40,0.15); }
+  .leap-month { background: rgba(80,180,80,0.1); }
+  .converter-box { background: rgba(0,0,0,0.6); border: 1px solid #c8a84b40; border-radius: 16px; padding: 20px; margin: 30px 0; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
+  .conv-input { display: flex; flex-direction: column; gap: 6px; }
+  .conv-input label { font-size: 10px; letter-spacing: 2px; color: #c8a84b; }
+  input, button { background: #1e180c; border: 1px solid #c8a84b; color: #f0e0a0; padding: 8px 14px; border-radius: 40px; font-family: monospace; font-size: 14px; }
+  button { cursor: pointer; transition: 0.2s; }
+  button:hover { background: #c8a84b; color: #0a0a0f; }
+  .result { font-family: 'Cinzel', serif; font-size: 18px; background: #0f0c05; padding: 12px 20px; border-radius: 40px; border-left: 4px solid #c8a84b; }
+  .month-names { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 8px; background: rgba(0,0,0,0.4); padding: 16px; border-radius: 16px; margin: 20px 0; }
+  .month-item { font-size: 12px; border-bottom: 1px dashed #c8a84b30; padding: 4px 0; }
+  @media (max-width: 700px) { .container { padding: 16px; } .cd-number { font-size: 32px; } }
+  .footer { font-size: 8px; text-align: center; border-top: 1px solid #c8a84b20; padding-top: 24px; margin-top: 40px; color: #5a4828; }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="moon-orbit"><div class="moon"></div></div>
+<div class="pulse-ring"></div>
+<div class="container">
+  <div style="text-align:center">
+    <div class="pre-title" style="font-size:11px; letter-spacing:6px;">MORPHEAN COSMOLOGY FRAMEWORK · MECP</div>
+    <h1>MORPHEAN CALENDAR<br>COMPLETE REFERENCE</h1>
+    <div class="epoch-badge">⚡ EPOCH: DECEMBER 23, 2031 · 00:00 UTC ⚡</div>
+    <div class="divider"></div>
+  </div>
+
+  <!-- COUNTDOWN SECTION -->
+  <div class="countdown-panel">
+    <div class="cd-card"><div class="cd-number" id="days">----</div><div class="cd-label">Days to Epoch</div></div>
+    <div class="cd-card"><div class="cd-number" id="hours">--</div><div class="cd-label">Hours</div></div>
+    <div class="cd-card"><div class="cd-number" id="minutes">--</div><div class="cd-label">Minutes</div></div>
+    <div class="cd-card"><div class="cd-number" id="seconds">--</div><div class="cd-label">Seconds</div></div>
+  </div>
+  <div style="text-align:center; font-size:12px; margin-top:-10px;" id="utcClock">UTC —</div>
+
+  <!-- CYCLE PROGRESS BARS -->
+  <div class="cycle-row">
+    <div class="cycle-card"><div>⚡ DISSECT (4 yr)</div><div id="dissectLabel">Cycle 0 · Year 0/4</div><div class="progress-bar"><div class="progress-fill" id="dissectFill"></div></div><div id="dissectPct">0%</div></div>
+    <div class="cycle-card"><div>🌀 GRAND DISSECT (36 yr)</div><div id="gdLabel">Cycle 0 · 0/36 yr</div><div class="progress-bar"><div class="progress-fill" id="gdFill"></div></div><div id="gdPct">0%</div></div>
+    <div class="cycle-card"><div>✨ HARMONY (200 yr)</div><div id="harmonyLabel">Cycle 0 · 0/200 yr</div><div class="progress-bar"><div class="progress-fill" id="harmonyFill"></div></div><div id="harmonyPct">0%</div></div>
+    <div class="cycle-card"><div>🏛️ GRAND YEAR (2737 yr)</div><div id="grandLabel">Cycle 0 · 0/2737 yr</div><div class="progress-bar"><div class="progress-fill" id="grandFill"></div></div><div id="grandPct">0%</div></div>
+  </div>
+  <div style="text-align:center; font-size:11px; margin: 10px 0;">⚡ Precession (50″/yr): <span id="precArc">0</span>″ · <span id="precDeg">0.0000</span>° &nbsp;|&nbsp; 🔺 Pyramid target: 38.014°</div>
+
+  <!-- DISSECT 1 & 2 TABLES (excerpt from official documents) -->
+  <h2 class="section-title">📜 DISSECT 1 — YEARS 1–4 (2031–2035)</h2>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Morphean Year</th><th>Gregorian Span</th><th>Months</th><th>Alignments</th><th>Special Events</th></tr></thead>
+      <tbody>
+        <tr><td>Year 1</td><td>Dec 23, 2031 – Dec 11, 2032</td><td>12</td><td>24</td><td>⚡ EPOCH · New Moon after solstice</td></tr>
+        <tr class="node"><td>Year 2 ★</td><td>Dec 12, 2032 – Dec 15, 2033</td><td>12</td><td>25</td><td>Morphean Node Year (extra Full Moon)</td></tr>
+        <tr class="leap-month"><td>Year 3 ★</td><td>Dec 16, 2033 – Jan 3, 2035</td><td>13</td><td>25</td><td>Leap Month + Node Year</td></tr>
+        <tr><td>Year 4</td><td>Jan 4, 2035 – Dec 24, 2035</td><td>12</td><td>24</td><td>Leap Day (Dissect Day) – Feb 29, 2036*</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:11px; margin-top:-15px;">* The Dissect Day (leap day) belongs to no month; it restores the solar alignment.</div>
+
+  <h2 class="section-title">📜 DISSECT 2 — YEARS 5–8 (2035–2039)</h2>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Morphean Year</th><th>Gregorian Span</th><th>Months</th><th>Alignments</th><th>Special Events</th></tr></thead>
+      <tbody>
+        <tr class="node"><td>Year 5 ★</td><td>Dec 10, 2035 – Nov 27, 2036</td><td>12</td><td>25</td><td>Node Year</td></tr>
+        <tr class="leap-month"><td>Year 6 ★</td><td>Nov 28, 2036 – Dec 15, 2037</td><td>13</td><td>25</td><td>Leap Month + Node</td></tr>
+        <tr class="node"><td>Year 7 ★</td><td>Dec 16, 2037 – Dec 4, 2038</td><td>12</td><td>25</td><td>Node Year</td></tr>
+        <tr><td>Year 8</td><td>Dec 5, 2038 – Nov 25, 2039</td><td>12</td><td>24</td><td>Leap Day (Dissect Day)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PERPETUAL CONVERTER -->
+  <h2 class="section-title">⏳ MORPHEAN PERPETUAL CONVERTER</h2>
+  <div class="converter-box">
+    <div class="conv-input"><label>GREGORIAN DATE (after epoch)</label><input type="date" id="gregDate" value="2026-02-19"></div>
+    <div class="conv-input"><button id="convertBtn">⟳ CONVERT TO MORPHEAN</button></div>
+    <div class="result" id="convResult">Morphean Year — Month — Day</div>
+  </div>
+  <div style="font-size:12px; margin-top:-20px;">✔ Based on synodic month (29.530589d) anchored to Dec 23, 2031 New Moon.<br>✔ Leap months (13th month) in years: 3,6,9,11,14,17,20,22,25,28,30,33,36 …<br>✔ Node Years (25 alignments) shown as ★ when extra Full Moon occurs.</div>
+
+  <!-- MONTH NAMES TABLE -->
+  <h2 class="section-title">📖 MORPHEAN MONTH NAMES & MEANINGS</h2>
+  <div class="month-names" id="monthNamesContainer"></div>
+
+  <!-- PRECISION & CYCLE SUMMARY (from the PDF analysis) -->
+  <h2 class="section-title">🔭 PRECISION & CYCLE HIERARCHY</h2>
+  <div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; background:rgba(0,0,0,0.4); padding:16px; border-radius:16px;">
+    <div><strong>4‑yr Dissect</strong><br>Exact (defined) · 1,461 days</div>
+    <div><strong>19‑yr Metonic</strong><br>235 synodic months ±2h</div>
+    <div><strong>76‑yr Century</strong><br>940 synodic months ±6h</div>
+    <div><strong>200‑yr Harmony</strong><br>2,669 MECP months EXACT<br>Synodic ±0.9d</div>
+    <div><strong>2,737‑yr Grand Year</strong><br>36,525 MECP months EXACT<br>Precession ~38° (Giza angle)</div>
+  </div>
+  <div style="margin: 20px 0; background:#0f0d08; padding:14px; border-radius:12px;">
+    <p><strong>⚡ The 200‑Year Harmony Cycle</strong> — a novel discovery from MECP (27.37d).<br>
+    13.345 = 2669/200 → 200 years = 2,669 MECP months integer, synodic & sidereal within 1 day.<br>
+    <strong>Epoch candidates:</strong> Dec 23, 2031 (tightest New Moon after solstice, 1‑day gap).<br>
+    Residuals: 36‑year block carries 7.6 days, corrected every ~144 years with one extra leap month.<br>
+    The calendar never needs emergency reform; maximum lunar drift &lt; 15 days.</p>
+  </div>
+
+  <div class="footer">
+    Morphean Cosmology Framework (MCF) · Christos Sotirelis "Morpheas The Shape Master"<br>
+    Dissect 1 & 2 tables derived from synodic epoch Dec 23, 2031 · All dates UTC · MCF-LP BY-NC-ND-EP
+  </div>
+</div>
+
+<script>
+  // ------------------------------------------------------------------
+  // MORPHEAN CONSTANTS
+  const EPOCH_MS = Date.UTC(2031, 11, 23, 0, 0, 0);   // Dec 23, 2031 00:00 UTC
+  const SYNODIC_DAYS = 29.530588853;
+  const JULIAN_YEAR_DAYS = 365.25;
+  const MECP_MONTH_DAYS = 27.37;
+  const PRECESSION_ARCSEC_YR = 50.0;   // Morphean defined
+
+  // Month names
+  const MONTH_NAMES = [
+    "Morphean", "Electron", "Node", "Pyramid", "Harmony", "Core", "Lunar",
+    "Solar", "Aether", "Precess", "Dissect", "Node II", "Grand"
+  ];
+  const MONTH_MEANINGS = [
+    "Foundation, origin", "Electrogravitational flow", "Alignment point (New/Full Moon)",
+    "Giza, 38° angle", "200‑year Harmony Cycle", "Earth's core (cathode)", "The Moon (anode)",
+    "The Sun (power source)", "Fasma crystalline medium", "2,737‑year Grand Year, precession",
+    "4‑year building block", "Second node month", "Leap month (only in 13‑month years)"
+  ];
+
+  // Generate month names table
+  const container = document.getElementById('monthNamesContainer');
+  for (let i = 0; i < MONTH_NAMES.length; i++) {
+    const div = document.createElement('div');
+    div.className = 'month-item';
+    div.innerHTML = `<strong>${i+1}. ${MONTH_NAMES[i]}</strong> <span style="color:#b89050;">— ${MONTH_MEANINGS[i]}</span>`;
+    container.appendChild(div);
+  }
+
+  // Helper: days since epoch (positive = remaining, negative = after epoch)
+  function daysToEpoch(nowMs) { return (EPOCH_MS - nowMs) / 86400000; }
+
+  // Morphean year as float (year 1 starts at epoch)
+  function getMorpheanYearFloat(nowMs) {
+    const daysRemaining = daysToEpoch(nowMs);
+    const yearsBeforeEpoch = -daysRemaining / JULIAN_YEAR_DAYS;
+    return 1 + yearsBeforeEpoch;   // at epoch returns 1
+  }
+
+  // Leap year test (Morphean: every 4th year)
+  function isLeapYear(mYear) { return mYear % 4 === 0; }
+
+  // days in a Morphean year (365 or 366)
+  function daysInMYear(mYear) { return isLeapYear(mYear) ? 366 : 365; }
+
+  // compute year, month, day from absolute days since epoch (epoch = 0)
+  function getMorpheanDateFromDaysSinceEpoch(daysSinceEpoch) {
+    if (daysSinceEpoch < 0) return { year: 0, month: 0, day: 0, error: "Before epoch" };
+    let remaining = daysSinceEpoch;
+    let year = 1;
+    while (true) {
+      let dYear = daysInMYear(year);
+      if (remaining < dYear) break;
+      remaining -= dYear;
+      year++;
+    }
+    // Now remaining is day-of-year (0-indexed). We need to find month using synodic cycles.
+    // The first day of year 1 is a new moon. Each month starts on a new moon.
+    // Month number = floor( (total days since epoch) / SYNODIC_DAYS ) + 1
+    const monthIndex = Math.floor(daysSinceEpoch / SYNODIC_DAYS);
+    const monthNum = monthIndex + 1;
+    const newMoonAtMonthStart = monthIndex * SYNODIC_DAYS;
+    const dayInMonth = daysSinceEpoch - newMoonAtMonthStart + 1;
+    // Determine if this is a leap month year (13 months)
+    const totalMonthsUpToYear = (() => {
+      let total = 0;
+      for (let y = 1; y < year; y++) total += isLeapMonthYear(y) ? 13 : 12;
+      return total;
+    })();
+    const monthsInThisYear = isLeapMonthYear(year) ? 13 : 12;
+    const monthOfYear = monthNum - totalMonthsUpToYear;
+    if (monthOfYear < 1 || monthOfYear > monthsInThisYear) return { year, month: monthOfYear, day: dayInMonth, warning: "Edge near intercalary" };
+    return { year, month: monthOfYear, day: dayInMonth, monthName: MONTH_NAMES[monthOfYear-1], leapMonthYear: isLeapMonthYear(year), nodeYear: isNodeYear(year) };
+  }
+
+  // Leap month rule: floor(N * 12.368266) > floor((N-1)*12.368266) + 12
+  function isLeapMonthYear(mYear) {
+    const f = (y) => Math.floor(y * 12.368266);
+    return f(mYear) > f(mYear - 1) + 12;
+  }
+
+  // Node year: 25 alignments (extra full moon) – same as cumulative alignment check
+  function isNodeYear(mYear) {
+    // alignments per year = 24.736532, each year floor cumul increases by 24 or 25
+    const align = (y) => Math.floor(y * 24.736532);
+    return align(mYear) > align(mYear - 1) + 24;
+  }
+
+  // Convert Gregorian date to Morphean
+  function gregorianToMorphean(dateObj) {
+    const ms = dateObj.getTime();
+    if (ms < EPOCH_MS) return { error: "Date before epoch (Dec 23, 2031). Use epoch or later." };
+    const daysSince = (ms - EPOCH_MS) / 86400000;
+    return getMorpheanDateFromDaysSinceEpoch(daysSince);
+  }
+
+  // Update all UI
+  function updateCountdownAndCycles() {
+    const now = Date.now();
+    const diff = EPOCH_MS - now;
+    if (diff <= 0) {
+      document.getElementById('days').innerText = '0000';
+      document.getElementById('hours').innerText = '00';
+      document.getElementById('minutes').innerText = '00';
+      document.getElementById('seconds').innerText = '00';
+    } else {
+      const totalSec = Math.floor(diff / 1000);
+      const d = Math.floor(totalSec / 86400);
+      const h = Math.floor((totalSec % 86400) / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      document.getElementById('days').innerText = String(d).padStart(4,'0');
+      document.getElementById('hours').innerText = String(h).padStart(2,'0');
+      document.getElementById('minutes').innerText = String(m).padStart(2,'0');
+      document.getElementById('seconds').innerText = String(s).padStart(2,'0');
+    }
+    const u = new Date(now);
+    document.getElementById('utcClock').innerHTML = `UTC ${String(u.getUTCHours()).padStart(2,'0')}:${String(u.getUTCMinutes()).padStart(2,'0')}:${String(u.getUTCSeconds()).padStart(2,'0')} · ${u.getUTCFullYear()}-${String(u.getUTCMonth()+1).padStart(2,'0')}-${String(u.getUTCDate()).padStart(2,'0')}`;
+    
+    // Morphean year progress
+    const yFloat = getMorpheanYearFloat(now);
+    if (yFloat > 0) {
+      const yInt = Math.floor(yFloat);
+      const yearFrac = yFloat - yInt;
+      // Dissect (4-year)
+      const dissectIdx = Math.floor((yInt - 1) / 4);
+      const yrInDissect = (yInt - 1) % 4;
+      document.getElementById('dissectLabel').innerHTML = `Cycle ${dissectIdx+1} · Year ${yrInDissect+1}/4`;
+      const dissPct = ((yrInDissect + yearFrac) / 4) * 100;
+      document.getElementById('dissectFill').style.width = dissPct + '%';
+      document.getElementById('dissectPct').innerText = dissPct.toFixed(1) + '%';
+      // Grand Dissect 36
+      const gdCycle = Math.floor((yInt - 1) / 36);
+      const yrInGd = (yInt - 1) % 36;
+      document.getElementById('gdLabel').innerHTML = `Cycle ${gdCycle+1} · ${yrInGd}/${36} yr`;
+      const gdPct = ((yrInGd + yearFrac) / 36) * 100;
+      document.getElementById('gdFill').style.width = gdPct + '%';
+      document.getElementById('gdPct').innerText = gdPct.toFixed(2) + '%';
+      // Harmony 200
+      const harmCycle = Math.floor((yInt - 1) / 200);
+      const yrInHarm = (yInt - 1) % 200;
+      document.getElementById('harmonyLabel').innerHTML = `Cycle ${harmCycle+1} · ${yrInHarm}/${200} yr`;
+      const harmPct = ((yrInHarm + yearFrac) / 200) * 100;
+      document.getElementById('harmonyFill').style.width = harmPct + '%';
+      document.getElementById('harmonyPct').innerText = harmPct.toFixed(2) + '%';
+      // Grand Year 2737
+      const grandCycle = Math.floor((yInt - 1) / 2737);
+      const yrInGrand = (yInt - 1) % 2737;
+      document.getElementById('grandLabel').innerHTML = `Cycle ${grandCycle+1} · ${yrInGrand}/${2737} yr`;
+      const grandPct = ((yrInGrand + yearFrac) / 2737) * 100;
+      document.getElementById('grandFill').style.width = grandPct + '%';
+      document.getElementById('grandPct').innerText = grandPct.toFixed(4) + '%';
+      // Precession
+      const elapsedYears = yFloat - 1;
+      const precArc = elapsedYears * PRECESSION_ARCSEC_YR;
+      const precDeg = precArc / 3600;
+      document.getElementById('precArc').innerText = precArc.toFixed(1);
+      document.getElementById('precDeg').innerText = precDeg.toFixed(4);
+    } else {
+      document.getElementById('dissectFill').style.width = '0%';
+      document.getElementById('gdFill').style.width = '0%';
+      document.getElementById('harmonyFill').style.width = '0%';
+      document.getElementById('grandFill').style.width = '0%';
+    }
+  }
+
+  // Converter logic
+  function updateConverter() {
+    const dateStr = document.getElementById('gregDate').value;
+    if (!dateStr) return;
+    const dt = new Date(dateStr + 'T00:00:00Z');
+    const res = gregorianToMorphean(dt);
+    if (res.error) {
+      document.getElementById('convResult').innerHTML = `⚠️ ${res.error}`;
+      return;
+    }
+    let extra = '';
+    if (res.leapMonthYear) extra += ' ★ Leap Month Year';
+    if (res.nodeYear) extra += ' ★ Node Year (25 alignments)';
+    if (res.month === 13) extra += ' · GRAND MONTH (intercalary)';
+    document.getElementById('convResult').innerHTML = `📅 Morphean Year ${res.year}, Month ${res.month} «${res.monthName || MONTH_NAMES[res.month-1]}», Day ${Math.floor(res.day)}${extra}`;
+  }
+
+  // Starfield
+  const starContainer = document.getElementById('stars');
+  for (let i = 0; i < 220; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const sz = Math.random() * 2 + 0.5;
+    const op = Math.random() * 0.6 + 0.1;
+    star.style.cssText = `width:${sz}px; height:${sz}px; top:${Math.random()*100}%; left:${Math.random()*100}%; --dur:${(Math.random()*4+2).toFixed(1)}s; --op:${op.toFixed(2)};`;
+    starContainer.appendChild(star);
+  }
+
+  setInterval(updateCountdownAndCycles, 1000);
+  updateCountdownAndCycles();
+  document.getElementById('convertBtn').addEventListener('click', updateConverter);
+  updateConverter(); // default
+
+  // Also show leap month and node year patterns in tooltip? Already in converter.
+  console.log('Morphean Calendar Live — Epoch Dec 23 2031, Harmony 200yr, Grand Year 2737yr');
+</script>
+</body>
+</html>
