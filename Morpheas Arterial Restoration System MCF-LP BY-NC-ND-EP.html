@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Morpheas Arterial Restoration System | Video + Technical Explanation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f7fc;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #1a2c3e;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.8rem;
+        }
+
+        /* header section */
+        .header-simple {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2edf2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .header-simple h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0c4e6e;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e9f0f5;
+            padding: 0.2rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-family: monospace;
+            color: #1a5d7a;
+            margin-top: 0.3rem;
+        }
+
+        /* video section - enlarged */
+        .video-large {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2edf2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .video-large p {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            color: #1e4663;
+            letter-spacing: 0.3px;
+        }
+
+        .video-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 0.75rem;
+            background: #000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.25rem;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+            padding: 1.8rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e6edf2;
+        }
+
+        .card h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #0f4c6b;
+            border-left: 4px solid #2c7da0;
+            padding-left: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1rem 0 0.6rem 0;
+            color: #1f5e7e;
+        }
+
+        .two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .two-columns > div {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .attribution-block {
+            background: #f0f6fa;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-left: 4px solid #2c7da0;
+        }
+
+        .license-text {
+            background: #fef7e0;
+            border-left: 4px solid #b68b40;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            border-radius: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .step-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .step-list li {
+            margin-bottom: 0.6rem;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: #2c7da0;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #d0dfe8;
+            font-size: 0.75rem;
+            color: #4a6f88;
+        }
+
+        button.scroll-top {
+            position: fixed;
+            bottom: 1.8rem;
+            right: 1.8rem;
+            background: #1f5e7e;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 720px) {
+            .container {
+                padding: 1rem;
+            }
+            .card {
+                padding: 1.2rem;
+            }
+            .header-simple h1 {
+                font-size: 1.5rem;
+            }
+            .video-wrapper {
+                max-width: 100%;
+            }
+        }
+
+        hr {
+            margin: 1rem 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, #cbdde9, transparent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header with title and license -->
+    <div class="header-simple">
+        <h1>Morpheas Arterial Restoration System</h1>
+        <div class="badge">MCF-LP BY-NC-ND-EP | Triple-Catheter Debridement + VetiGel</div>
+        <p style="margin-top: 0.75rem; color: #2c5a74; max-width: 650px;">Stent-free plaque extraction with biological sealing. Eliminates the clinical expiration date of permanent implants.</p>
+    </div>
+
+    <!-- Video section - enlarged -->
+    <div class="video-large">
+        <p>MCF Bypass procedure</p>
+        <div class="video-wrapper">
+            <video controls preload="metadata">
+                <source src="MCF Bypass prosedure.mp4" type="video/mp4">
+                Your browser does not support the video tag. Please ensure "MCF Bypass prosedure.mp4" is present.
+            </video>
+        </div>
+    </div>
+
+    <!-- Abstract Card -->
+    <div class="card">
+        <h2>Abstract & Clinical Rationale</h2>
+        <p>The Morpheas Arterial Restoration System is a modular endovascular intervention designed to physically extract atheromatic plaque, eliminating the need for permanent foreign body implantation (stents). Conventional stenting imposes a finite clinical "expiration date" due to restenosis, in-stent thrombosis, and cumulative metallic burden. This system utilizes a proprietary triple-catheter mechanism: an outer stabilization balloon, a distal fixation envelope, and a middle debridement unit equipped with precision-expandable blades and dual-balloon support. By integrating <strong>VetiGel (invented by Joe Landolina)</strong> as an obligate hemostatic agent, the system enables safe aspiration of plaque particles and blood while ensuring immediate arterial wall sealing. The result is a fully restored, natural arterial lumen without permanent hardware.</p>
+    </div>
+
+    <!-- Triple-Catheter Technical Description -->
+    <div class="card">
+        <h2>Technical Architecture: Triple-Catheter System</h2>
+        <div class="two-columns">
+            <div>
+                <h3>1. Outer Stabilizer</h3>
+                <p>Primary catheter expands a high-compliance balloon to anchor the system inside the vessel, providing a rigid working channel and preventing migration during debridement.</p>
+                <h3>2. Distal Envelope (Fixation Catheter)</h3>
+                <p>Passes entirely through the plaque and expands distally. This creates a protective catchment zone that prevents embolic debris from travelling downstream. A dedicated injection port on the backside allows delivery of VetiGel or autologous blood.</p>
+                <h3>3. Middle Debridement Unit</h3>
+                <p>Contains two integrated balloons: a soft support balloon and a precision balloon that expands micro-blades. These blades shave the atheromatic plaque with controlled radial force, preserving the healthy media and adventitia.</p>
+            </div>
+            <div>
+                <h3>Obligate Hemostatic Agent: VetiGel</h3>
+                <p><strong>Inventor: Joe Landolina (Cresilon / Suneris)</strong><br>Plant-derived polysaccharide gel that mimics the extracellular matrix. Upon contact with bleeding tissue, it self-assembles into a physical mesh, stopping arterial bleeding within seconds and promoting fibrin production. The Morpheas system injects VetiGel through the distal envelope cavity immediately after plaque debridement, then activates main lumen aspiration to remove debris, excess gel, and blood, leaving a clean and sealed arterial wall.</p>
+                <div class="attribution-block" style="margin-top: 0.8rem;">
+                    <strong>Injection & Suction protocol</strong><br>
+                    - Step A: Deliver VetiGel (or patient blood) via backside injection point.<br>
+                    - Step B: Main cavity vacuum aspirates plaque fragments, old blood, and residual agent.<br>
+                    - Step C: Retraction of all catheters – no foreign body remains.
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h3>Procedural workflow (Phase-by-Phase)</h3>
+        <ul class="step-list">
+            <li>Primary entry & outer balloon expansion – system stabilization.</li>
+            <li>Distal envelope crosses the lesion, expands to form a distal seal and embolic shield.</li>
+            <li>Injection of VetiGel into the working zone (back cavity).</li>
+            <li>Middle unit deploys micro-blades (via second precision balloon) – active plaque debridement.</li>
+            <li>Simultaneous suction through main cavity removes debris and hemostatic agent.</li>
+            <li>Arterial wall remains sealed by VetiGel – no thrombosis or late restenosis risk.</li>
+            <li>Complete retraction of all catheters; native artery restored without stents.</li>
+        </ul>
+        <p style="margin-top: 0.8rem;"><strong>Clinical advantage:</strong> Eliminates the cumulative burden of stents, reduces dual antiplatelet therapy dependency, and removes the patient’s "expiration date" associated with multiple reinterventions.</p>
+    </div>
+
+    <!-- Intellectual Property & License -->
+    <div class="card">
+        <h2>Intellectual Property & Attribution</h2>
+        <div class="two-columns">
+            <div>
+                <h3>System Design & Method</h3>
+                <p><strong>Christos Sotirelis – "Morpheas the Shape Master"</strong><br>Original triple-catheter concept (2007) and full mechanical architecture: balloon-expanding blade array, dual-lumen suction, and envelope retraction mechanism.</p>
+                <h3>Hemostatic Agent (Obligate Component)</h3>
+                <p><strong>Joe Landolina</strong> – Inventor of VetiGel (plant-derived hemostatic matrix). The Morpheas system relies on VetiGel as the essential anti-bleeding agent to enable safe, stent-free debridement and sealing. This work respectfully acknowledges Joe Landolina’s breakthrough.</p>
+            </div>
+            <div>
+                <div class="license-text">
+                    <strong>MCF-LP BY-NC-ND-EP (Morpheas Cosmology Framework – License for Public Use)</strong><br><br>
+                    - BY (Attribution): Credit must be given to Christos Sotirelis and, for the hemostatic agent, Joe Landolina.<br>
+                    - NC (Non-Commercial): No direct sale or profit from this work.<br>
+                    - ND (No Derivatives): No unauthorized conversion or modification of the mechanical design.<br>
+                    - EP (Ethics Preservation): Any use must respect Logic, Balance, and Respect for Life, preserving the integrity of Morpheas Cosmology.<br><br>
+                    Violation of this license (unauthorized commercial use, conversion, or lack of attribution) permits the creator to claim resulting income or take legal action.
+                </div>
+            </div>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">The triple-catheter bypass methodology, extraction sequence, and integration with VetiGel are original contributions of Christos Sotirelis. The VetiGel technology remains the property of Cresilon / Joe Landolina, used here as an enabling obligate agent with full attribution.</p>
+    </div>
+
+    <footer>
+        <p>Morpheas Arterial Restoration System – Design by Christos Sotirelis (Morpheas the Shape Master). VetiGel hemostatic agent invented by Joe Landolina. Protected under MCF-LP BY-NC-ND-EP.</p>
+        <p style="margin-top: 0.3rem;">This documentation is provided for research, study, and non-commercial development. No expiration date for vascular health.</p>
+    </footer>
+</div>
+
+<button class="scroll-top" id="scrollTopBtn">Top of page</button>
+
+<script>
+    // scroll to top button
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    if (scrollBtn) {
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+</script>
+</body>
+</html>
