@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Morphean Link Symbol System</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0a0a0f; color: #eee; font-family: sans-serif; min-height: 100vh; padding: 24px 16px; }
+h1 { font-size: 20px; color: #fff; margin-bottom: 4px; }
+.sub { font-size: 12px; color: #555; margin-bottom: 28px; }
+.panel { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+.panel h2 { font-size: 14px; color: #aaa; margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; }
+label { font-size: 12px; color: #888; display: block; margin-bottom: 5px; margin-top: 12px; }
+input[type="text"] {
+  width: 100%; padding: 9px 12px; background: #1a1a1a; border: 1px solid #333;
+  border-radius: 7px; color: #fff; font-size: 13px; outline: none;
+}
+input[type="text"]:focus { border-color: #555; }
+.upload-zone {
+  border: 2px dashed #333; border-radius: 8px; padding: 16px; text-align: center;
+  cursor: pointer; margin-top: 12px; transition: border-color 0.2s;
+}
+.upload-zone:hover { border-color: #666; }
+.upload-zone input { display: none; }
+.upload-zone p { font-size: 12px; color: #666; }
+.preview-img { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; margin-top: 8px; }
+.btn {
+  padding: 10px 20px; border: none; border-radius: 8px;
+  font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 14px;
+}
+.btn-blue { background: #2563eb; color: #fff; width: 100%; }
+.btn-blue:hover { background: #1d4ed8; }
+.btn-blue:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+/* SYMBOL LIBRARY */
+.symbol-library { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; min-height: 50px; }
+.symbol-entry {
+  display: flex; align-items: center; gap: 8px;
+  background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 12px;
+}
+.symbol-entry img { width: 28px; height: 28px; object-fit: contain; }
+.symbol-name { font-size: 11px; color: #777; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.del-btn { background: none; border: none; color: #555; cursor: pointer; font-size: 14px; margin-left: 4px; }
+.del-btn:hover { color: #f87171; }
+
+/* COMPOSER */
+.composer-area {
+  background: #0d0d0d; border: 1px solid #222; border-radius: 10px;
+  min-height: 100px; padding: 14px; font-size: 15px; line-height: 1.8;
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px;
+  cursor: text;
+}
+.composer-area span.word { color: #eee; white-space: pre; }
+.composer-area span.typed { color: #eee; outline: none; min-width: 4px; display: inline; white-space: pre-wrap; }
+.link-symbol {
+  display: inline-flex; align-items: center; cursor: pointer;
+  border-radius: 4px; transition: transform 0.1s;
+  vertical-align: middle;
+}
+.link-symbol:hover { transform: scale(1.15); }
+.link-symbol img { width: 24px; height: 24px; object-fit: contain; display: block; }
+
+.insert-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.insert-btn {
+  display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+  background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 20px;
+  cursor: pointer; font-size: 12px; color: #ccc; transition: border-color 0.2s;
+}
+.insert-btn img { width: 20px; height: 20px; }
+.insert-btn:hover { border-color: #4a90e2; color: #fff; }
+
+.msg { font-size: 12px; color: #4ade80; margin-top: 8px; min-height: 16px; }
+
+/* EXPORT */
+.export-box {
+  background: #0d0d0d; border: 1px solid #222; border-radius: 8px;
+  padding: 12px; font-size: 11px; font-family: monospace; color: #aaa;
+  word-break: break-all; max-height: 120px; overflow-y: auto; margin-top: 12px;
+}
+.btn-green { background: #16a34a; color: #fff; }
+.btn-green:hover { background: #15803d; }
+.btn-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-row .btn { margin-top: 0; flex: 1; }
+
+.manifesto {
+  background: #0d0d12; border: 1px solid #1e2a4a; border-radius: 10px;
+  padding: 16px; margin-top: 20px; font-size: 12px; color: #4a6fa5; line-height: 1.7;
+}
+.manifesto strong { color: #6b9fd4; }
+</style>
+</head>
+<body>
+
+<h1>⬡ Morphean Link Symbol System</h1>
+<p class="sub">v1.0 — Invented by Christos Sotirelis (Morpheas the Shape Master) — MCF-LP BY-NC-ND-EP</p>
+
+<!-- STEP 1: CREATE SYMBOL -->
+<div class="panel">
+  <h2>Step 1 — Create Your Link Symbol</h2>
+
+  <label>Image (your QR, logo, anything)</label>
+  <div class="upload-zone" onclick="document.getElementById('imgIn').click()">
+    <input type="file" id="imgIn" accept="image/*" onchange="loadImg(event)">
+    <p id="upTxt">Click to upload image</p>
+    <img id="upPreview" class="preview-img" style="display:none">
+  </div>
+
+  <label>The Link (URL this symbol will open)</label>
+  <input type="text" id="linkIn" placeholder="https://github.com/ChristosSotirelis/The-Morphean-Cosmology-Framework-MCF-">
+
+  <label>Symbol Name (what you call it)</label>
+  <input type="text" id="nameIn" placeholder="MCF">
+
+  <button class="btn btn-blue" id="createBtn" onclick="createSymbol()" disabled>Create Symbol</button>
+  <div class="msg" id="createMsg"></div>
+</div>
+
+<!-- STEP 2: LIBRARY -->
+<div class="panel">
+  <h2>Step 2 — Your Symbol Library</h2>
+  <div class="symbol-library" id="library">
+    <span style="font-size:12px;color:#444;">No symbols yet. Create one above.</span>
+  </div>
+</div>
+
+<!-- STEP 3: COMPOSER -->
+<div class="panel">
+  <h2>Step 3 — Compose Your Message</h2>
+  <p style="font-size:12px;color:#666;margin-bottom:10px;">Type text, then click a symbol below to insert it inline. Click any symbol in the message to open its link.</p>
+
+  <div class="composer-area" id="composer">
+    <span class="typed" contenteditable="true" id="typingArea" spellcheck="false"></span>
+  </div>
+
+  <div class="insert-btns" id="insertBtns">
+    <span style="font-size:12px;color:#444;">Create symbols first.</span>
+  </div>
+
+  <button class="btn btn-blue" onclick="clearComposer()" style="margin-top:10px;background:#333;">Clear</button>
+</div>
+
+<!-- STEP 4: EXPORT -->
+<div class="panel">
+  <h2>Step 4 — Export as Shareable File</h2>
+  <p style="font-size:12px;color:#666;margin-bottom:8px;">This generates an HTML file. Anyone who opens it sees your message with your symbols as clickable links — works in any browser.</p>
+  <div class="export-box" id="exportBox">Press "Generate Export" to see output...</div>
+  <div class="btn-row">
+    <button class="btn btn-blue" onclick="generateExport()">Generate Export</button>
+    <button class="btn btn-green" onclick="downloadHTML()">Download HTML File</button>
+  </div>
+  <div class="msg" id="exportMsg"></div>
+</div>
+
+<div class="manifesto">
+  <strong>📜 System Declaration — MCF Link Symbol Protocol v1.0</strong><br>
+  This system defines a new class of communication primitive: the <strong>Link Symbol</strong> — a visual glyph that carries embedded destination data and interaction instructions. Unlike standard Unicode emoji (which are text characters mapped to images by closed platform dictionaries), a Link Symbol is a self-contained, image-bound, clickable node. This protocol is offered openly to humanity as part of the Morphean Cosmology Framework contribution to human evolution. When adopted at the OS/platform level, any compliant system will render Link Symbols as interactive glyphs. First implemented locally — offered globally.<br><br>
+  Creator: Christos Sotirelis · License: MCF-LP BY-NC-ND-EP
+</div>
+
+<script>
+let symbols = []; // {name, url, dataURL}
+let imgDataURL = null;
+
+function loadImg(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    imgDataURL = ev.target.result;
+    document.getElementById('upPreview').src = imgDataURL;
+    document.getElementById('upPreview').style.display = 'block';
+    document.getElementById('upTxt').textContent = '✓ ' + file.name;
+    document.getElementById('createBtn').disabled = false;
+  };
+  r.readAsDataURL(file);
+}
+
+function createSymbol() {
+  const url = document.getElementById('linkIn').value.trim();
+  const name = document.getElementById('nameIn').value.trim() || 'symbol';
+  if (!imgDataURL) return;
+  if (!url) { alert('Enter a link URL.'); return; }
+
+  // Resize to 48px
+  const canvas = document.createElement('canvas');
+  canvas.width = 48; canvas.height = 48;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, 48, 48);
+    const resized = canvas.toDataURL('image/png');
+    const sym = { name, url, dataURL: resized, id: Date.now() };
+    symbols.push(sym);
+    renderLibrary();
+    renderInsertBtns();
+    document.getElementById('createMsg').textContent = '✓ Symbol "' + name + '" created!';
+    setTimeout(() => document.getElementById('createMsg').textContent = '', 2500);
+    imgDataURL = null;
+    document.getElementById('upPreview').style.display = 'none';
+    document.getElementById('upTxt').textContent = 'Click to upload image';
+    document.getElementById('createBtn').disabled = true;
+    document.getElementById('nameIn').value = '';
+    document.getElementById('linkIn').value = '';
+  };
+  img.src = imgDataURL;
+}
+
+function renderLibrary() {
+  const lib = document.getElementById('library');
+  if (symbols.length === 0) {
+    lib.innerHTML = '<span style="font-size:12px;color:#444;">No symbols yet.</span>';
+    return;
+  }
+  lib.innerHTML = symbols.map(s => `
+    <div class="symbol-entry">
+      <img src="${s.dataURL}" title="${s.url}">
+      <span class="symbol-name">${s.name}</span>
+      <button class="del-btn" onclick="deleteSymbol(${s.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+function deleteSymbol(id) {
+  symbols = symbols.filter(s => s.id !== id);
+  renderLibrary();
+  renderInsertBtns();
+}
+
+function renderInsertBtns() {
+  const c = document.getElementById('insertBtns');
+  if (symbols.length === 0) {
+    c.innerHTML = '<span style="font-size:12px;color:#444;">Create symbols first.</span>';
+    return;
+  }
+  c.innerHTML = symbols.map(s => `
+    <button class="insert-btn" onclick="insertSymbol(${s.id})">
+      <img src="${s.dataURL}"> Insert "${s.name}"
+    </button>
+  `).join('');
+}
+
+function insertSymbol(id) {
+  const sym = symbols.find(s => s.id === id);
+  if (!sym) return;
+  const composer = document.getElementById('composer');
+  const typingArea = document.getElementById('typingArea');
+
+  // Save current typed text before cursor if any
+  const sel = window.getSelection();
+  
+  const el = document.createElement('span');
+  el.className = 'link-symbol';
+  el.title = sym.url;
+  el.setAttribute('data-url', sym.url);
+  el.setAttribute('data-name', sym.name);
+  el.onclick = () => window.open(sym.url, '_blank');
+  el.innerHTML = `<img src="${sym.dataURL}" draggable="false">`;
+
+  // Insert before the typing area
+  composer.insertBefore(el, typingArea);
+
+  // Add a space span
+  const sp = document.createElement('span');
+  sp.className = 'word';
+  sp.textContent = ' ';
+  composer.insertBefore(sp, typingArea);
+
+  typingArea.focus();
+}
+
+function clearComposer() {
+  const composer = document.getElementById('composer');
+  // Remove everything except typingArea
+  const ta = document.getElementById('typingArea');
+  while (composer.firstChild) composer.removeChild(composer.firstChild);
+  ta.textContent = '';
+  composer.appendChild(ta);
+  ta.focus();
+}
+
+function getComposerContent() {
+  const composer = document.getElementById('composer');
+  let html = '';
+  let text = '';
+  for (const child of composer.childNodes) {
+    if (child.id === 'typingArea') {
+      const t = child.textContent;
+      html += t;
+      text += t;
+    } else if (child.classList && child.classList.contains('link-symbol')) {
+      const url = child.getAttribute('data-url');
+      const name = child.getAttribute('data-name');
+      const src = child.querySelector('img').src;
+      html += `<a href="${url}" target="_blank" title="${url}" style="display:inline-block;vertical-align:middle;margin:0 2px;"><img src="${src}" width="24" height="24" alt="${name}" style="border:none;cursor:pointer;"></a>`;
+      text += `[${name}: ${url}]`;
+    } else {
+      html += child.textContent || '';
+      text += child.textContent || '';
+    }
+  }
+  return { html, text };
+}
+
+let exportHTML = '';
+function generateExport() {
+  const { html, text } = getComposerContent();
+  exportHTML = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MCF Message — Christos Sotirelis</title>
+<style>
+body { font-family: sans-serif; background: #0a0a0f; color: #eee; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+.msg { font-size: 18px; line-height: 2; max-width: 600px; text-align: center; }
+.msg a img { transition: transform 0.1s; }
+.msg a img:hover { transform: scale(1.2); }
+.footer { margin-top: 30px; font-size: 11px; color: #444; text-align: center; }
+</style>
+</head>
+<body>
+<div>
+<div class="msg">${html}</div>
+<div class="footer">Morphean Link Symbol Protocol v1.0 · Christos Sotirelis · MCF-LP BY-NC-ND-EP</div>
+</div>
+</body>
+</html>`;
+  document.getElementById('exportBox').textContent = exportHTML.substring(0, 400) + '...';
+  document.getElementById('exportMsg').textContent = '✓ Ready to download.';
+  setTimeout(() => document.getElementById('exportMsg').textContent = '', 2500);
+}
+
+function downloadHTML() {
+  if (!exportHTML) { generateExport(); }
+  const blob = new Blob([exportHTML], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'MCF_Message.html';
+  a.click();
+  document.getElementById('exportMsg').textContent = '✓ File downloaded!';
+  setTimeout(() => document.getElementById('exportMsg').textContent = '', 2500);
+}
+</script>
+</body>
+</html>
