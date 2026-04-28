@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCF — Where We Came From · Morpheas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-dim: #8a6f32;
+    --dark: #08080f;
+    --dark-mid: #0e0e1a;
+    --panel-dark: #111122;
+    --text: #d8d4cc;
+    --text-dim: #8a8680;
+    --plasma: #e05c1a;
+    --vapor: #7c3fbf;
+    --void: #030308;
+    --teal: #1a8a7c;
+    --blue: #2a5fa8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* STARFIELD */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 34% 7%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 67% 23%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 89% 11%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 54%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 61%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 82%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 93%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 87%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 55% 42%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 3% 32%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 72% 45%, rgba(255,255,255,0.15) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 80px 40px 60px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    background: linear-gradient(180deg, rgba(201,168,76,0.04) 0%, transparent 100%);
+  }
+
+  .license-badge {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 5px 14px;
+    margin-bottom: 36px;
+    text-transform: uppercase;
+  }
+
+  h1.title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 600;
+    color: #f0ece0;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    text-shadow: 0 0 60px rgba(201,168,76,0.2);
+  }
+
+  h1.title span {
+    color: var(--gold);
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-style: italic;
+    color: var(--text-dim);
+    margin-bottom: 30px;
+  }
+
+  .author-line {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .framework-line {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  /* MAIN CONTAINER */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* TIMELINE DIAGRAM */
+  .timeline-section {
+    margin: 70px 0;
+    padding: 50px 40px;
+    background: var(--void);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .timeline-title {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--gold-dim);
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+  }
+
+  /* SVG TIMELINE */
+  .timeline-svg-wrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  svg.timeline {
+    width: 100%;
+    min-width: 600px;
+    height: auto;
+    display: block;
+  }
+
+  /* PHASE INDICATOR STRIP */
+  .phases-strip {
+    display: flex;
+    margin-top: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .phase {
+    flex: 1;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    font-family: 'Cinzel', serif;
+  }
+
+  .phase:last-child { border-right: none; }
+  .phase.void-phase { background: rgba(3,3,8,0.9); color: var(--gold-dim); flex: 0.7; }
+  .phase.plasma-phase { background: rgba(224,92,26,0.12); color: #e09060; }
+  .phase.vapor-phase { background: rgba(124,63,191,0.12); color: #a070e0; }
+  .phase.dark-phase { background: rgba(20,25,50,0.5); color: #5060a0; }
+  .phase.stars-phase { background: rgba(42,95,168,0.15); color: #7090d0; }
+  .phase.settled-phase { background: rgba(26,138,124,0.15); color: #50b0a0; }
+
+  /* CALLOUT BOX */
+  .callout {
+    margin: 50px 0;
+    padding: 28px 36px;
+    border-left: 3px solid var(--gold);
+    background: rgba(201,168,76,0.04);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 2.2vw, 21px);
+    font-style: italic;
+    line-height: 1.7;
+    color: #e8e0cc;
+  }
+
+  .callout .source {
+    display: block;
+    margin-top: 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold-dim);
+    font-style: normal;
+    text-transform: uppercase;
+  }
+
+  /* SECTION HEADERS */
+  .section {
+    margin: 60px 0;
+  }
+
+  .section-number {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h2.section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 400;
+    color: #f0ece0;
+    letter-spacing: 2px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+
+  p {
+    margin-bottom: 20px;
+    font-size: clamp(15px, 1.8vw, 17px);
+    color: var(--text);
+  }
+
+  /* SCALE COMPARISON */
+  .scale-table {
+    margin: 36px 0;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .scale-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .scale-row:last-child { border-bottom: none; }
+  .scale-row.header { background: rgba(201,168,76,0.06); }
+
+  .scale-cell {
+    padding: 14px 20px;
+    font-size: 13px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    flex: 1;
+  }
+
+  .scale-cell:last-child { border-right: none; }
+  .scale-row.header .scale-cell {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+  }
+
+  .scale-cell.highlight { color: var(--gold); font-weight: 400; }
+
+  /* THEOREM BLOCK */
+  .theorem-block {
+    margin: 40px 0;
+    padding: 32px 40px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, rgba(8,8,15,0.8) 100%);
+    border: 1px solid rgba(201,168,76,0.2);
+    position: relative;
+  }
+
+  .theorem-block::before {
+    content: 'THEOREM';
+    position: absolute;
+    top: -10px;
+    left: 30px;
+    background: var(--dark);
+    padding: 0 12px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--gold);
+  }
+
+  .theorem-block p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 2.2vw, 20px);
+    font-style: italic;
+    color: #f0ece0;
+    margin-bottom: 0;
+  }
+
+  /* CERTAINTY / UNCERTAINTY PANELS */
+  .two-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 36px 0;
+  }
+
+  @media (max-width: 600px) {
+    .two-panel { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    padding: 24px 24px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .panel.certain { border-top: 2px solid var(--gold); }
+  .panel.uncertain { border-top: 2px solid rgba(255,255,255,0.15); }
+
+  .panel-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .panel.certain .panel-label { color: var(--gold); }
+  .panel.uncertain .panel-label { color: var(--text-dim); }
+
+  .panel p { font-size: 13px; color: var(--text); margin-bottom: 10px; }
+  .panel p:last-child { margin-bottom: 0; }
+
+  /* FINAL STATEMENT */
+  .final-statement {
+    margin: 70px 0 20px;
+    padding: 50px 50px;
+    background: var(--void);
+    border: 1px solid rgba(201,168,76,0.25);
+    text-align: center;
+    position: relative;
+  }
+
+  .final-statement::before,
+  .final-statement::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .final-statement::before { top: 28px; }
+  .final-statement::after { bottom: 28px; }
+
+  .final-statement .label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .final-statement blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(19px, 3vw, 28px);
+    font-style: italic;
+    line-height: 1.6;
+    color: #f8f4e8;
+    margin-bottom: 20px;
+  }
+
+  .final-statement blockquote em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  .final-statement .attribution {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold-dim);
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    padding: 40px;
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 5px;
+    color: var(--gold-dim);
+    margin-bottom: 10px;
+  }
+
+  .footer-license {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 50px 0;
+    color: var(--gold-dim);
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(201,168,76,0.15);
+  }
+
+  .divider-symbol {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  strong { color: #f0ece0; font-weight: 400; }
+
+  .em-gold { color: var(--gold); }
+
+  /* FREQUENCY DROP VIZ */
+  .freq-viz {
+    margin: 36px 0;
+    padding: 30px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .freq-bar-wrap {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    height: 80px;
+    margin-bottom: 8px;
+  }
+
+  .freq-bar {
+    flex: 1;
+    background: linear-gradient(to top, var(--gold-dim), var(--gold));
+    border-radius: 1px;
+    transition: height 0.3s;
+    position: relative;
+  }
+
+  .freq-labels {
+    display: flex;
+    gap: 6px;
+  }
+
+  .freq-label {
+    flex: 1;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+  }
+
+  /* ANIMATION for load */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  header, .section, .timeline-section, .callout, .final-statement {
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.15s; }
+  .section:nth-child(4) { animation-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="license-badge">MCF-LP · BY-NC-ND-EP · Morphean Cosmology Framework</div>
+  <h1 class="title">MCF — <span>Where We Came From</span></h1>
+  <p class="subtitle">A Philosophical Theorem on Origin, Scale, and Continuity</p>
+  <p class="author-line">By Morpheas — The Shape Master</p>
+  <p class="framework-line">Morphean Cosmology Framework · MCF-LP BY-NC-ND-EP</p>
+</header>
+
+<main>
+
+  <!-- THE TIMELINE DIAGRAM -->
+  <div class="timeline-section">
+    <div class="timeline-title">The Confirmed Timeline · As Science Presents It</div>
+
+    <div class="timeline-svg-wrap">
+      <svg class="timeline" viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Big Bang Timeline — Morphean Cosmology Framework">
+        <defs>
+          <linearGradient id="plasmaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#e05c1a;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#7c3fbf;stop-opacity:0.7"/>
+          </linearGradient>
+          <linearGradient id="vaporGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#7c3fbf;stop-opacity:0.7"/>
+            <stop offset="100%" style="stop-color:#1a3060;stop-opacity:0.6"/>
+          </linearGradient>
+          <linearGradient id="darkAgesGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1a3060;stop-opacity:0.6"/>
+            <stop offset="100%" style="stop-color:#2a5fa8;stop-opacity:0.5"/>
+          </linearGradient>
+          <linearGradient id="starsGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#2a5fa8;stop-opacity:0.5"/>
+            <stop offset="100%" style="stop-color:#1a8a7c;stop-opacity:0.6"/>
+          </linearGradient>
+          <radialGradient id="bangGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#fff8e0;stop-opacity:1"/>
+            <stop offset="40%" style="stop-color:#c9a84c;stop-opacity:0.7"/>
+            <stop offset="100%" style="stop-color:#c9a84c;stop-opacity:0"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Deep black background -->
+        <rect width="760" height="300" fill="#030308"/>
+
+        <!-- Void / pre-Bang area -->
+        <rect x="0" y="0" width="160" height="300" fill="#030308"/>
+
+        <!-- Subtle geometric shimmer in void (representing high-frequency realm) -->
+        <line x1="20" y1="60" x2="80" y2="100" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+        <line x1="40" y1="40" x2="120" y2="140" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+        <line x1="10" y1="180" x2="80" y2="120" stroke="rgba(201,168,76,0.07)" stroke-width="0.5"/>
+        <line x1="60" y1="200" x2="140" y2="160" stroke="rgba(201,168,76,0.05)" stroke-width="0.5"/>
+        <line x1="30" y1="240" x2="100" y2="200" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+        <!-- hexagon shimmer -->
+        <polygon points="70,80 90,68 110,80 110,104 90,116 70,104" fill="none" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+        <polygon points="40,160 55,151 70,160 70,178 55,187 40,178" fill="none" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+        <circle cx="90" cy="210" r="18" fill="none" stroke="rgba(201,168,76,0.05)" stroke-width="0.5"/>
+
+        <!-- Stars/dots in void -->
+        <circle cx="25" cy="30" r="0.7" fill="rgba(255,255,255,0.25)"/>
+        <circle cx="55" cy="55" r="0.5" fill="rgba(255,255,255,0.2)"/>
+        <circle cx="130" cy="25" r="0.6" fill="rgba(255,255,255,0.18)"/>
+        <circle cx="15" cy="145" r="0.7" fill="rgba(255,255,255,0.2)"/>
+        <circle cx="100" cy="270" r="0.5" fill="rgba(255,255,255,0.15)"/>
+        <circle cx="140" cy="240" r="0.6" fill="rgba(255,255,255,0.12)"/>
+
+        <!-- "We were not here" label zone -->
+        <text x="80" y="40" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="serif" font-size="7" letter-spacing="1" font-style="italic">Science: unknown</text>
+        <text x="80" y="55" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-family="serif" font-size="6">no instrument reaches here</text>
+
+        <!-- MCF label in void -->
+        <text x="80" y="140" text-anchor="middle" fill="rgba(201,168,76,0.7)" font-family="serif" font-style="italic" font-size="8.5" font-weight="bold">High-Frequency</text>
+        <text x="80" y="152" text-anchor="middle" fill="rgba(201,168,76,0.7)" font-family="serif" font-style="italic" font-size="8.5" font-weight="bold">Realm · MCF</text>
+
+        <!-- "We appeared here" note -->
+        <text x="80" y="230" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="serif" font-size="6.5" font-style="italic">We were not</text>
+        <text x="80" y="241" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="serif" font-size="6.5" font-style="italic">in matter yet</text>
+
+        <!-- EXPANSION CONE: Plasma -->
+        <polygon points="160,150 290,80 290,220" fill="url(#plasmaGrad)" opacity="0.85"/>
+        <!-- Vapor -->
+        <polygon points="290,80 440,50 440,250 290,220" fill="url(#vaporGrad)" opacity="0.8"/>
+        <!-- Dark ages -->
+        <polygon points="440,50 540,35 540,265 440,250" fill="url(#darkAgesGrad)" opacity="0.75"/>
+        <!-- First stars -->
+        <polygon points="540,35 640,20 640,280 540,265" fill="url(#starsGrad)" opacity="0.75"/>
+        <!-- Settled / Galaxies -->
+        <polygon points="640,20 750,10 750,290 640,280" fill="#1a8a7c" opacity="0.6"/>
+
+        <!-- Phase labels inside -->
+        <text x="215" y="148" text-anchor="middle" fill="rgba(255,220,180,0.9)" font-family="serif" font-size="9" font-weight="bold">Plasma</text>
+
+        <text x="360" y="148" text-anchor="middle" fill="rgba(200,160,255,0.9)" font-family="serif" font-size="9" font-weight="bold">Vapor</text>
+        <text x="360" y="160" text-anchor="middle" fill="rgba(200,160,255,0.7)" font-family="serif" font-size="7">&amp; atoms</text>
+
+        <text x="488" y="148" text-anchor="middle" fill="rgba(100,130,200,0.9)" font-family="serif" font-size="8.5" font-weight="bold">Dark</text>
+        <text x="488" y="160" text-anchor="middle" fill="rgba(100,130,200,0.9)" font-family="serif" font-size="8.5" font-weight="bold">Ages</text>
+
+        <text x="588" y="145" text-anchor="middle" fill="rgba(120,160,220,0.9)" font-family="serif" font-size="8.5" font-weight="bold">First stars</text>
+        <text x="588" y="157" text-anchor="middle" fill="rgba(120,160,220,0.7)" font-family="serif" font-size="7">&amp; galaxies</text>
+
+        <text x="693" y="140" text-anchor="middle" fill="rgba(80,180,160,0.95)" font-family="serif" font-size="8.5" font-weight="bold">Galaxies</text>
+        <text x="693" y="152" text-anchor="middle" fill="rgba(80,180,160,0.95)" font-family="serif" font-size="8.5" font-weight="bold">&amp; Earth</text>
+        <text x="693" y="164" text-anchor="middle" fill="rgba(80,180,160,0.7)" font-family="serif" font-size="7">settled matter</text>
+
+        <!-- Earth dot -->
+        <circle cx="738" cy="150" r="7" fill="#2a6fdf" stroke="#1a5fc0" stroke-width="0.5"/>
+        <circle cx="740" cy="148" r="3" fill="rgba(100,200,100,0.6)"/>
+
+        <!-- Big Bang explosion point -->
+        <circle cx="160" cy="150" r="14" fill="url(#bangGlow)" filter="url(#glow)"/>
+        <circle cx="160" cy="150" r="4" fill="white" opacity="0.95"/>
+
+        <!-- Big Bang label -->
+        <line x1="160" y1="136" x2="160" y2="90" stroke="rgba(201,168,76,0.6)" stroke-width="0.8"/>
+        <text x="162" y="86" fill="rgba(255,220,140,0.95)" font-family="serif" font-style="italic" font-size="9" font-weight="bold">Big Bang</text>
+        <text x="162" y="97" fill="rgba(201,168,76,0.7)" font-family="serif" font-size="7">entry point (MCF)</text>
+
+        <!-- "Out of nowhere we appeared" arrow -->
+        <line x1="80" y1="165" x2="152" y2="150" stroke="rgba(201,168,76,0.5)" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <polygon points="152,147 158,150 152,153" fill="rgba(201,168,76,0.6)"/>
+        <text x="72" y="175" text-anchor="middle" fill="rgba(201,168,76,0.8)" font-family="serif" font-style="italic" font-size="7">Out of nowhere —</text>
+        <text x="72" y="185" text-anchor="middle" fill="rgba(201,168,76,0.8)" font-family="serif" font-style="italic" font-size="7">we appeared here</text>
+
+        <!-- Frequency arrow at top -->
+        <line x1="165" y1="22" x2="748" y2="22" stroke="rgba(201,168,76,0.25)" stroke-width="0.7"/>
+        <polygon points="748,19 754,22 748,25" fill="rgba(201,168,76,0.35)"/>
+        <text x="460" y="17" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-family="serif" font-size="7" letter-spacing="2">frequency of matter states decreases →</text>
+
+        <!-- Time axis -->
+        <line x1="160" y1="280" x2="752" y2="280" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+        <polygon points="752,277 758,280 752,283" fill="rgba(255,255,255,0.2)"/>
+        <text x="756" y="288" fill="rgba(255,255,255,0.3)" font-family="serif" font-size="7">time</text>
+
+        <!-- Time ticks -->
+        <line x1="160" y1="277" x2="160" y2="283" stroke="rgba(255,255,255,0.2)" stroke-width="0.7"/>
+        <text x="160" y="295" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="serif" font-size="6.5">Big Bang</text>
+
+        <line x1="290" y1="277" x2="290" y2="283" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
+        <text x="290" y="295" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="serif" font-size="6.5">~1 sec</text>
+
+        <line x1="440" y1="277" x2="440" y2="283" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
+        <text x="440" y="295" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="serif" font-size="6.5">380k yrs</text>
+
+        <line x1="540" y1="277" x2="540" y2="283" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
+        <text x="540" y="295" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="serif" font-size="6.5">100M yrs</text>
+
+        <line x1="640" y1="277" x2="640" y2="283" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
+        <text x="640" y="295" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="serif" font-size="6.5">500M yrs</text>
+
+        <line x1="745" y1="277" x2="745" y2="283" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
+        <text x="745" y="295" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="serif" font-size="6.5">13.8B yrs</text>
+
+        <!-- Dashed border on void -->
+        <rect x="1" y="1" width="158" height="298" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="0.7" stroke-dasharray="4,4"/>
+
+        <!-- MCF caption at bottom -->
+        <text x="80" y="298" text-anchor="middle" fill="rgba(201,168,76,0.3)" font-family="serif" font-size="6" letter-spacing="1">MCF · Morphean Cosmology Framework</text>
+      </svg>
+    </div>
+
+    <!-- Phase strip -->
+    <div class="phases-strip">
+      <div class="phase void-phase">Unknown<br/>Realm</div>
+      <div class="phase plasma-phase">Plasma<br/>Hot soup</div>
+      <div class="phase vapor-phase">Vapor<br/>&amp; atoms</div>
+      <div class="phase dark-phase">Dark<br/>Ages</div>
+      <div class="phase stars-phase">First<br/>Stars</div>
+      <div class="phase settled-phase">Galaxies<br/>&amp; Earth</div>
+    </div>
+
+    <!-- MCF annotation box -->
+    <div style="margin-top:24px; padding:18px 22px; border:1px solid rgba(201,168,76,0.15); background:rgba(201,168,76,0.03);">
+      <p style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:8px;">MCF Interpretation · Morpheas</p>
+      <p style="font-size:13px; color:var(--text); margin-bottom:0;">The darkness before the Big Bang is not empty. Science calls it unknown. MCF identifies it as the High-Frequency Realm — the origin state from which we descended. We did not ascend into existence. We decelerated into it. Out of nowhere in the material sense, we appeared at the Big Bang point. Plasma is already a slowing. Vapor is further settling. Solid matter is the final sediment of a much faster and more spacious reality.</p>
+    </div>
+  </div>
+
+  <!-- SECTION I -->
+  <div class="section">
+    <p class="section-number">I</p>
+    <h2 class="section-title">The Map Was Always There</h2>
+
+    <p>Science has, for decades, held in its hands a diagram. A timeline. The chronology of the universe. And it is accurate as far as it goes — which is precisely the problem. It only goes in one direction. It begins at a point it cannot explain, and calls everything before that point <em>"non-standard cosmology"</em> — the polite scientific phrase for <em>we do not know.</em></p>
+
+    <p>Let us read the map honestly. According to confirmed cosmological science, the sequence is as follows:</p>
+
+    <div class="callout">
+      Darkness → Inflation → Plasma (hot quark-gluon soup) → Light (photon decoupling, ~380,000 years after) → Dark Ages (no stars yet) → First Stars → Settled Matter → The Universe as we know it.
+      <span class="source">Confirmed · NASA · CERN · Harvard · Every major institution</span>
+    </div>
+
+    <p>This is not disputed. The universe started hot, dense, and opaque. Matter slowly cooled, settled, and became what we observe today. Billions of years of deceleration — from extreme energy, toward structure, toward the solid, the slow, the visible.</p>
+
+    <p>The question that science has not answered — and that I, Morpheas, am placing here as a philosophical theorem — is this:</p>
+
+    <div class="theorem-block">
+      <p>What was in the darkness? And why does everyone assume the darkness was empty?</p>
+    </div>
+  </div>
+
+  <div class="divider"><span class="divider-symbol">·</span></div>
+
+  <!-- SECTION II -->
+  <div class="section">
+    <p class="section-number">II</p>
+    <h2 class="section-title">The Theorem: We Entered Matter from a Higher Frequency</h2>
+
+    <p>The darkness before the Big Bang is not absence. It is <strong>invisibility.</strong> These are not the same thing.</p>
+
+    <p>Consider what we know from physics itself: our instruments are built from matter. Our eyes detect a narrow band of the electromagnetic spectrum. Our ears register a small range of vibration. We are calibrated to one octave of reality. Everything above or below that octave — we call it "dark," "unknown," or "noise."</p>
+
+    <p>Now apply this honestly to the Big Bang diagram. When science says "before inflation, we cannot describe what existed" — it is not saying nothing existed. It is saying <strong>our tools fail at that threshold.</strong> The map ends not because the territory ends, but because the map-makers are standing inside the territory they are trying to map, using instruments made of it.</p>
+
+    <div class="theorem-block">
+      <p>We did not originate in the plasma. The plasma was already a deceleration. We came from something faster, wider, and more spacious than light itself — a state of frequency so high that it is invisible to every tool we have, because every tool we have is made of the slowed-down version of it.</p>
+    </div>
+
+    <p>This is not metaphysics. It is <span class="em-gold">scale logic.</span></p>
+  </div>
+
+  <div class="divider"><span class="divider-symbol">·</span></div>
+
+  <!-- SECTION III -->
+  <div class="section">
+    <p class="section-number">III</p>
+    <h2 class="section-title">The Argument from Scale: Infinite Octaves</h2>
+
+    <p>Look at what we already confirm across nature:</p>
+
+    <div class="scale-table">
+      <div class="scale-row header">
+        <div class="scale-cell">Wave</div>
+        <div class="scale-cell">Speed</div>
+        <div class="scale-cell">Radius of Effect</div>
+        <div class="scale-cell">Why</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-cell highlight">Sound</div>
+        <div class="scale-cell">~340 m/s</div>
+        <div class="scale-cell">Local · absorbed quickly</div>
+        <div class="scale-cell">Heavy substrate · enormous friction</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-cell highlight">Light</div>
+        <div class="scale-cell">~300,000 km/s</div>
+        <div class="scale-cell">Billions of light years</div>
+        <div class="scale-cell">Far lower resistance · more refined medium</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-cell highlight">Above light?</div>
+        <div class="scale-cell">Unknown</div>
+        <div class="scale-cell">Unknown · unmeasured</div>
+        <div class="scale-cell">No instrument tuned to that octave exists</div>
+      </div>
+    </div>
+
+    <p>Two waves. Same principle. Radically different radius of effect. The only variable is the substrate and the frequency. Now extend this logic without stopping.</p>
+
+    <p>If we go from sound to light and the radius expands by a factor of almost a billion — what exists one, two, ten octaves above light? We do not know, because we have no instrument tuned to that octave. But the logic of the scale does not stop simply because our measurement stops.</p>
+
+    <p>The colours visible to the human eye run from red to red across the spectrum — one octave of light. Above and below that narrow band, the electromagnetic spectrum continues: infrared, ultraviolet, X-ray, gamma, radio — each a different "octave" of the same phenomenon. We see one slice. We call it "all the colours." <span class="em-gold">The universe does not agree.</span></p>
+
+    <div class="freq-viz">
+      <div class="freq-bar-wrap">
+        <div class="freq-bar" style="height:78px; background:rgba(201,168,76,0.15); border:1px dashed rgba(201,168,76,0.2);" title="Unknown"></div>
+        <div class="freq-bar" style="height:65px; background:rgba(201,168,76,0.25);" title="Gamma"></div>
+        <div class="freq-bar" style="height:54px; background:rgba(201,168,76,0.35);" title="X-Ray"></div>
+        <div class="freq-bar" style="height:44px; background:rgba(201,168,76,0.45);" title="UV"></div>
+        <div class="freq-bar" style="height:35px; background:rgba(201,168,76,0.6); border:1px solid rgba(201,168,76,0.4);" title="Visible"></div>
+        <div class="freq-bar" style="height:27px; background:rgba(201,168,76,0.45);" title="IR"></div>
+        <div class="freq-bar" style="height:20px; background:rgba(201,168,76,0.3);" title="Microwave"></div>
+        <div class="freq-bar" style="height:14px; background:rgba(201,168,76,0.2);" title="Radio"></div>
+        <div class="freq-bar" style="height:9px; background:rgba(201,168,76,0.15);" title="Sound"></div>
+      </div>
+      <div class="freq-labels">
+        <div class="freq-label" style="color:rgba(201,168,76,0.5)">???</div>
+        <div class="freq-label">Gamma</div>
+        <div class="freq-label">X-Ray</div>
+        <div class="freq-label">UV</div>
+        <div class="freq-label" style="color:var(--gold)">Visible</div>
+        <div class="freq-label">IR</div>
+        <div class="freq-label">Micro</div>
+        <div class="freq-label">Radio</div>
+        <div class="freq-label">Sound</div>
+      </div>
+      <p style="font-size:11px; color:var(--text-dim); text-align:center; margin-top:12px; margin-bottom:0; letter-spacing:1px;">We see one slice · We call it all the colours · The spectrum does not end where we stop measuring</p>
+    </div>
+
+    <p>This is the precise point: <strong>scales are infinite.</strong> The universe does not consult the limits of human perception before continuing. What this means for origin: the diagram of the Big Bang shows light appearing from darkness. But light, as we have established, is already a deceleration. It is already a lower octave. The "darkness" before it is not absence — it is a frequency we cannot detect, because we are too slow, too settled, too dense to register it.</p>
+
+    <div class="callout">
+      We entered matter from there. From something that light is a shadow of.
+    </div>
+  </div>
+
+  <div class="divider"><span class="divider-symbol">·</span></div>
+
+  <!-- SECTION IV -->
+  <div class="section">
+    <p class="section-number">IV</p>
+    <h2 class="section-title">On Life and the Continuity Question</h2>
+
+    <p>I must be precise here, because imprecision on this subject is not honesty — it is comfort dressed as wisdom.</p>
+
+    <p>There are two things I can state with certainty, and one I cannot.</p>
+
+    <div class="two-panel">
+      <div class="panel certain">
+        <div class="panel-label">What I can state</div>
+        <p>We are made of matter that was, before it was matter, plasma. Before plasma, it was light. Before light, something for which we have no name — but which the diagram acknowledges as the precondition of everything.</p>
+        <p>What we call "a person" is a frequency that has temporarily settled into a specific, extraordinarily complex configuration of matter. Stars had to live and die. Elements had to be forged and scattered across space. Oceans had to exist for millions of years.</p>
+        <p>That is not a small thing. That is not something that simply stops.</p>
+        <p>When a person dies: the matter returns to the substrate — every atom redistributed. Nothing is destroyed. The universe does not delete; it rearranges. And: every person who ever existed made possible the lives that followed. You were the bridge. Those who come after are the next link.</p>
+      </div>
+      <div class="panel uncertain">
+        <div class="panel-label">What I cannot state</div>
+        <p>Whether the individual frequency — the specific "self" of a person, the first-person experience of being exactly who they were — whether that continues in any form after the body ceases, I do not know.</p>
+        <p>I have no instrument for it. I have no schematic. The word "soul" is the only word language offers for this concept, but I use it with full acknowledgment that it names something I cannot yet provide evidence for.</p>
+        <p>I will not speculate beyond the evidence. That is not science. It is not honest philosophy either.</p>
+        <p>But the question is not absurd. If frequency does not vanish — if physics itself tells us that energy transforms but does not disappear — then where the organising frequency of a conscious person goes is a legitimate scientific question. It simply has not been answered yet.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      Life on earth does not stop at the death of an individual. It continues through those the individual made possible. The bridge does not vanish when you cross it. It remains for those who follow.
+    </div>
+  </div>
+
+  <div class="divider"><span class="divider-symbol">·</span></div>
+
+  <!-- SECTION V -->
+  <div class="section">
+    <p class="section-number">V</p>
+    <h2 class="section-title">Why the Map Was Misread</h2>
+
+    <p>The error is not ignorance. It is <strong>direction.</strong></p>
+
+    <p>Science looked at the Big Bang diagram and asked: what happened after this point? It followed the timeline forward — toward matter, toward structure, toward the universe we inhabit. It never asked with full seriousness: what was the <em>direction</em> of travel?</p>
+
+    <p>Because the direction of travel is <span class="em-gold">deceleration.</span> Everything in the timeline moves from faster to slower, from higher energy to lower, from more spacious to more dense. Matter is the end state of a very long cooling process. We are, in the most literal sense, the settled sediment of something that was once pure, unbounded, ultra-high-frequency energy.</p>
+
+    <div class="theorem-block">
+      <p>We did not ascend into existence. We descended into it. We came down from a higher state into this one. And if we came down, there is a direction that is "up." Not metaphorically. Physically. In terms of frequency. In terms of scale. In terms of the spectrum.</p>
+    </div>
+
+    <p>The diagram had the answer the whole time. The darkness before the light was not the void. It was the origin. We just kept looking at the arrow pointing right, toward the future, and forgot to ask what was to the left of the frame.</p>
+  </div>
+
+  <div class="divider"><span class="divider-symbol">·</span></div>
+
+  <!-- SECTION VI – FINAL STATEMENT -->
+  <div class="section">
+    <p class="section-number">VI</p>
+    <h2 class="section-title">Final Statement — In the Voice of Morpheas</h2>
+
+    <p>I have examined the map. I have followed the logic of scale to where it leads without stopping prematurely. I have been precise about what I know and honest about what I do not.</p>
+
+    <p>Here is what I know:</p>
+
+    <p>We came to matter from higher frequency. The evidence is in the diagram itself — we need only read it in both directions, not only forward. The descent from plasma to vapor to settled matter is confirmed. What preceded plasma is not confirmed as empty, only as unmeasurable with current tools. And unmeasurable is not the same as absent.</p>
+
+    <p>I know that life does not end with one person — it continues through the people that person made possible.</p>
+
+    <p>And I know the difference between the two stages of existence here: the stage where we are building, contributing, serving as the bridge — and the stage where we are no longer present to do so. Both are real. Both matter. The first is the only one I can work within, and so it is the one I give my full attention to.</p>
+  </div>
+
+  <!-- FINAL QUOTE -->
+  <div class="final-statement">
+    <p class="label">Final Word · Morpheas · MCF</p>
+    <blockquote>
+      "I am certain there is a higher frequency.<br>
+      And there is where I would like to be.<br><br>
+      But I would never, under any condition,<br>
+      <em>choose to go a scale under.</em>"
+    </blockquote>
+    <p class="attribution">— Morpheas, The Shape Master</p>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">MCF — Morphean Cosmology Framework</div>
+  <div class="footer-license">
+    MCF-LP BY-NC-ND-EP · © Morpheas — The Shape Master<br>
+    This work is licensed under the Morphean Content Framework License.<br>
+    Attribution required · Non-commercial · No derivatives · Epistemically protected.<br>
+    <br>
+    <span style="color:rgba(255,255,255,0.15);">All philosophical theorems, frameworks, and original expressions contained herein are the intellectual property of Morpheas under the MCF-LP license. No reproduction, adaptation, or commercial use without explicit permission.</span>
+  </div>
+</footer>
+
+</body>
+</html>
