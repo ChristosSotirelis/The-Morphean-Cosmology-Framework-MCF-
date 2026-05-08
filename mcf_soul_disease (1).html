@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 840px;
+    margin: 40px auto;
+    padding: 44px 56px;
+    color: #1a1a1a;
+    line-height: 1.95;
+    background: #fff;
+    font-size: 15px;
+  }
+  .cover {
+    text-align: center;
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+    border-bottom: 3px double #1a1a3a;
+  }
+  .cover .tag {
+    font-size: 0.78em;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #1a1a3a;
+    margin-bottom: 14px;
+  }
+  .cover h1 {
+    font-size: 1.95em;
+    color: #1a1a3a;
+    margin: 0 0 8px 0;
+    line-height: 1.25;
+  }
+  .cover h2 {
+    font-size: 1.02em;
+    color: #555;
+    font-weight: normal;
+    font-style: italic;
+    margin: 0 0 20px 0;
+  }
+  .cover .author-block {
+    margin-top: 16px;
+    font-size: 0.95em;
+    color: #333;
+  }
+  .cover .author-block strong { color: #1a1a3a; font-size: 1.05em; }
+  .cover .author-block em { color: #777; font-size: 0.9em; }
+  .notice {
+    background: #f0f0f8;
+    border: 1px solid #c0c0d8;
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 0 0 36px 0;
+    font-size: 0.88em;
+    color: #333;
+    line-height: 1.7;
+  }
+  .notice strong { color: #1a1a3a; }
+  h3 {
+    font-size: 1.05em;
+    color: #1a1a3a;
+    border-left: 4px solid #1a1a3a;
+    padding-left: 13px;
+    margin-top: 2.2em;
+    margin-bottom: 0.5em;
+  }
+  h4 {
+    font-size: 0.97em;
+    color: #3a3a6a;
+    margin-top: 1.6em;
+    margin-bottom: 0.3em;
+    font-weight: bold;
+  }
+  p { margin: 0.75em 0; text-align: justify; }
+  .definition {
+    background: #f4f4fc;
+    border-left: 4px solid #1a1a3a;
+    padding: 14px 18px;
+    margin: 1.6em 0;
+    font-size: 0.96em;
+    color: #111;
+  }
+  .definition strong { color: #1a1a3a; }
+  .warning {
+    background: #fdf6ec;
+    border-left: 4px solid #b06000;
+    padding: 14px 18px;
+    margin: 1.6em 0;
+    font-size: 0.95em;
+    color: #111;
+  }
+  .warning strong { color: #b06000; }
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 1.6em 0;
+  }
+  .state-box {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 13px 15px;
+    font-size: 0.9em;
+  }
+  .state-box .state-label {
+    font-size: 0.78em;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #ccc;
+  }
+  .s-inactive .state-label { color: #666; border-color: #bbb; }
+  .s-active-life .state-label { color: #1a5a1a; border-color: #80b080; }
+  .s-active-harm .state-label { color: #8a1a1a; border-color: #c08080; }
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin: 1.6em 0;
+  }
+  .pillar {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 13px 15px;
+    font-size: 0.91em;
+    text-align: center;
+  }
+  .pillar .p-label {
+    font-weight: bold;
+    color: #1a1a3a;
+    font-size: 0.95em;
+    margin-bottom: 6px;
+  }
+  .cycle-box {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 1.6em 0;
+    font-size: 0.93em;
+  }
+  .cycle-box .c-label {
+    font-size: 0.75em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  .cycle-step {
+    padding: 5px 0;
+    border-bottom: 1px dotted #ddd;
+    color: #222;
+  }
+  .cycle-step:last-child { border-bottom: none; }
+  .arrow { color: #888; font-size: 1.1em; padding: 0 6px; }
+  hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 2.4em 0;
+  }
+  .license {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-top: 2.8em;
+    font-size: 0.83em;
+    color: #444;
+    line-height: 1.75;
+  }
+  .license strong { color: #1a1a3a; }
+  .print-btn {
+    display: block;
+    margin: 32px auto 0;
+    padding: 12px 36px;
+    background: #1a1a3a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    letter-spacing: 0.5px;
+  }
+  .print-btn:hover { background: #3a3a7a; }
+  @media print {
+    .print-btn { display: none; }
+    body { margin: 0; padding: 24px 32px; font-size: 13px; }
+    .three-col, .pillars { display: block; }
+    .state-box, .pillar { margin-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">Morphean Cosmology Framework (MCF) — Psychological Domain · First Chapter</div>
+  <h1>The Fear Disease</h1>
+  <h2>A Structural and Psychological Description of the Pathology<br>
+  of Mortality Terror and Its Consequences for the Human Organism and the Species</h2>
+  <div class="author-block">
+    By <strong>Christos Sotirelis</strong> — "Morpheas"<br>
+    <em>The Shape Master · Founder of the Morphean Cosmology Framework</em>
+  </div>
+</div>
+
+<div class="notice">
+  <strong>Important clarification before reading:</strong> This document does not use metaphor or symbolic language. Every term used here refers to a specific, observable psychological or biological reality. The word "soul" does not appear in this document because it carries meanings across theology, philosophy, and tradition that differ from what is described here. What is described here is the <strong>functional psychological core of a human being</strong> — the integrated center of motivation, orientation, and behavioral output. This is a psychological framework, not a spiritual, religious, or philosophical one. Readers from any tradition are asked to engage with the precise definitions given here rather than mapping the content onto their existing frameworks.
+</div>
+
+<!-- SECTION 1 -->
+<section>
+<h3>1. What This Document Describes</h3>
+<p>This document identifies and describes a specific psychological condition. The condition is real, observable, and distinct from ordinary human distress, depression, trauma response, or moral failure. It has a specific cause, a specific mechanism, a specific set of effects on the individual and on the social organism, and a specific set of conditions under which it can be reversed.</p>
+<p>The condition is called here the <strong>Fear Disease</strong>. It is named this precisely — not metaphorically — because it is a disease, meaning a state of abnormal functioning with identifiable causes and consequences, and because its root is fear — a specific, structural terror of nonexistence that has been left unresolved and has become the organizing principle of a person's psychology.</p>
+<p>It is not called "evil." The word evil is a verdict, not a diagnosis. A verdict closes investigation. A diagnosis opens it. This document treats the condition as something that can be understood, and therefore as something that can — under certain conditions — be addressed.</p>
+</section>
+
+<hr>
+
+<!-- SECTION 2 -->
+<section>
+<h3>2. The Foundation — The Life Equation Applied to the Human Organism</h3>
+<p>The Morphean Cosmology Framework establishes the Life Equation as the foundational description of any functioning system:</p>
+<p style="text-align:center; font-size:1.1em; letter-spacing:1px; margin: 1.4em 0;"><strong>U* = 1 · L · V · T</strong></p>
+<p>This equation states that for any system to function, four conditions must be simultaneously non-zero: Unity (coherence and identity), Logic (consistent internal structure), Vibration (dynamic activity and change), and Temperature (available energy for transformation). The equation is multiplicative — meaning if any single variable reaches zero, the entire system collapses. There is no compensation. A system cannot survive the total loss of any one of these conditions by maximizing the others.</p>
+<p>Applied to the human psychological organism, this means the following: a person requires coherent identity, internal logical consistency, active engagement with life, and sustained energy — material, relational, and purposive — to remain functionally oriented toward existence. When any of these is systematically removed or destroyed, the psychological system begins to fail. This failure is not a character flaw. It is a mechanical consequence of the equation.</p>
+
+<div class="definition">
+  <strong>The MCF framework also identifies that Life, Logic, Love, Truth, Justice, and Light are not separate concepts but different readings of the same operational reality.</strong> This is not a philosophical claim. It is a structural one: each of these requires all the others to function. Logic without Truth becomes calculation without purpose. Justice without Love becomes mechanism without life. Love without Logic becomes impulse that destroys what it intends to protect. When one begins to collapse in a person, the others begin to follow — because they are, functionally, the same system.
+</div>
+</section>
+
+<hr>
+
+<!-- SECTION 3 -->
+<section>
+<h3>3. The Root Cause — Terror of Nonexistence</h3>
+<p>Every conscious human being who has reached sufficient cognitive development becomes aware, at some point, that the individual body will cease to function. This awareness is universal. What differs between individuals and between psychological states is what happens next — how the mind and the behavioral system respond to this awareness.</p>
+<p>Under normal, healthy conditions, this awareness is metabolized. The person recognizes — consciously or through lived experience — that individual biological death does not constitute total cessation. Life continues through what is created, transmitted, and built: children, knowledge, relationships, culture, and contribution. The awareness of death becomes a driver of purposeful action rather than a source of permanent terror.</p>
+<p>The Fear Disease begins when this metabolization does not occur. The person confronts the awareness of individual death, and instead of resolving it through the recognition of continuation, they absorb it as a terminal fact: <em>I end, completely, and therefore nothing I do carries permanent meaning.</em></p>
+
+<div class="warning">
+  <strong>This is a cognitive and psychological event, not a moral one.</strong> The person who fails to metabolize the awareness of death is not choosing weakness or evil. They are, in most cases, responding to an environment — or an internal state — that has not provided the conditions for resolution. The disease begins as a response. Whether it remains a response or becomes a chosen orientation is addressed in Section 5.
+</div>
+
+<p>Once this unresolved terror becomes the organizing principle of a person's psychology, it begins to distort all other cognitive and behavioral functions. The person's relationship to creation, to others, to the future, and to life-sustaining action is progressively shaped by a foundational belief that continuation is impossible or meaningless — and therefore that actions oriented toward continuation are futile or absurd.</p>
+</section>
+
+<hr>
+
+<!-- SECTION 4 -->
+<section>
+<h3>4. The Three Minimum Conditions for Psychological Health</h3>
+<p>The Morphean framework identifies three concrete, material conditions whose presence or absence directly determines whether the Fear Disease activates in a given person. These are not cultural preferences or comfort factors. They are the minimum structural requirements for a human being — a social organism — to maintain a functional orientation toward life.</p>
+
+<div class="pillars">
+  <div class="pillar">
+    <div class="p-label">I. Sustenance and Work</div>
+    The ability to meet material needs through meaningful activity. This is not merely economic. Work is the primary mechanism through which a person participates in the continuation of the social organism. Its absence removes the direct experience of contributing to what persists beyond the individual.
+  </div>
+  <div class="pillar">
+    <div class="p-label">II. Partnership</div>
+    A stable, genuine relational bond with another person. Not as a social convention, but as the primary lived evidence that one is not alone in existence — that one's continuation is connected to and valued by another. Its absence isolates the person inside their own individual mortality.
+  </div>
+  <div class="pillar">
+    <div class="p-label">III. Purpose and Role</div>
+    A recognized and functional position within a social group — family, community, society. The experience of being needed, of having a contribution that is received by others. Its absence removes the direct experience of being part of something that continues.
+  </div>
+</div>
+
+<p>When all three are present and functional, the Life Equation's variables remain non-zero in the person. The awareness of individual death is held within a lived context of continuation. The person's behavior remains oriented toward life.</p>
+<p>When one or more of these conditions is removed — through poverty, isolation, social exclusion, injustice, sustained insult, or environmental toxicity — the equation begins to destabilize. The terror of nonexistence, which was held in place by the lived experience of continuation, begins to surface without resolution. This is the entry point of the Fear Disease.</p>
+
+<div class="definition">
+  <strong>Critical observation:</strong> The removal of these conditions is not always accidental. A person, group, or system that consistently destroys the partnerships, purposive roles, and sustenance of others is — whether knowingly or not — creating the conditions under which the Fear Disease activates in those people. The disease can be deliberately installed by removing the conditions that prevent it.
+</div>
+</section>
+
+<hr>
+
+<!-- SECTION 5 -->
+<section>
+<h3>5. The Three States — Within One Person</h3>
+<p>This is the most precise and most easily misunderstood element of this framework. There are not three types of people. There are three states that can be active in the same person at different times, under different conditions. Every person has the psychological capacity for all three. What determines which state is active is the combination of environmental conditions, internal history, and — at a certain point — conscious orientation.</p>
+
+<div class="three-col">
+  <div class="state-box s-inactive">
+    <div class="state-label">State I — Inactive</div>
+    The person is aware, at some level, of the conditions around them but does not act in either direction. They neither build nor destroy. They are not oriented toward life or against it. They are absent from the equation in behavioral terms. This state is not neutral in its consequences — see Section 6.
+  </div>
+  <div class="state-box s-active-life">
+    <div class="state-label">State II — Active Toward Life</div>
+    The person acts in the direction of continuation: building relationships, creating, transmitting knowledge, contributing to the social organism, raising children, sustaining community. The three pillars are present. The Life Equation is non-zero. The awareness of death has been metabolized into purposeful action.
+  </div>
+  <div class="state-box s-active-harm">
+    <div class="state-label">State III — Active Against Life</div>
+    The person acts in the direction of destruction: undermining continuation, damaging the pillars in others, spreading the conditions that activate the disease in those around them. The terror of nonexistence has not been metabolized. It has become the behavioral driver.
+  </div>
+</div>
+
+<p>A person moves between these states. The movement is determined primarily by whether the three minimum conditions — sustenance, partnership, purpose — are present or absent. When they are present, the person naturally orients toward State II. When they are removed, State I or State III becomes more likely depending on the person's internal history and the degree of the disease already present.</p>
+
+<h4>The point of chosen orientation</h4>
+<p>There is a threshold in this process that must be stated precisely. In the early stages of the Fear Disease, the person's state is primarily determined by their circumstances. They are responding. The disease is happening to them as much as through them.</p>
+<p>However, as the disease progresses and becomes more established as the person's organizing principle, a different situation can emerge: the person becomes aware — at some level — of what they are doing and why. At this point, continued action against life is no longer purely a response to circumstances. It has become, in part, a choice. The disease has produced an orientation, and the person is now maintaining that orientation with some degree of awareness.</p>
+<p>This is not stated as a moral judgment. It is stated as a description of the psychological mechanism. The distinction matters for understanding the difference between those for whom reversal is possible through changing conditions, and those for whom reversal would require a more fundamental confrontation with their own interior state.</p>
+</section>
+
+<hr>
+
+<!-- SECTION 6 -->
+<section>
+<h3>6. What Feeds the Disease — The Full List</h3>
+<p>One of the central structural principles of this framework is this: there is no neutral position. A person, an action, a system, or an environment is either sustaining the conditions of life or it is, by its absence of life-sustaining action, contributing to the conditions of the disease. This is not a moral statement. It is a mechanical one — the same logic as the Life Equation. A variable that is not maintained does not remain stable. It begins to decrease.</p>
+<p>The following conditions all feed the Fear Disease. They are not equivalent in severity, but they are equivalent in direction:</p>
+
+<div class="cycle-box">
+  <div class="c-label">Conditions that feed the Fear Disease</div>
+  <div class="cycle-step"><strong>Terror and sustained threat</strong> — direct activation of the mortality awareness without the conditions for resolution.</div>
+  <div class="cycle-step"><strong>Ignorance</strong> — the absence of the knowledge that continuation is real and that individual death is not total cessation. Ignorance is not passive. In the context of this framework, a person who does not know cannot choose the life-sustaining orientation, and therefore defaults toward the disease by the mechanics of the equation.</div>
+  <div class="cycle-step"><strong>Injustice</strong> — the systematic denial of the three minimum conditions to a person or group. Injustice installs the disease by removing the lived experience of continuation.</div>
+  <div class="cycle-step"><strong>Isolation</strong> — the removal of partnership and community, which are the primary experiential evidence that the individual is part of something that continues.</div>
+  <div class="cycle-step"><strong>Purposelessness</strong> — the removal of meaningful work and social role, which destroys the experience of participation in the continuation of the social organism.</div>
+  <div class="cycle-step"><strong>Sustained insult</strong> — repeated damage to a person's coherent identity (Unity in the Life Equation), which destabilizes the psychological system and makes the terror of nonexistence more available.</div>
+  <div class="cycle-step"><strong>Inactivity in those who could act</strong> — when people in State I remain inactive while the conditions of others deteriorate, the disease spreads further because it is unopposed. Inactivity is not innocence. It is the absence of the only thing that counteracts the disease.</div>
+</div>
+</section>
+
+<hr>
+
+<!-- SECTION 7 -->
+<section>
+<h3>7. The Interior Mechanism — Ego, Mind, and the Sustaining of the Disease</h3>
+<p>Once the Fear Disease is installed, it requires an interior mechanism to sustain itself. That mechanism is the conflict between two distinct functional layers of the human psyche: the <strong>Mind</strong> and the <strong>Ego</strong>.</p>
+
+<p>The <strong>Mind</strong> — the layer that processes meaning and seeks logical coherence — already knows, at a level beneath verbal thought, that continuation is real. As described in Section 4, the mind holds knowledge that the brain has not yet consciously articulated. It knows that individual death is not total cessation. It knows that what is built, transmitted, and created continues. This knowledge is intrinsic.</p>
+
+<p>The <strong>Ego</strong> is not the self. It is a specific functional layer whose role is to protect the person's existing self-image and emotional stability from information that would destabilize it. Under normal conditions, this is a useful buffer. Under the Fear Disease, it becomes the mechanism that perpetuates the disease by blocking the Mind's knowledge from reaching conscious recognition.</p>
+
+<p>When the Mind's awareness of continuation contradicts the Ego's installed belief that death is absolute and meaningless, the Ego does not update. It denies. It filters out the contradicting information to preserve the existing internal narrative — because acknowledging continuation would require the person to confront the fact that their current orientation against life is a chosen distortion, not an inevitable response to reality. That confrontation is what the Ego is structurally designed to prevent.</p>
+
+<div class="definition">
+  <strong>The psychic poison mechanism:</strong> When a person knows a truth internally — when the Mind holds it — and the Ego systematically suppresses or denies it, the result is a toxic internal feedback loop. The system is running two contradictory states simultaneously: the Mind's knowledge of continuation and the Ego's insistence on meaninglessness. This internal contradiction does not resolve. It compounds. The cognitive and behavioral consequences of this sustained internal contradiction are the ongoing expressions of the disease in the person's life and actions.
+</div>
+
+<p>This is why the Fear Disease is self-sustaining once established. The Ego's denial of the Mind's knowledge prevents the very recognition that would begin reversal. The person cannot be argued out of the disease from outside if the Ego is filtering out every piece of evidence that would contradict the disease's foundational belief. The interior lock must be addressed before external conditions alone can produce reversal.</p>
+
+<p>This also explains why some people, when their three pillars are partially restored, do not recover as expected. The pillars provide the conditions for recovery, but if the Ego-Mind conflict has become entrenched, the evidence of continuation that the restored pillars provide is filtered before it reaches conscious recognition. The lock is interior, not environmental.</p>
+
+<h3>8. How the Disease Spreads — The Propagation Mechanism</h3>
+<p>The Fear Disease does not require deliberate transmission. It propagates through the same mechanism by which it is caused: the systematic removal of the conditions that prevent it.</p>
+<p>A person in State III — active against life — does not need to explain their condition or recruit others to it. They simply act in ways that damage the three pillars in those around them: undermining partnerships, destroying purposive roles, denying sustenance, spreading the false belief that continuation is impossible. Each person whose pillars are damaged moves toward State I or State III. Each person who moves toward State III damages the pillars of further people. The mechanism is self-amplifying.</p>
+
+<div class="cycle-box">
+  <div class="c-label">Propagation Cycle</div>
+  <div class="cycle-step">Person's pillars are damaged (injustice, isolation, insult, purposelessness)</div>
+  <div class="cycle-step">Life Equation variables approach zero in that person</div>
+  <div class="cycle-step">Terror of nonexistence becomes the dominant psychological force</div>
+  <div class="cycle-step">Person moves toward State I (inactive) or State III (active against life)</div>
+  <div class="cycle-step">If State III: person's actions damage pillars in others</div>
+  <div class="cycle-step">If State I: person's inaction creates a vacuum that State III fills</div>
+  <div class="cycle-step">Cycle repeats at wider scale</div>
+</div>
+
+<p>The disease spreads most efficiently not through direct violence or obvious harm, but through the slow, consistent removal of the conditions of life — the quiet destruction of partnership, purpose, and sustenance across a community or culture over time. This is why it can operate at civilizational scale without any single identifiable actor directing it.</p>
+</section>
+
+<hr>
+
+<!-- SECTION 8 -->
+<section>
+<h3>9. What the Disease Is Not — Necessary Distinctions</h3>
+<p>Because this framework uses language that intersects with existing disciplines, the following distinctions are essential.</p>
+
+<h4>This is not a description of evil in the theological or moral-philosophical sense</h4>
+<p>Evil, as understood in theological and moral traditions, is typically a permanent quality — either of a being or of an act. The Fear Disease is not a permanent quality. It is a psychological state with identifiable causes. Calling it a disease rather than evil is not a softening of language. It is a more precise description of the actual mechanism, which is necessary for understanding how it operates and how it can be addressed.</p>
+
+<h4>This is not depression</h4>
+<p>Depression is a condition characterized primarily by collapsed energy, withdrawal, and diminished capacity, with identifiable neurochemical and situational components. The Fear Disease can coexist with high functional capacity and outward activity. A person in State III may be highly energetic and socially engaged while acting consistently against the continuation of life around them.</p>
+
+<h4>This is not trauma response</h4>
+<p>Trauma response is a specific psychological reaction to specific past events, producing fear, avoidance, and hypervigilance oriented toward the original threat. The Fear Disease is not a reaction. It is a structural reorganization of the psychological system around the terror of nonexistence. It does not point back to a single event. It is a foundational condition.</p>
+
+<h4>This does not use "soul," "spirit," or "energy" in their traditional senses</h4>
+<p>None of these terms appear in this framework's technical language. When any of them appear in supporting discussion, they refer specifically to the functional psychological core of the human organism — the integrated center of motivation, orientation, and behavioral output. They are used for communicative clarity only and carry no theological, metaphysical, or philosophical meaning in this context.</p>
+</section>
+
+<hr>
+
+<!-- SECTION 9 -->
+<section>
+<h3>10. The Conditions for Reversal</h3>
+<p>The Fear Disease is reversible in its early and intermediate stages. Reversal follows the same logic as causation: it requires the restoration of the conditions whose absence caused the disease to activate.</p>
+<p>The three minimum conditions — sustenance and work, partnership, purpose and role — must be re-established in a form that is genuine and functional. This is not a therapeutic technique. It is a structural requirement. A person cannot metabolize the terror of nonexistence through insight alone if the lived conditions that provide evidence of continuation are absent. The knowledge that continuation is real must be matched by the lived experience of it.</p>
+<p>Reversal also requires that the false belief at the core of the disease — that individual death constitutes total and absolute cessation — be confronted and replaced, not with comfort or ideology, but with the direct recognition of observable fact: that what a person builds, transmits, raises, and creates continues after the individual body ceases. This is not a spiritual claim. It is a biological, social, and cognitive observable reality.</p>
+<p>In the advanced stage — where the person has crossed into conscious chosen orientation against life — reversal requires a confrontation with the interior state itself that goes beyond environmental change. Whether that confrontation is possible in a given individual is not addressed by this document. This document describes the mechanism. The limits of reversal in specific cases are outside its scope.</p>
+
+<div class="definition">
+  <strong>The measure of a functioning human life in the MCF framework</strong> is not duration, achievement, or individual success. It is the degree to which the conditions of life — for oneself and for others — were sustained and transmitted forward. A person who has done this has not died in the way that matters. The only form of death that is final is the cessation of transmission — the condition the Fear Disease, at its endpoint, produces.
+</div>
+</section>
+
+<hr>
+
+<div class="license">
+  <strong>License and Attribution</strong><br><br>
+  This document is an original intellectual work within the <strong>Morphean Cosmology Framework (MCF)</strong>, authored by <strong>Christos Sotirelis</strong> ("Morpheas").<br><br>
+  It is offered freely to humanity as a non-commercial contribution to knowledge. It may be shared, cited, and discussed without restriction, provided that authorship is attributed in full to Christos Sotirelis and the Morphean Cosmology Framework (MCF), and that the content is not modified without the author's explicit review and approval.<br><br>
+  This work may not be commercialized, sold, or incorporated into proprietary systems without the written consent of the author. All theoretical content, structural definitions, and named frameworks within this document remain the intellectual property of Christos Sotirelis.<br><br>
+  <em>First Edition · Morphean Cosmology Framework — Psychological Domain · © Christos Sotirelis</em>
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨️ Save / Print as PDF</button>
+
+</body>
+</html>
