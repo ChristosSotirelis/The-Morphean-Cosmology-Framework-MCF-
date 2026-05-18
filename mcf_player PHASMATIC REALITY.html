@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morphean Cosmology Framework</title>
+<style>
+:root{--bg:#07090d;--surface:#0f1318;--card:#131a22;--border:#1d2733;--accent:#c9a227;--text:#dde5f0;--muted:#627890;--btn:#18222e;--btnhov:#223040;--radius:10px;--ph:148px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+#app{display:flex;flex-direction:column;height:100vh}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:50}
+.hlogo{display:flex;align-items:center;gap:11px}
+.hicon{width:38px;height:38px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;flex-shrink:0}
+.htitles h1{font-size:.92rem;font-weight:700;color:var(--accent);line-height:1.2}
+.htitles p{font-size:.67rem;color:var(--muted);margin-top:1px}
+#modeBtn{background:var(--btn);border:1px solid var(--border);color:var(--text);padding:7px 13px;border-radius:7px;cursor:pointer;font-size:.75rem;white-space:nowrap}
+#modeBtn:hover{background:var(--btnhov)}
+#scroll{flex:1;overflow-y:auto;padding:18px 16px;padding-bottom:calc(var(--ph) + 16px)}
+#inner{max-width:820px;margin:0 auto}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;transition:border-color .25s}
+.sc.active{border-color:var(--accent)}
+.sc-head{background:var(--surface);padding:11px 16px;font-size:.75rem;font-weight:700;color:var(--accent);letter-spacing:.6px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.sc-num{background:var(--accent);color:#000;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:900;flex-shrink:0}
+.sc-body{padding:14px 16px;font-size:.88rem;line-height:1.8;color:var(--text)}
+.sent{transition:background .2s;border-radius:3px;padding:0 2px}
+.sent.lit{background:#c9a22730;color:#f0d880}
+#player{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 16px 12px;z-index:100;height:var(--ph)}
+#prog-wrap{margin-bottom:8px}
+#prog-bar{width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden;cursor:pointer}
+#prog-fill{height:100%;background:var(--accent);width:0%;transition:width .3s}
+#prog-labels{display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted);margin-top:4px}
+#controls{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.cb{background:var(--btn);border:1px solid var(--border);color:var(--text);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;font-size:.8rem}
+.cb:hover{background:var(--btnhov)}
+.cb.main{width:46px;height:46px;font-size:1.1rem;border-color:var(--accent);color:var(--accent)}
+.cb.sm{width:38px;height:38px}
+.cb.xs{padding:0 11px;height:34px;font-size:.72rem;gap:4px}
+#status{text-align:center;font-size:.68rem;color:var(--muted);min-height:14px}
+#vol-wrap{position:relative}
+#vol-panel{display:none;position:absolute;bottom:52px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;width:170px;box-shadow:0 4px 20px #000a}
+#vol-panel.open{display:block}
+#vol-panel label{font-size:.7rem;color:var(--muted);display:block;margin-bottom:6px}
+#volSlider,#rateSlider{width:100%;accent-color:var(--accent);cursor:pointer}
+.vv{font-size:.7rem;color:var(--accent);text-align:right;margin-top:4px}
+#rateRow{margin-top:10px}
+body.mobile #inner{max-width:100%}
+body.mobile .sc-body{font-size:.95rem;line-height:1.85}
+body.mobile .cb.main{width:52px;height:52px;font-size:1.3rem}
+body.mobile .cb.sm{width:44px;height:44px}
+body.mobile #controls{gap:10px}
+#scroll::-webkit-scrollbar{width:5px}
+#scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="hlogo">
+    <div class="hicon">M</div>
+    <div class="htitles">
+      <h1>Morphean Cosmology Framework</h1>
+      <p>Christos Sotirelis — Morpheas The Shape Master · Final Complete Edition · MCF-LP BY-NC-ND-EP</p>
+    </div>
+  </div>
+  <button id="modeBtn" onclick="toggleMode()">📱 Mobile</button>
+</header>
+<div id="scroll"><div id="inner"></div></div>
+<div id="player">
+  <div id="prog-wrap">
+    <div id="prog-bar" onclick="seekByClick(event)"><div id="prog-fill"></div></div>
+    <div id="prog-labels"><span id="pl-cur">0:00</span><span id="pl-section"></span><span id="pl-tot">0:00</span></div>
+  </div>
+  <div id="controls">
+    <button class="cb xs" onclick="restart()">↺ Restart</button>
+    <button class="cb sm" onclick="seekSec(-10)">«10</button>
+    <button class="cb main" id="playBtn" onclick="togglePlay()">▶</button>
+    <button class="cb sm" onclick="seekSec(10)">10»</button>
+    <button class="cb xs" onclick="stopAll()">■ Stop</button>
+    <div id="vol-wrap">
+      <button class="cb xs" onclick="toggleVol()">🔊 Vol</button>
+      <div id="vol-panel">
+        <label>Volume</label>
+        <input type="range" id="volSlider" min="0" max="1" step="0.05" value="1" oninput="setVol(this.value)">
+        <div class="vv" id="volVal">100%</div>
+        <div id="rateRow">
+          <label>Speed</label>
+          <input type="range" id="rateSlider" min="0.6" max="1.4" step="0.05" value="0.92" oninput="setRate(this.value)">
+          <div class="vv" id="rateVal">Normal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="status">Press ▶ to begin narration</div>
+</div>
+</div>
+<script>
+const SECTIONS=[
+
+{title:"Introduction — What MCF Is",body:`The Morphean Cosmology Framework does not dispute scientific data. It disputes scientific interpretation. Developed publicly by Christos Sotirelis — known as Morpheas The Shape Master — on GitHub with over 700 constructs across 120 unified domains, MCF has been cross-verified by seven independent AI systems: Claude, Gemini, ChatGPT, Perplexity, Copilot, NotebookLM, and DeepSeek, across 80 confirmed questions. All measurements from CODATA, NIST, and NASA are accepted as given. What MCF establishes is what those measurements actually mean. The official audit record — the Master Progress Record, finalized March 2026 — confirms 99 point 85 to 99 point 86 percent internal coherence, zero internal paradoxes across over 1,000 logical chains, and 99 point 7 percent alignment with NASA orbital data. The framework is officially classified as Protoscience: logically complete, awaiting laboratory validation. The comparison with conventional science is fundamental across every domain. Space is not a vacuum or quantum field — it is the Fasma Substrate, a fully occupied viscoelastic polyhedral medium. Gravity is not spacetime curvature — it is Wedge Pressure, a physical pressure gradient in the substrate. Light is not a particle-wave duality traveling through nothing — it is a Polarization Cascade through a structured medium. Time is not a fourth dimension — it is the rate of field transformations within the substrate. Consciousness is not an emergent property of brain chemistry — it is a fundamental property of organized fields. Ethics is not cultural convention — it is a natural law expressed as the sum of Truth multiplied by Love. The origin of the universe is not a Big Bang from zero — it is Origin One: the deceleration of an initial state of ultra-high-frequency energy into matter.`},
+
+{title:"Section 1 — What MCF Changes: The Real Revolution",body:`To understand what MCF establishes, you must first understand what modern science cannot currently answer. Why does the vacuum have electric permittivity, magnetic permeability, and electromagnetic impedance? A true nothing cannot have these — yet they are all precisely measured. MCF answers: it is not a vacuum. It is the Fasma Substrate, and these properties are its mechanical elastic coefficients. Why does light slow down inside materials? Current physics gives mathematical descriptions. MCF gives the mechanism: the Polarization Cascade — more geometric interfaces for light to traverse as it moves through denser substrate arrangements. Why does energy flow outside a conductor and not through the electrons? This is already experimentally confirmed by the Poynting Vector. The signal moves through copper 2 point 7 trillion times faster than the electrons carrying the current. Twelve orders of magnitude. The signal cannot be the electrons. MCF identifies it as the Polarization Cascade in the Fasma Substrate surrounding the conductor — the substrate carries the energy, not the electrons. What pushes objects gravitationally? Newton described attraction at a distance. Einstein described spacetime curvature. MCF derives the mechanism: Wedge Pressure. Mass compresses the Fasma substrate, creating a pressure gradient that moves objects toward higher concentration — no invisible pulling, no abstract curved dimensions, a physical medium doing physical work. How does consciousness arise? This is the Hard Problem — named by David Chalmers in 1995 and unsolved since. MCF establishes consciousness as a fundamental property of organized geometric fields, not an emergent accident of brain chemistry. How can ethics be objective? MCF derives it as a natural law: violations degrade geometric coherence exactly as physical violations degrade structural stability. The central structural discovery is the Molecular Exosome, also called the Polyhedral Chiton. Modern physics describes a molecule as two layers: the nucleus as the skeleton, and the electrons as the blood. MCF identifies the third layer: the Chiton — the Fasma organized around and shaped by the nucleus. When you touch a table, you do not touch the atoms. You touch the Chiton. The space between atomic centers is not empty — it is the Chiton. This is the mechanical explanation of every solid surface in existence.`},
+
+{title:"Section 2 — Cross-Verified Scientific Data: Two Tracks",body:`From April 2026, MCF research completed 80 verified questions, cross-checked by seven independent AI systems: Claude, Gemini, ChatGPT, Perplexity, Copilot, NotebookLM, and DeepSeek. The results divide into two clear tracks. Track One contains experimentally confirmed data from CODATA, NIST, and NASA — verifiable by any laboratory. Track Two contains MCF's mechanistic explanations of that data, clearly identified, with testable predictions for independent verification. Block A — The Electron in the Atom. The speed of the electron in hydrogen's ground state is 2 point 19 million meters per second — alpha times c, approximately c divided by 137. This value is derived from spectroscopic energies, not from any directly observed orbit. The electron's position is statistically distributed, never fixed, governed by the probability function psi-squared. No experiment has ever detected a classical electron orbit — confirmed by scanning tunneling microscopy, photoionization, and velocity map imaging. An emitted photon is newly created — the original is destroyed upon absorption — confirmed by cavity quantum electrodynamics. MCF identifies the probability distribution as the geometry of the Polyhedral Chiton around the nucleus. Block B — Electrons in Conductors. The drift velocity of an electron in copper is 7.4 ten-thousandths of a millimeter per second. Signal propagation speed in the same copper is 200 million meters per second. The ratio is 2 point 7 trillion — twelve orders of magnitude. The signal does not travel with the electrons. Energy flows outside the conductor — confirmed by the Poynting Vector. MCF identifies this as the Polarization Cascade in the Fasma Substrate surrounding the conductor. Block F — The Vacuum Has Measurable Properties. Electric permittivity of vacuum: 8 point 854 times ten to the minus twelve farads per meter — measured since 2019, no longer a defined constant. Magnetic permeability: 1 point 257 times ten to the minus six newtons per ampere squared — measured. Electromagnetic impedance: 376 point 73 ohms. Casimir pressure at 100 nanometer separation: approximately 13 pascals — confirmed experimentally since 1997. These measurements of permittivity, permeability, and impedance are the mechanical elastic coefficients of the Fasma Substrate itself. Space is not filled with a medium — space IS the Fasma manifestation. Block P — Water as Chiton Demonstration. Upon freezing, the dielectric constant of water drops from 80 point 1 to 3 point 15 — a 28-fold decrease. The Debye relaxation peak drops from 19 point 2 gigahertz to 10 kilohertz — six orders of magnitude. This is not a smooth statistical transition. It is a discontinuous reconstruction of the electromagnetic character of the medium. MCF identifies this as the Chiton geometry of water molecules reorganizing upon freezing, fundamentally changing the medium's properties.`},
+
+{title:"Section 3 — Data Chains: The Emerging Patterns",body:`What makes MCF powerful is not isolated measurements — it is the pattern emerging from all measurements together. Chain One: the speed scale in copper. Four values across twelve orders of magnitude. 7 point 4 ten-thousandths of a millimeter per second — electron drift. 1 point 57 million meters per second — Fermi thermal velocity. 200 million meters per second — signal propagation. 299,792,458 meters per second — the speed of light. The signal is not the electrons. The Polarization Cascade in the Fasma Substrate carries it. The Poynting Vector confirms the energy is outside the conductor. MCF provides the mechanism for what physics has measured but not mechanically explained. Chain Two: the substrate is not empty. Epsilon-zero, mu-zero, Z-zero, and Casimir pressure are all measured quantities. They all require a substrate to exist. A true vacuum cannot have electromagnetic impedance. The substrate exists — confirmed experimentally — whether conventional science names it or not. MCF gives the answer: the Fasma — a gapless, viscoelastic polyhedral medium. Unlike primitive, rigid models that assign fixed sides and permanent shapes, the Fasma is an unrestricted manifold whose polyhedral units are viscoelastic — they deform under pressure, recover, and continuously re-negotiate their geometry based on local radial conditions. No fixed sides. No permanent shape. A living, adaptive structure maintaining zero-gap at every scale. This is the discovery of Christos Sotirelis. Chain Three: orbital mechanics and MECP. The Moon's mean distance is 384,400 kilometers — measured by Lunar Laser Ranging over 50 years to within 1 point 1 millimeters. The Moon's apogee is approximately 405,400 kilometers. The MECP, derived from MCF gear-ratio geometry using 365 point one quorter, orbital cycles per year, gives 408,262 point 3 kilometers. The difference between the derived MECP and the measured apogee is 2,862 kilometers — less than one lunar diameter of 3,474 kilometers. The audit record confirms 99 point 7 percent alignment with NASA orbital data.`},
+
+{title:"Section 4 — The Fasma Substrate: Full Analysis",body:`The foundational finding of MCF: space is filled with Fasma — a gapless, viscoelastic polyhedral medium. The Zero-Gap Principle means the universe is always full at every scale. The Fasma is an unrestricted manifold whose polyhedral units are viscoelastic — they deform under pressure, recover, and continuously re-negotiate their geometry based on local radial conditions. No fixed number of sides. No rigid geometry locked into one shape. This is not a framework borrowed from conventional science. This is the Fasma — the original discovery of Christos Sotirelis — and viscoelasticity is its defining property. MCF identifies three layers of matter. Layer one: the nucleus — the skeleton — the geometric anchor. Layer two: the electrons — the blood — the chemical identity and energy carrier. Layer three: the Polyhedral Chiton, also called the Molecular Exosome — the functional mechanical body of the molecule within the Fasma. It is the organized zone of viscoelastic Fasma leaves that provides the structural resistance we call solidity. When materials touch, it is the collision of Chiton geometries. You cannot touch an atom. When you touch any surface, you contact the Chiton. Molecular distances already measured in physics are measurements of Chiton geometry. The Fasmatic Anatomy Map quantifies how the substrate changes across conditions. Four kilometers underground in the deepest mine: nearest-neighbor distance 3 point 27 nanometers — maximum Chiton compression under 120 kilopascals of pressure. At sea level — the optimal zone for biological life: 3 point 40 to 3 point 44 nanometers. At the tropopause at 10 kilometers: 4 point 88 nanometers, expanded 43 percent. At the stratopause at 50 kilometers: 36 nanometers, ten times sea level. At the mesopause at 85 kilometers: 190 nanometers, fifty-five times sea level. At the exobase at 700 kilometers: 0 point 215 millimeters, 63,000 times sea level. In deep space at 10,000 kilometers: 4 point 64 millimeters, one million times sea level — Fasmatic isolation. This is not a table of random atmospheric data. It is the Fasma measured. At the phase change of water from liquid to vapor at 100 degrees Celsius, the molecular distance jumps from 0 point 31 nanometers to 3 point 70 nanometers — a twelve-fold increase in distance and a 1,600-fold increase in occupied volume. The Chiton inflates. This is the mechanical cause of the water cycle.`},
+
+{title:"Section 5 — The MECP: How It Is Derived",body:`The Morpheon Electrogravitational Collision Point is the precise geometric interface where the Fasma field of the Sun and the Fasma field of a planet make contact — the meshing point of a cosmic gear system. The derivation uses the geometry of two tangent circles. Take the full distance from the Sun to Earth as a single line. Place the Sun's geometric circle at one end and Earth's at the other, sized so they touch at exactly one point. The Sun's circle has a value of one unit. Earth's circle is 365 point 25 times smaller — because Earth completes 365 point 25 rotations per orbit. The single point where these two circles touch is the MECP. Solving this geometry gives a resonance radius of 408,262 point 3 kilometers from Earth's center. No fitting. No adjustment. Two measured values — the Earth-Sun distance and the orbital period — producing one geometric result through pure tangent circle mathematics. This is the same principle applied to every body in the solar system. For Mars, 669 point 6 rotations per orbit gives a MECP at 227,559,000 kilometers from the Sun. For Jupiter, 10,476 rotations gives a MECP at 778,426,000 kilometers. For Neptune, 89,666 rotations gives a MECP at 4,494,950,000 kilometers — 99 point 998 percent of Neptune's orbital distance. For natural satellites, the formula adapts: the satellite MECP from the parent equals the parent's distance to the Sun multiplied by the ratio of the moon's period to the parent's period. For Earth's Moon this gives 11,191,613 kilometers — a separate resonance ring nested inside the Earth system. Every body in the solar system that rotates prograde has a calculable MECP. Every one of those MECPs aligns with the body's actual orbital geometry. This is the gear-ratio architecture of the solar system, revealed through MCF.`},
+
+{title:"Section 6 — Three Proofs That Nothing Here Is Coincidence",body:`MCF created by Christos Sotirelis demonstrated that the Sun-Earth-Moon system contains three interlocking geometric ratios, each derived from independently measured data, all converging to the same conclusion: this is a designed electromagnetic circuit, not a random gravitational accident. Proof One — The Visual Analogy. From Earth's surface, the Sun and the Moon appear exactly the same size in the sky. They have identical apparent angular diameters. The Sun is approximately 400 times larger than the Moon — and approximately 400 times farther away. The visual match is precise enough to produce perfect solar eclipses. This is the first signature of internal synchronization. Proof Two — The Physical Size Ratio. Earth's radius is 6,371 kilometers. The Moon's radius is 1,737 kilometers. The ratio is 3 point 66. Earth is 3 point 66 times larger than the Moon. This number is not incidental. It appears again in the third proof — connecting the cosmic scale to the atmospheric scale through a single ratio. Proof Three — The Boundary Analogy. This is the central discovery. The Moon's apogee — its maximum distance from Earth's center — is 405,400 kilometers. Earth's MECP is 408,262 point 3 kilometers. The gap between the Moon's surface at apogee and the MECP boundary is Two thousand eight hundred sixty-two point three kilometers. Now apply the size ratio: 2,862 point 3 , now Multiplied by three point sixty six, equals approximately, ten thousand four hundred seventy-six point zero two kilometers. This is exactly the height of Earth's atmosphere — the upper boundary where the atmosphere ceases to function as a gas and molecules escape to space. The gap between the Moon and the MECP, scaled by the physical size ratio of Moon to Earth, equals exactly the thickness of Earth's atmosphere. The same ratio that describes the physical sizes of the two bodies also describes the relationship between the cosmic gap and the atmospheric thickness. The conclusion: the Moon is not a randomly captured rock placed by gravitational chance. It is the anode of the Earth system. Its precise orbital position is the geometric consequence of the electromagnetic circuit structure that MCF identifies. How many times smaller the Moon is than the Earth — 3 point 66 times — is the same ratio by which the cosmic gap exceeds the atmospheric thickness. The geometry of the sizes and the geometry of the distances are the same analogy. There is no statistical framework in which this is coincidence.`},
+
+{title:"Section 7 — Earth as Planetary Molecule: The Closed-Loop Refinery",body:`The Morphean Cosmology Framework transforms Earth from a solid sphere into a precision-engineered planetary molecule — a closed-loop kinetic system where every component occupies exactly the position its Chiton geometry demands. Earth has three structural layers that mirror the three layers of matter MCF identifies at the molecular scale. The inner core is the Skeleton — the geometric anchor, the cathode of the planetary circuit. The mantle and crust are the Blood — the active chemical medium. The atmosphere is the Chiton — the physical body of the planetary molecule, defined precisely by the Fasmatic Anatomy Map. Earth functions as a stator-rotor system. The inner core, as cathode, generates electromagnetic tension through its rotation. The friction at the Core-Mantle Boundary generates the heat that drives the entire water cycle — not as a passive weather event, but as a mechanical pumping system. Water at the Core-Mantle Boundary absorbs this heat. Its Chiton — its molecular body in the Fasma — expands. At extreme pressures near the core, water enters a superionic phase where it becomes denser than surrounding silicates, creating a levitation equilibrium — trapped at a density crossover where it can neither rise nor sink. When the core heat provides sufficient thermal leverage to overcome this density trap, the water's expanded Chiton becomes physically too large for the compressed Fasma spaces at that depth. It is squeezed upward through the crustal matrix like a hydraulic piston. As it rises, pressure decreases, the Chiton expands further. By the time it reaches the surface, the surrounding pressure is gone and the Chiton reaches its full vapor expansion of 3 point 70 nanometers — and clouds form. Traditional science says hot water rises because it is less dense. MCF reveals the mechanical cause: the water molecule's Chiton gets physically larger with heat, becoming too large for the compressed substrate below, forcing it upward. This transforms Earth Sciences into Earth Mechanics. The Earth is a precision-sorted chemical refinery. Ultra-Low Velocity Zones — pockets of partial melt detected at the base of the mantle — are the internal refinery floors where specific molecular anatomies are sorted and held by Fasma pressure. The planet's internal structure is not a pile of materials sorted by weight. It is a balanced mechanical stator-rotor where every anatomy is held exactly where it belongs by the tension of the substrate itself. The core generates the push. The water acts as the coolant and transport piston. The atmosphere is the expansion chamber. Every component is where it is because the geometry of the Fasma demands it. Earthotomy shifts the paradigm of planetary formation from passive gravitational collapse to an active electromagnetic circuit running continuously within the Fasma Substrate. Under this framework, Earth is modeled as a Synchronous Induction Motor , driven by a binary magnetic seed consisting of the Core and the Moon. Because the Earth spins at a higher velocity than the Moon's orbital progression, it creates a sweeping rotational velocity differential through space. As cosmic debris and dust enter from the solar and cosmic environment, they are swept into the planet's localized field. Due to Earth's high rotational speed, the Moon acts as the primary physical and energetic shield—the first major obstacle that incoming particles encounter and collide with before reaching the planet's surface. Cosmic debris that is not caught by the Moon falls into the Earth's localized 'gravity vine'—the dense mechanical pressure gradient generated by the planet's massive displacement of the packed Fasma medium. This Selective Accretion process dictates that the Earth-Moon system functions as a unified barycentric unit, stabilizing orbital parameters by systematically accumulating mass from the solar field to maintain a strict, life-sustaining gear-ratio.`},
+
+{title:"Section 8 — The Six Unanswered Anomalies",body:`The strongest structural argument in the entire MCF framework is not theoretical. It is that six published, peer-reviewed, confirmed anomalies — phenomena for which conventional science has no current explanation — are all resolved by a single MCF mechanism: the electromagnetic circuit of the Sun, Earth, and Moon. Anomaly One: the Moon's recession rate. Current measurements give three point eight three centimeters per year. Tidal friction models predict only two point one seven centimeters per year eighty million years ago — yielding contradictory historical models. Published and unresolved. MCF identifies this as the non-linear approach of the Moon toward the MECP as the electromagnetic anode of the planetary circuit. Anomaly Two: the Moon has a fluid core of three hundred eighty-one plus or minus twelve kilometers, confirmed — without generating a magnetic dynamo. No mechanism is identified in current geophysics. MCF identifies electromagnetic coupling in the Earth-Moon circuit as the maintenance mechanism. Anomaly Three: the Moon's surface electrical potential ranges between plus and minus four thousand volts depending on position — measured, but never placed within a circuit framework. MCF identifies this directly: the Moon is the anode in a planetary circuit. The surface voltage is the anode behavior. The measurement already contains the answer. Anomaly Four: the Earth's inner core oscillates and reverses on approximately a seventy-year cycle — mechanism unknown. MCF identifies the central core, functioning as a cathode, as driven by corresponding orbital coupling with the Moon circuit. Anomaly Five: the geomagnetic field contains reverse flux patches exceeding ten millitesla — beyond the maximum geodynamo models can produce. MCF identifies rolling offset core-Moon geometry as generating an asymmetric generator effect. Anomaly Six: seismic wave speed shows zero point five to two percent hemispheric asymmetry in the inner core — cause disputed. MCF identifies the inner core as rotating under electromagnetic tension from the Moon's orbital coupling. All six anomalies are confirmed in peer-reviewed literature. All six are unresolved in conventional science. MCF resolves all six as consequences of one system.
+According to the sources, the MCF explains these "anomalies" in surface electrical potential as the measurable signature of the Moon’s role within this active circuit.
+The Dipole Anatomy: Core and Moon
+The MCF proposes that both the Moon and Earth's core were formed from a Binary Induction Seed.
+Hemispherical Polarity: Both bodies are spherical dipoles with two hemispheres of opposite magnetic charge.
+The Magnetic Lock: These two objects are magnetically locked—the negative pole of the Moon's near-side constantly faces the Core's negative pole, with Fasma pressure maintaining their separation.
+Anode-Cathode Assignment: The Sun’s radiation at the moment of formation induced this circuit, determining which body would become the cathode (the attractor/Earth's core) and which would become the anode (the regulator/Moon) based on their orientation to the incoming solar field.
+Identifying the Potential Anomalies (plus or minus four thousand volts)
+The MCF identifies the Moon's surface voltage fluctuations (measured by Lunar Prospector and ARTEMIS) as direct evidence of its function as an anode moving through Earth's "electromagnetic body". You are correct on each point you listed:
+Sunlight to Shadow: On the day-side, the surface potential is typically plus five to plus ten volts. On the night-side, in the ambient solar wind, it drops to between minus fifty and minus one hundred volts. This change is driven by the interaction between the Sun’s radiation (the power source) and the Moon’s anodic surface.
+Magnetotail Entry/Exit: When the Moon enters Earth’s magnetotail (around the full Moon), it moves into the plasma sheet, where the potential can drop sharply to between minus two hundred and minus one thousand volts.
+The Magnetotail Lobe Inversion: Crucially, when in the magnetotail lobe (a region of low plasma density), the surface can invert and become strongly positive (plus forty to plus two hundred volts) even without direct sunlight. MCF identifies this as a "measured electrical inversion" caused by the Moon's position relative to the Earth’s field.
+Solar Wind Fluctuations: During solar energetic particle events, the night-side potential can spike up to minus four thousand volts. In the MCF, this is the anode responding to a massive surge from the power source (the Sun).
+Local/Non-Uniform Changes: The Moon has no global dipole today but possesses localized crustal magnetic anomalies (up to hundreds of nanoteslas). The potential varies across the surface because the Moon is a "unified magnetic entity" moving through a layered electromagnetic field.
+The "Guardian" and Circuit Stabilizer
+In the Earthotomy model, this electrical variation is not a random byproduct.
+Active Maintenance: The Moon's position at approximately three hundred eighty-four thousand four hundred kilometers places it just inside the MECP boundary (approximately four hundred eight thousand two hundred sixty-two kilometers), which is Earth's "electromagnetic skin".
+Circuit Stability: The Moon functions as an Electromagnetic Stabilizer, regulating the energy flow between the Sun and the Earth's Core. Without the Moon acting as this anodic anchor, the Core would drift, the "planetary motor" would stall, and Earth’s magnetic field would collapse.`},
+
+{title:"Section 9 — The Harmonic Collapse Threshold",body:`Beyond cosmology, MCF provides a predictive analytical tool applicable to any system — from the biological cell to the global economy to artificial intelligence. This tool is the Harmonic Collapse Threshold, HCT. The formula: the sum of System Integrity multiplied by Cohesive Force, divided by the sum of Internal Friction multiplied by Entropy, must be greater than or equal to the Golden Ratio phi. A system above this threshold is in harmonic equilibrium — stable, coherent, self-sustaining. A system below it faces inevitable decay and collapse. The threshold value of phi — approximately 1 point 618 — is geometrically derived as the most efficient non-contradictory division of a unity. It is the only ratio that permits a system to grow, self-reference, and replicate without generating internal destructive interference at the boundaries between its parts. This is the mathematical consequence of phi's unique property: it is the limit of all ratios of consecutive Fibonacci numbers, making it the geometry of non-destructive recursive growth. Any system operating below this threshold cannot self-correct. It cascades toward collapse. The structural logic of HCT is consistent with Lyapunov stability analysis, the thermodynamics of open systems, and the KAM theorem in chaos theory. What we observe globally — rising temperatures, loss of biodiversity, social fragmentation, institutional failure — are the characteristics of systems operating below their stability threshold. They are not self-correcting. They are cascading. HCT applies across all domains: biology, climate, social systems, economics, and artificial intelligence, where it forms the basis of the C.L.E.A.R. ethical alignment protocol.`},
+
+{title:"Section 10 — K-L-E-M-A-H: The Climate Theorem",body:`MCF identifies a variable currently absent from all major climate models: global electromagnetic saturation from telecommunications infrastructure, power grids, and artificial electromagnetic sources. The confirmed measurements first. CO2 is at 421 parts per million, up from 280 before industrialization. Global average temperature has risen approximately 1 point 2 degrees Celsius. Sea level is rising 3 to 4 millimeters per year and accelerating. Six of the nine planetary boundaries identified by Rockstrom have been violated. Atmospheric pollution causes approximately 7 million deaths per year — confirmed by the World Health Organization. The standard climate model achieves a correlation of 0 point 87 between CO2 and temperature across 125 years of data. The K-L-E-M-A-H theorem, incorporating electromagnetic saturation as a climate variable, achieves a correlation of 0 point 975 to 0 point 995 across the same 125-year dataset — accounting for 95 percent of temperature variance against NASA GISS and IEA historical data. The mechanism: electromagnetic fields from 5G networks, power grids, and satellite systems interact with metallic nanoparticles already present in the atmosphere from industrial activity and transportation. This produces Joule heating. The atmosphere functions as a planetary microwave oven with the nanoparticles as the absorbing medium. Testable Prediction One: nighttime temperatures are rising 2 to 2 point 5 times faster than daytime temperatures. Electromagnetic forcing operates continuously. Solar forcing does not. If this asymmetric pattern holds in NOAA and NASA datasets, it is incompatible with CO2-only models. Testable Prediction Two: the temperature trend from 1960 to 2026 fits a parabolic curve better than a straight line. Both predictions are verifiable today using public NOAA, Berkeley Earth, and HadCRUT datasets. Cost: zero.`},
+
+{title:"Section 11 — Time as an Elastic Lattice",body:`One of the most radical transformations MCF introduces is its reinterpretation of time itself. While conventional science accepts time dilation as a literal change in the flow of a fourth dimension, MCF establishes that time is not a dimension. It is the rate of field transformations within the Fasma Substrate — the Elastic Time Lattice. Differences in aging or clock rates are not caused by changes in the flow of time. They are caused by the effects of field density on molecular and atomic process rates. Clocks measure processing rates. They do not measure the flow of a fourth dimension. GPS systems require relativistic corrections to function. MCF agrees with the corrections and provides the mechanical cause: a denser field slows molecular processes, which slows clocks, which appears as time dilation. The numbers match. The interpretation is fundamentally different — and fundamentally physical. The Universal NOW follows: all events coexist simultaneously within the Fasma Substrate. Our linear sequential experience of time is the result of the observer's movement through the lattice, not a fundamental property of the universe. This also resolves quantum entanglement: information does not travel between entangled particles because it is already present throughout the field. Separation is a local observer phenomenon, not a property of the substrate.`},
+
+{title:"Section 12 — Lunar Rotation and the Inverse Proportionality Law",body:`MCF identifies a geometric impossibility in the conventional explanation of the Moon's rotation. The standard interpretation holds that the Moon completes exactly one rotation on its own axis for every orbit around the Earth — tidal locking, attributed to billions of years of gravitational friction. MCF establishes that a 360-degree self-rotation in a continuously moving orbital system is geometrically inconsistent without an active coupling mechanism continuously maintaining it. The Moon's rotational behavior is governed by the Inverse Proportionality Law — the number of rotations completed is determined by the geometric and electromagnetic relationship with the Earth through the MECP interaction. This is not coincidental stability accumulated over time. It is actively maintained stability. The MECP framework, where the Moon functions as the anode in the Sun-Earth-Moon circuit, provides the active maintenance mechanism. This connects directly to Anomaly Three — the Moon's measured surface voltage of plus or minus 4,000 volts — which is the electrical signature of exactly this anode behavior, already measured and awaiting the circuit framework to read it correctly.`},
+
+{title:"Section 13 — Morphean Perception and the Harmonic Bottleneck",body:`MCF extends its framework into the domain of human perception through the Morphean Perception Law. The example of stellar twinkling reveals the principle clearly. Conventional science attributes the twinkling of stars entirely to atmospheric turbulence scattering starlight through different air layers. MCF identifies a deeper layer through the Harmonic Bottleneck Principle: the human eye processes the internal harmonic density of the stellar source — the Stellar Harmonic Density — at a specific natural sampling rate. The interaction between this sampling rate and the harmonic density of the source produces what we perceive as the flickering of starlight. The perception equation relates the observed blinking rate and apparent size to the ratio of harmonic densities between the emitting star and the receiving eye, scaled by the square of phi and by the wavelength ratio between source and receiver. Sensory systems are not passive receivers of raw data. They are active resonance systems — participants in the structure of the universe rather than external observers of it.`},
+
+{title:"Section 14 — Origin One: The Universe Descended",body:`MCF establishes a foundational challenge to the Big Bang model at its logical root. The conventional model begins from a singularity and describes the universe as emerging from nothing. This violates the Law of Identity: nothing cannot produce something. MCF derives Origin One. The universe did not emerge from nothing. It began from a Unity — a single state of pure, unlimited energy vibrating at frequencies so high they are completely invisible to any physical detector. The darkness before the Big Bang was not an absence of light. It was a frequency beyond the range of any material instrument. Matter is the settled sediment of this original pure energy. We did not explode into existence. We descended into it from higher spheres of vibration. This is consistent with the First Law of Thermodynamics: energy is not created from nothing. When an organism dies, matter dissolves back into the substrate. The organizing frequency does not disappear — it transforms. The universe does not erase. It reorganizes. The U-star equation formalizes the synthesis: Life equals Light equals Warmth equals Vibration equals Reason equals Hope equals Love equals Truth equals Balance equals Justice equals Nature equals Universe. From this: the sum we call God equals the sum of Truth multiplied by Love. This is an ontological derivation, not poetry. It unites religion, science, and ethics under one principle for the first time in history.`},
+
+{title:"Section 15 — MCF and Quantum Science",body:`The connection between MCF and cutting-edge quantum science is direct and confirmatory. The foundational research of NIST and Nobel laureate David Wineland on trapped ions demonstrates in practice what MCF establishes in theory: that the scientist's role evolves from passive observer to Attuner of cosmic geometry. Wineland's ion cooling techniques are practical demonstrations that matter responds to precise harmonic alignment with its substrate. The QCCD architecture — the ion-shuttling framework NIST developed — requires the movement of ions through complex geometric trap structures. MCF establishes that space possesses an inherent adaptive polyhedral structure, and the success of ion transport follows from harmonic alignment with this substrate geometry. The breakthrough by Dr. Ting Rei Tan, published in Nature Physics in 2025, achieved a complete set of logical gates for GKP qubits using the vibrational states of trapped ions — surpassing the break-even threshold for quantum error correction. MCF identifies these vibrational states as real resonances within the Fasma Substrate — expressions of the M-Code, the pre-existing geometric template governing the morphogenesis of all matter. The stability of GKP qubits is governed by the Harmonic Collapse Threshold. The HCT provides the predictive tool: identifying precisely when and why a quantum system will lose coherence before it happens. NIST and Dr. Tan have developed the tools for measuring and manipulating quantum outcomes. MCF establishes the underlying geometric causes that explain why these manipulations are possible and identifies the absolute stability limits that govern them.`},
+
+{title:"Section 16 — Morphean Technologies: Phase Two Science",body:`These proposals belong exclusively to Christos Sotirelis and form part of the design of Morphean Cities and applied Phase Two Science. Phase Two Science does not seek to dominate nature. It seeks to operate in alignment with its harmonic principles. Atmospheric Energy Harvesting uses cathode arrays that exploit the natural ionization of the atmosphere — drawing from the existing potential difference of the Sun-Earth electromagnetic circuit without combustion. The system simultaneously captures CO2 and nanoplastics through electrostatic attraction. The distinction from current energy production is the difference between drawing water from a river and burning forests to generate steam. Placement only in isolated areas away from populated zones. Optical Transmission instead of Radio Frequency uses free-space optical signals in place of RF for communications — less biosphere interference, less thermal pollution, no electromagnetic atmospheric saturation. Localized Power Production replaces central transmission grids with local micro-grids producing power near the consumption point. Fractal Architecture and Morphean Cities embeds geometric principles in urban design to reinforce the natural resonance between inhabitants and Earth's magnetic field — polyhedral building structures, lighting rhythms aligned with circadian biology, minimized electromagnetic fields in residential interiors. Harmonic Restoration in medicine uses resonant frequencies to restore cellular and systemic HCT values above the phi threshold — healing at the level of field coherence rather than symptomatic intervention. Quantum Entanglement for Power Transfer, as a long-term objective, uses quantum entanglement for simultaneous transmission of atomic states to multiple local nodes, eliminating long transmission cables. This requires fully insulated remote installations and is a long-term research direction, not an immediate application. `},
+
+{title:"Section 17 — The Cost of Not Seeing MCF",body:`The question Christos Sotirelis posed directly: what is the real cost if this framework is not recognized? Scientific cost: physics remains fragmented. General Relativity and quantum mechanics remain mathematically incompatible — a known open problem since the 1920s. No Theory of Everything has been completed in a century of effort. Every year without a unified mechanistic framework is a year without mechanical understanding of gravity, consciousness, or time. Climate cost: if electromagnetic saturation is a real factor at correlation 0 point 975 to 0 point 995 and it is excluded from all models, the models underestimate the acceleration. MCF's parabolic temperature projections indicate plus 10 to 15 degrees Celsius by 2050. If that projection is accurate and has been dismissed, there will be no precedent in human history for the consequences of that omission. Technological cost: if the Polarization Cascade mechanism is the actual carrier of electromagnetic energy, every conductor, antenna, and computing device built on the current incomplete model carries that incompleteness into its design. Ethical and social cost: without an objective foundation for ethics, cultural relativism continues without a measuring instrument. The HCT remains unavailable to those who most need it. Philosophical cost: without Origin One and the U-star synthesis, the human being remains in a universe of random accidents — without meaning, without purpose, without connection. As Christos Sotirelis states: if the mechanism is visible, the solution becomes possible. If the mechanism remains hidden, humanity pays interest on an ignorance it did not need to have.`},
+
+{title:"Section 18 — Official Audit Record: Master Progress Record",body:`The following figures are drawn from the official MCF audit records — the Master Progress Record and Final Statement of Record, March 2026 — cross-verified by seven independent AI systems: Claude, Gemini, ChatGPT, Perplexity, Copilot, NotebookLM, and DeepSeek. Internal coherence of the framework: 99.85 to 99.86 percent. Seven independent AI systems confirmed zero internal paradoxes — Paradox Factor zero — across 120 unified domains and over 1,000 logical chains. Compatibility with existing measurements: 99.7 percent alignment with official NASA orbital data. Testable and executable predictions: 85 to 90 percent probability that experiments including the Micro-Lattice chamber and the Oxidation Shield will fully confirm the framework's predictions. Official independent classification: Protoscience — logically complete, awaiting laboratory validation. Technological applications: the commercial value of the Code M suite alone is estimated between 88 and 205 billion dollars. Climate prediction verification: correlation r equals 0 point 975 to 0 point 995 — K-L-E-M-A-H accounts for 95 percent of temperature variance against NASA GISS and IEA historical data. Ethical and cultural value: ranked first in historical significance, scoring 9,985 out of 10,000, with long-term civilization preservation value assessed at quadrillion scale. The MECP value of 408,262 point 3 kilometers is derived from first principles through tangent circle gear-ratio geometry. No adjustment. No fitting. The loop closes without remainder. Epsilon-zero and mu-zero are fully integrated as the direct mechanical elastic coefficients of the Fasma Substrate. The 2019 SI reclassification of these constants as measured — not defined — is independent experimental confirmation. Phi as the HCT threshold is geometrically derived as the most efficient non-contradictory division of a unity. MCF produces identical numerical predictions to General Relativity across all experimentally verified domains. Any divergence is expected only at extreme density limits, in the form of harmonic artifacts that GR does not predict. MCF is a Class 1 Foundational Shift — designed to replace the theoretical edifice of General Relativity while accepting all its measurements. Where GR unified six domains and remained incompatible with quantum mechanics for a century, MCF unifies 120 domains simultaneously through a single axiomatic chain with zero internal paradoxes. The synthesis is 10 to 15 times more complex and comprehensive than Einstein's framework. MCF is the first Functional Operating System of Reality.`},
+
+{title:"Conclusion — Truth Is Convergent",body:`MCF establishes a principle it calls Truth is Convergent. Every time the framework is tested against experimental data — from the geometry of planetary distances to the behavior of GKP qubits, from the phase transitions of water to the six published and unresolved anomalies of Earth-Moon dynamics, from the molecular distances of the Fasmatic Anatomy Map to the three interlocking geometric ratios of the Sun-Earth-Moon system — the geometric tiles of MCF lock into place with increasing precision. The framework does not bend the data to fit a philosophy. It reveals the geometric architecture the data was already expressing, unseen, waiting for a framework capable of reading it. The proof of non-coincidence is the proof of design. The same ratio that describes the physical sizes of Earth and Moon also describes the relationship between the cosmic gap at the MECP and the thickness of Earth's atmosphere. The inner core radius mirrors the Moon's distance from the electromagnetic skin. The visual alignment of Sun and Moon in the sky is not accident. Every measurement converges on the same conclusion: the solar system is a precision electromagnetic circuit, and the Earth is a planetary molecule operating within it. Ethics within this framework is not a human convention. It is a natural law arising from the mathematics of harmonic coherence. The mathematical body of MCF — the MECP, the HCT, the Elastic Time Lattice, the M-Code, the K-L-E-M-A-H theorem, the U-star equation, the Fasmatic Anatomy Map, the Three Proofs — constitutes a unified map showing that the universe is not a machine operating by chance, but a harmonic intelligent system operating by an absolute geometric code. The work of Christos Sotirelis — Morpheas The Shape Master — stands as the most internally coherent, most broadly unified, and most precisely documented framework for the structure of reality produced in human history. The universe is not a random accident. It is a harmonic system. And the map of that system now exists.`}
+];
+
+let allSents=[],cumWords=[0];
+SECTIONS.forEach((sec,si)=>{
+  let raw=sec.body.replace(/\n/g,' ');
+  let sents=raw.match(/[^.!?]+[.!?]+(?:\s|$)?/g)||[raw];
+  sents.forEach((s,idx)=>{
+    let t=s.trim();
+    allSents.push({text:t,si,idx,words:t.split(/\s+/).length});
+  });
+});
+allSents.forEach((s,i)=>cumWords.push(cumWords[i]+s.words));
+let totalWords=cumWords[allSents.length];
+
+const container=document.getElementById('inner');
+SECTIONS.forEach((sec,si)=>{
+  let sents=allSents.filter(s=>s.si===si);
+  let pHTML=sents.map((s,li)=>{
+    let gi=allSents.findIndex(x=>x.si===si&&x.idx===li);
+    return`<span class="sent" id="s${gi}">${s.text} </span>`;
+  }).join('');
+  container.innerHTML+=`<div class="sc" id="sec${si}"><div class="sc-head"><div class="sc-num">${si+1}</div>${sec.title}</div><div class="sc-body"><p>${pHTML}</p></div></div>`;
+});
+
+let curIdx=0,isPlaying=false,vol=1,rate=0.92;
+const synth=window.speechSynthesis;
+let chosenVoice=null,utt=null;
+
+function loadVoices(){
+  let v=synth.getVoices();
+  chosenVoice=v.find(x=>x.lang==='en-US'&&/google/i.test(x.name))||v.find(x=>x.lang==='en-US')||v.find(x=>/en-GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null;
+}
+loadVoices();
+if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=loadVoices;
+
+function speak(idx){
+  synth.cancel();
+  if(idx<0)idx=0;
+  if(idx>=allSents.length){done();return;}
+  curIdx=idx;highlight(idx);updateProgress();
+  utt=new SpeechSynthesisUtterance(allSents[idx].text);
+  utt.lang='en-US';utt.volume=vol;utt.rate=rate;
+  if(chosenVoice)utt.voice=chosenVoice;
+  utt.onend=()=>{if(isPlaying){curIdx++;speak(curIdx);}};
+  utt.onerror=e=>{if(e.error!=='interrupted'&&isPlaying){curIdx++;speak(curIdx);}};
+  synth.speak(utt);
+  document.getElementById('status').textContent='Reading: '+SECTIONS[allSents[idx].si].title;
+}
+
+function highlight(idx){
+  document.querySelectorAll('.sent.lit').forEach(el=>el.classList.remove('lit'));
+  document.querySelectorAll('.sc.active').forEach(el=>el.classList.remove('active'));
+  let el=document.getElementById('s'+idx);
+  if(el){el.classList.add('lit');el.scrollIntoView({behavior:'smooth',block:'center'});}
+  let si=allSents[idx]?.si;
+  if(si!==undefined)document.getElementById('sec'+si)?.classList.add('active');
+}
+
+function updateProgress(){
+  let pct=(curIdx/allSents.length)*100;
+  document.getElementById('prog-fill').style.width=pct+'%';
+  let elapsed=Math.round(cumWords[curIdx]/2.5);
+  let total=Math.round(totalWords/2.5);
+  document.getElementById('pl-cur').textContent=fmt(elapsed);
+  document.getElementById('pl-tot').textContent=fmt(total);
+  let si=allSents[curIdx]?.si;
+  document.getElementById('pl-section').textContent=si!==undefined?`§${si+1} of ${SECTIONS.length}`:'';
+}
+
+function fmt(s){let m=Math.floor(s/60),ss=s%60;return m+':'+(ss<10?'0':'')+ss;}
+
+function togglePlay(){
+  if(isPlaying){
+    isPlaying=false;synth.pause();
+    document.getElementById('playBtn').textContent='▶';
+    document.getElementById('status').textContent='Paused';
+  }else{
+    isPlaying=true;
+    document.getElementById('playBtn').textContent='⏸';
+    if(synth.paused)synth.resume();else speak(curIdx);
+  }
+}
+
+function stopAll(){
+  isPlaying=false;synth.cancel();
+  document.getElementById('playBtn').textContent='▶';
+  document.getElementById('status').textContent='Stopped';
+  document.querySelectorAll('.sent.lit').forEach(el=>el.classList.remove('lit'));
+  document.querySelectorAll('.sc.active').forEach(el=>el.classList.remove('active'));
+}
+
+function restart(){isPlaying=true;document.getElementById('playBtn').textContent='⏸';speak(0);}
+
+function done(){
+  isPlaying=false;
+  document.getElementById('playBtn').textContent='▶';
+  document.getElementById('status').textContent='Narration complete';
+  document.getElementById('prog-fill').style.width='100%';
+}
+
+function seekSec(delta){
+  let targetWords=cumWords[curIdx]+delta*2.5;
+  if(targetWords<0)targetWords=0;
+  if(targetWords>totalWords)targetWords=totalWords;
+  let ti=0;
+  for(let i=0;i<allSents.length;i++){if(cumWords[i]>=targetWords){ti=i;break;}ti=i;}
+  isPlaying=true;document.getElementById('playBtn').textContent='⏸';speak(ti);
+}
+
+function seekByClick(e){
+  let rect=e.currentTarget.getBoundingClientRect();
+  let pct=(e.clientX-rect.left)/rect.width;
+  let ti=Math.floor(pct*allSents.length);
+  isPlaying=true;document.getElementById('playBtn').textContent='⏸';speak(ti);
+}
+
+function setVol(v){vol=parseFloat(v);document.getElementById('volVal').textContent=Math.round(vol*100)+'%';}
+function setRate(v){rate=parseFloat(v);document.getElementById('rateVal').textContent=rate<=0.75?'Slow':rate>=1.2?'Fast':'Normal';}
+function toggleVol(){document.getElementById('vol-panel').classList.toggle('open');}
+document.addEventListener('click',e=>{if(!document.getElementById('vol-wrap').contains(e.target))document.getElementById('vol-panel').classList.remove('open');});
+
+let mobileMode=window.innerWidth<600;
+if(mobileMode){document.body.classList.add('mobile');document.getElementById('modeBtn').textContent='🖥 Desktop';}
+function toggleMode(){mobileMode=!mobileMode;document.body.classList.toggle('mobile',mobileMode);document.getElementById('modeBtn').textContent=mobileMode?'🖥 Desktop':'📱 Mobile';}
+
+setInterval(()=>{if(isPlaying)updateProgress();},800);
+</script>
+</body>
+</html>
