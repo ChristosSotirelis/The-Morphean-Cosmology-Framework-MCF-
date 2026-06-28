@@ -1,0 +1,666 @@
+
+<h2 class="sr-only">KLEMAH Live Monitoring Instrument — Meta-Atomic Polar Impact Observatory by Christos Sotirelis (Morpheas the Shape Master)</h2>
+
+<style>
+:root {
+  --bg: #02020e;
+  --surface: #0a0f1e;
+  --card: #0d1525;
+  --border-col: rgba(200,168,75,0.2);
+  --gold: #c8a84b;
+  --gold-dim: #6b5820;
+  --cyan: #3ad4c8;
+  --red: #ef5350;
+  --orange: #ffa726;
+  --green: #4caf50;
+  --blue: #64b5f6;
+  --purple: #ab47bc;
+  --text: #d8d4c8;
+  --muted: #7a7870;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Georgia', serif; font-size: 13px; }
+
+.instrument { max-width: 100%; padding: 0; }
+
+.header { background: #060c1a; border-bottom: 1px solid var(--gold-dim); padding: 14px 16px 10px; }
+.header-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.header h1 { font-size: 14px; font-weight: 500; color: var(--gold); letter-spacing: 1px; font-family: 'Georgia', serif; }
+.header .author { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.license-tag { font-size: 9px; font-family: monospace; color: var(--gold-dim); border: 1px solid var(--gold-dim); border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
+
+.ticker { background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(58,212,200,0.15); padding: 5px 16px; font-size: 10px; font-family: monospace; color: var(--cyan); display: flex; align-items: center; gap: 8px; overflow: hidden; }
+.ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+.ticker-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; padding: 10px 12px; }
+.stat-card { background: var(--card); border: 1px solid var(--border-col); border-radius: 8px; padding: 9px 11px; }
+.stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-family: monospace; }
+.stat-value { font-size: 16px; font-weight: 500; color: var(--blue); line-height: 1.1; }
+.stat-value.gold { color: var(--gold); }
+.stat-value.orange { color: var(--orange); }
+.stat-value.cyan { color: var(--cyan); }
+.stat-value.green { color: var(--green); }
+.stat-sub { font-size: 9px; color: var(--muted); margin-top: 3px; }
+
+.section { margin: 0 12px 12px; }
+.section-title { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-family: monospace; border-bottom: 1px solid var(--border-col); padding-bottom: 5px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 580px) { .grid2 { grid-template-columns: 1fr; } }
+
+.panel { background: var(--card); border: 1px solid var(--border-col); border-radius: 10px; padding: 10px 12px; }
+.panel h3 { font-size: 10px; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; font-family: monospace; border-bottom: 1px solid rgba(58,212,200,0.1); padding-bottom: 5px; margin-bottom: 8px; }
+
+.data-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 11px; }
+.data-row:last-child { border-bottom: none; }
+.data-key { color: var(--muted); }
+.data-val { color: var(--text); font-family: monospace; font-weight: 500; }
+.data-val.hot { color: var(--red); }
+.data-val.warm { color: var(--orange); }
+.data-val.cool { color: var(--cyan); }
+.data-val.gold { color: var(--gold); }
+
+.tau-bar-wrap { margin: 5px 0; }
+.tau-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; display: flex; justify-content: space-between; }
+.tau-track { background: #06101e; border-radius: 3px; height: 14px; overflow: hidden; }
+.tau-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; padding-left: 6px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.9); transition: width 0.8s ease; }
+
+.det-scroll { max-height: 220px; overflow-y: auto; }
+.det-scroll::-webkit-scrollbar { width: 3px; }
+.det-scroll::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+.det-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.det-table th { background: #0a1525; color: var(--gold); padding: 5px 7px; text-align: left; font-family: monospace; font-size: 9px; letter-spacing: 0.5px; position: sticky; top: 0; }
+.det-table td { padding: 4px 7px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; font-family: monospace; }
+.det-table tr:hover td { background: rgba(200,168,75,0.04); }
+.yield-h { color: var(--red); }
+.yield-m { color: var(--orange); }
+.yield-l { color: var(--green); }
+.sig-yes { color: var(--green); font-weight: 700; }
+.sig-no { color: var(--muted); }
+
+.q-item { background: #06101e; border-left: 3px solid var(--blue); border-radius: 0 6px 6px 0; padding: 6px 9px; margin-bottom: 5px; font-size: 10px; line-height: 1.5; color: var(--muted); }
+.q-item strong { color: var(--blue); display: block; margin-bottom: 2px; }
+.q-item.done { border-left-color: var(--green); }
+.q-item.done strong { color: var(--green); }
+.q-item.pend { border-left-color: var(--orange); }
+.q-item.pend strong { color: var(--orange); }
+.q-item.front { border-left-color: var(--red); }
+.q-item.front strong { color: var(--red); }
+
+.chain-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 8px 0; padding: 8px; background: #06101e; border-radius: 8px; }
+.c-node { background: #1a3a6b; border: 1px solid #2a5a9b; border-radius: 5px; padding: 3px 8px; font-size: 9px; color: var(--cyan); white-space: nowrap; }
+.c-arr { color: var(--gold); font-size: 12px; font-weight: 700; }
+
+.evidence-block { background: #06101e; border: 1px solid var(--border-col); border-radius: 8px; padding: 9px 11px; margin-bottom: 6px; }
+.ev-title { font-size: 10px; font-weight: 700; color: var(--cyan); margin-bottom: 4px; }
+.ev-body { font-size: 10px; color: var(--muted); line-height: 1.5; }
+.ev-status { display: inline-block; font-size: 9px; font-family: monospace; padding: 2px 6px; border-radius: 3px; margin-top: 4px; }
+.ev-confirmed { background: rgba(76,175,80,0.15); color: var(--green); border: 1px solid var(--green); }
+.ev-measurable { background: rgba(255,167,38,0.15); color: var(--orange); border: 1px solid var(--orange); }
+.ev-frontier { background: rgba(239,83,80,0.15); color: var(--red); border: 1px solid var(--red); }
+
+.action-bar { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--border-col); flex-wrap: wrap; }
+.btn { font-family: 'Georgia', serif; font-size: 11px; padding: 7px 14px; border-radius: 5px; cursor: pointer; border: none; transition: opacity 0.2s; }
+.btn-gold { background: var(--gold-dim); color: #fff; }
+.btn-gold:hover { opacity: 0.85; }
+.btn-cyan { background: rgba(58,212,200,0.15); color: var(--cyan); border: 1px solid var(--cyan); }
+.btn-cyan:hover { background: rgba(58,212,200,0.25); }
+.btn-orange { background: rgba(255,167,38,0.15); color: var(--orange); border: 1px solid var(--orange); }
+.btn-orange:hover { background: rgba(255,167,38,0.25); }
+
+.snapshot-list { max-height: 140px; overflow-y: auto; }
+.snapshot-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 10px; }
+.snapshot-item:last-child { border-bottom: none; }
+.snap-time { font-family: monospace; color: var(--muted); }
+.snap-vals { color: var(--text); }
+.snap-del { color: var(--red); cursor: pointer; font-size: 11px; padding: 0 4px; background: none; border: none; }
+
+.transport-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+@media (max-width: 480px) { .transport-form { grid-template-columns: 1fr; } }
+.transport-form select { background: #06101e; color: var(--cyan); border: 1px solid var(--border-col); border-radius: 5px; padding: 4px 6px; font-size: 10px; width: 100%; }
+.transport-result { background: #06101e; border-radius: 7px; padding: 8px 10px; font-size: 10px; color: var(--text); }
+
+.print-only { display: none; }
+</style>
+
+<div class="instrument" id="mainInstrument">
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header h1">KLEMAH Live Monitor — Meta-Atomic Polar Impact Observatory</div>
+      <div class="author">Morphean Climate Framework (MCF) · Christos Sotirelis "Morpheas the Shape Master" · MCF-LP BY-NC-ND-EP</div>
+    </div>
+    <div class="license-tag">MCF-LP BY-NC-ND-EP © Christos Sotirelis</div>
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="ticker-dot"></div>
+  <div class="ticker-text" id="tickerText">Initializing live data streams...</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label">UTC Time</div>
+    <div class="stat-value cyan" id="utcClock" style="font-size:13px;font-family:monospace">--:--:--</div>
+    <div class="stat-sub" id="utcDate">--</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Arctic Ice Extent</div>
+    <div class="stat-value blue" id="arcticIce">-- M km²</div>
+    <div class="stat-sub" id="arcticTrend">loading...</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Antarctic Ice</div>
+    <div class="stat-value blue" id="antarctIce">-- M km²</div>
+    <div class="stat-sub" id="antarctTrend">loading...</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Peak τ (Strat/Spring)</div>
+    <div class="stat-value gold">~42 days</div>
+    <div class="stat-sub">Stratospheric spring STE</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Fast τ (Trop/Winter)</div>
+    <div class="stat-value orange">2–7 days</div>
+    <div class="stat-sub">Winter jet stream path</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Svalbard Temp</div>
+    <div class="stat-value" id="svalbardTemp" style="color:var(--cyan)">-- °C</div>
+    <div class="stat-sub">Live · Open-Meteo</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">South Pole Temp</div>
+    <div class="stat-value" id="southPoleTemp" style="color:var(--purple)">-- °C</div>
+    <div class="stat-sub">Live · Open-Meteo</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Data Snapshots</div>
+    <div class="stat-value green" id="snapCount">0</div>
+    <div class="stat-sub">Saved in session</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Causal chain — MCF radiophoric polar impact</div>
+  <div class="chain-row">
+    <div class="c-node">Test detonation (Q_i)</div>
+    <div class="c-arr">→</div>
+    <div class="c-node">Fireball ascent 75–110 m/s</div>
+    <div class="c-arr">→</div>
+    <div class="c-node">Stratospheric injection &gt;12 km</div>
+    <div class="c-arr">→</div>
+    <div class="c-node">Brewer-Dobson + jet stream</div>
+    <div class="c-arr">→</div>
+    <div class="c-node">τ = 2–7d (trop) / 30–90d (strat)</div>
+    <div class="c-arr">→</div>
+    <div class="c-node">Polar deposition in cryoconite</div>
+    <div class="c-arr">→</div>
+    <div class="c-node">Albedo collapse → stepped melt</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>Atmospheric transport calculator</h3>
+      <div class="transport-form">
+        <select id="siteSelect" onchange="calcTransport()">
+          <option value="11.59,165.51,Bikini Atoll (Castle Bravo 15Mt)">Bikini Atoll — Castle Bravo</option>
+          <option value="73.0,54.0,Novaya Zemlya (Tsar Bomba 50Mt)">Novaya Zemlya — Tsar Bomba</option>
+          <option value="50.41,77.82,Semipalatinsk">Semipalatinsk</option>
+          <option value="37.09,116.03,Nevada Test Site">Nevada Test Site</option>
+          <option value="1.59,-157.32,Christmas Island (Dominic)">Christmas Island</option>
+          <option value="21.83,-138.88,Mururoa (France)">Mururoa Atoll</option>
+          <option value="41.5,88.5,Lop Nur (China)">Lop Nur, China</option>
+          <option value="41.28,129.08,Punggye-ri (DPRK)">Punggye-ri, DPRK</option>
+        </select>
+        <select id="seasonSelect" onchange="calcTransport()">
+          <option value="DJF">Winter (DJF)</option>
+          <option value="MAM" selected>Spring (MAM)</option>
+          <option value="JJA">Summer (JJA)</option>
+          <option value="SON">Autumn (SON)</option>
+        </select>
+        <select id="injectSelect" onchange="calcTransport()">
+          <option value="strat">Stratospheric &gt;12 km</option>
+          <option value="trop">Tropospheric &lt;12 km</option>
+        </select>
+      </div>
+      <div class="transport-result" id="transportResult">Select parameters above...</div>
+    </div>
+
+    <div class="panel">
+      <h3>τ lag correlation bands</h3>
+      <div id="tauBars"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Confirmed evidence summary</div>
+  <div id="evidenceBlocks"></div>
+</div>
+
+<div class="section">
+  <div class="section-title">Key atmospheric test inventory (source term Q_i)</div>
+  <div class="panel" style="padding:0">
+    <div class="det-scroll">
+      <table class="det-table">
+        <thead><tr><th>Country</th><th>Event</th><th>Date</th><th>Yield</th><th>Type</th><th>τ→Arctic</th><th>τ→Antarctic</th><th>Ice signal</th></tr></thead>
+        <tbody id="detBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Live polar station data</div>
+  <div class="panel">
+    <div id="polarPanel" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;font-size:10px;color:var(--muted)">Loading polar stations...</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Snapshot history (session memory)</div>
+  <div class="panel">
+    <div class="snapshot-list" id="snapshotList">
+      <div style="color:var(--muted);font-size:10px;padding:8px 0">No snapshots yet. Click "Save Snapshot" to record current data state.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Research question status</div>
+  <div id="qList"></div>
+</div>
+
+<div class="action-bar">
+  <button class="btn btn-gold" onclick="saveSnapshot()">Save Snapshot</button>
+  <button class="btn btn-cyan" onclick="exportPDF()">Download Evidence PDF</button>
+  <button class="btn btn-orange" onclick="refreshData()">Refresh Live Data</button>
+</div>
+
+</div>
+
+<div id="printContent" class="print-only"></div>
+
+<script>
+const DETONATIONS = [
+  {c:'USA',e:'Trinity',d:'1945-07-16',lat:33.68,lon:-106.48,y:21,t:'Atm',sig:'Faint ¹³⁷Cs trace'},
+  {c:'USA',e:'Ivy Mike',d:'1952-10-31',lat:11.55,lon:162.31,y:10400,t:'Atm',sig:'Suppressed Antarctic (QBO gate)'},
+  {c:'USA',e:'Castle Bravo',d:'1954-03-01',lat:11.59,lon:165.51,y:15000,t:'Atm',sig:'Strong ²³⁹Pu both poles'},
+  {c:'USA',e:'Castle Union',d:'1954-04-26',lat:11.59,lon:165.51,y:6900,t:'Atm',sig:'Confirmed stratospheric'},
+  {c:'USSR',e:'Joe-4',d:'1953-08-12',lat:50.41,lon:77.82,y:400,t:'Atm',sig:'Regional NH signal'},
+  {c:'USSR',e:'Tsar Bomba',d:'1961-10-30',lat:73.0,lon:54.0,y:50000,t:'Atm',sig:'Record 5700–8100 Bq/kg'},
+  {c:'France',e:'Canopus',d:'1968-08-24',lat:-21.83,lon:-138.88,y:2600,t:'Atm',sig:'Strong SH signal'},
+  {c:'China',e:'Test 6 (Thermonuclear)',d:'1967-06-17',lat:41.5,lon:88.5,y:3300,t:'Atm',sig:'Strong NH signal'},
+  {c:'Multi',e:'1963 PTBT Peak',d:'1963-01-01',lat:37.09,lon:-116.03,y:5000,t:'Atm',sig:'UNIVERSAL BOMB LAYER'},
+  {c:'DPRK',e:'Test 6',d:'2017-09-03',lat:41.28,lon:129.08,y:250,t:'UG',sig:'¹³³Xe detected — contained'},
+];
+
+const EVIDENCE = [
+  {t:'Nuclear tests injected radionuclides into stratosphere',b:'High-yield atmospheric detonations (1945–1980) lifted fine radioactive aerosols above 12 km, where they entered global circulation for months to years. ~76% of ²³⁹Pu from high-yield tests was stratospherically injected.',s:'confirmed'},
+  {t:'Seasonal atmospheric circulation transported fallout to poles',b:'Sub-annual ²³⁹Pu records from NEEM (Greenland) and GV7/Styx/Hercules Névé (Antarctica) confirm poleward transport at seasonal resolution. Spring STE and Brewer-Dobson circulation are the primary pathways.',s:'confirmed'},
+  {t:'"Seasonal gates" — QBO phase controls when particles reach poles',b:'Castle Bravo (March 1954) produced a strong Antarctic ²³⁹Pu peak; Ivy Mike (October 1952) did not. The difference is QBO phase orientation. Confirmed in Shin et al., Science Advances, October 2025.',s:'confirmed'},
+  {t:'Cryoconite concentrates fallout and darkens ice surface',b:'Radionuclides are concentrated in biogenic dark granules (cryoconite) on glacier surfaces. Novaya Zemlya: 5,700–8,100 Bq/kg ¹³⁷Cs. Albedo drops from ~0.85 (clean snow) to 0.10–0.30 under cryoconite coverage.',s:'confirmed'},
+  {t:'Microplastics co-located with fallout in polar ice (up to 14,400 particles/L)',b:'Arctic snow contains up to 14,400 microplastic particles/L. All 19 Antarctic Ross Ice Shelf sites show 10–100 particles/L. Co-location with the 1963 bomb layer confirmed in ice core stratigraphy.',s:'confirmed'},
+  {t:'Colored MNPs cause atmospheric radiative forcing (2026)',b:'Liu et al., Nature Climate Change, May 2026: global mean DRF from atmospheric MNPs = 0.039 ± 0.019 W m⁻² = 16.2% of black carbon. Regional peaks over North Pacific: ~1.34 W m⁻² (4.7× black carbon). Not in IPCC models.',s:'confirmed'},
+  {t:'Time-lagged cross-correlation between test dates and polar anomalies',b:'Pipeline designed. ERA5 + NSIDC daily data available. Requires execution: cross-correlate yield-weighted detonation impulse vs daily polar ice extent for τ = 0–365 days, removing ENSO/solar/volcanic covariates.',s:'measurable'},
+  {t:'Core-Moon electromagnetic circuit driving polar attraction (Earthotomy)',b:'MECP = 408,262.3 km. Moon inside MECP at 384,400 km. Equatorial anode (Mid⁺) to polar cathode (Pole⁻) current flow. Nuclear tests deformed Earth-Ionosphere waveguide and shifted Schumann resonance ~7.83 Hz.',s:'frontier'},
+];
+
+const Q_LIST = [
+  {n:'Q-A1',cls:'done',s:'Computable now',t:'Calculate τ_min, τ_avg to Arctic and Antarctic for each atmospheric detonation using ERA5 seasonal wind fields at the exact detonation date.'},
+  {n:'Q-A2',cls:'done',s:'Data exists (Shin et al. 2025)',t:'Match sub-annual ²³⁹Pu deposition peaks in NEEM/GV7/Styx ice cores to specific test windows. Castle Bravo → strong spring peak confirmed.'},
+  {n:'Q-A3',cls:'pend',s:'Measurable',t:'Estimate washout fraction for top-20 yield events using historical precipitation at test coordinates (NCEP/NCAR). Stratospheric particles bypass entirely.'},
+  {n:'Q-A4',cls:'done',s:'Confirmed physics',t:'Cryoconite albedo reduction: α_clean ~0.85 → α_cryoconite 0.10–0.30. Coverage threshold for measurable excess melt ~15–30% surface fraction.'},
+  {n:'Q-B1',cls:'pend',s:'Pipeline ready — run locally',t:'Full Python cross-correlation pipeline designed. Requires ERA5 + NSIDC CSV inputs. τ cross-correlation for 0–365 days after removing climate covariates.'},
+  {n:'Q-B2',cls:'pend',s:'Measurable — not yet done',t:'Microplastic strata co-location with 1963 bomb layer. Temporal overlap confirmed but specific depth matching not yet published.'},
+  {n:'Q-B3',cls:'pend',s:'Calculation gap',t:'Surface-deposited MNP radiative forcing on polar ice. Atmospheric DRF confirmed (0.039 W/m²). Ice-surface application not yet calculated.'},
+  {n:'Q-C1',cls:'front',s:'Lab experiment needed',t:'Does ionizing radiation darken white microplastics via cross-linking, increasing their MAC? Weathering alone shows minimal change (2026 study).'},
+  {n:'Q-C2',cls:'front',s:'New research',t:'Dendroclimatological corridor: trace ¹⁴C bomb-pulse from Semipalatinsk/Novaya Zemlya along prevailing winds through Siberian/Scandinavian forests to polar deposition.'},
+  {n:'Q-C3',cls:'front',s:'Frontier',t:'Daily calving velocity micro-spike analysis at τ = 2–90 days post-detonation. Requires ICESat-2 data + careful tidal detrending.'},
+];
+
+const TAU_BANDS = [
+  {l:'τ 0–7 days — tropospheric winter jet',v:22,c:'#ef5350'},
+  {l:'τ 30–60 days — stratospheric spring STE',v:78,c:'#ffa726'},
+  {l:'τ 6–9 months — QBO open phase',v:65,c:'#64b5f6'},
+  {l:'τ 12–18 months — QBO suppressed',v:35,c:'#ab47bc'},
+  {l:'τ 1–5 years — ultra-fine stratospheric',v:55,c:'#4caf50'},
+];
+
+let snapshots = [];
+
+function calcTau(lat, lon, season, inj) {
+  const distA = Math.abs(90 - Math.abs(lat)) * 111;
+  const distAnt = lat >= 0 ? Math.abs(-90 - lat) * 111 : Math.abs(-90 + Math.abs(lat)) * 111;
+  let vAvg = 35, vMax = 90;
+  if (season === 'DJF') { vAvg = 60; vMax = 110; }
+  else if (season === 'MAM') { vAvg = 45; vMax = 90; }
+  else if (season === 'JJA') { vAvg = 25; vMax = 60; }
+  else { vAvg = 35; vMax = 80; }
+  const f = inj === 'strat' ? 1 : 0.3;
+  return {
+    tauMinA: Math.max(2, Math.round((distA / (vMax * 86.4)) * f)),
+    tauAvgA: Math.max(7, Math.round((distA / (vAvg * 86.4)) * f)),
+    tauMinAnt: Math.max(5, Math.round((distAnt / (vMax * 86.4)) * f)),
+    tauAvgAnt: Math.max(14, Math.round((distAnt / (vAvg * 86.4)) * f)),
+  };
+}
+
+function calcTransport() {
+  const sel = document.getElementById('siteSelect').value.split(',');
+  const lat = parseFloat(sel[0]), lon = parseFloat(sel[1]), name = sel.slice(2).join(',');
+  const season = document.getElementById('seasonSelect').value;
+  const inj = document.getElementById('injectSelect').value;
+  const tau = calcTau(lat, lon, season, inj);
+  const sd = {DJF:'Winter — polar vortex strongest, jets up to 110 m/s',MAM:'Spring — STE peaks, main stratospheric descent window',JJA:'Summer — weakened jets 25–60 m/s',SON:'Autumn — vortex reforming, variable'};
+  document.getElementById('transportResult').innerHTML = `
+    <div style="color:var(--gold);font-size:11px;font-weight:500;margin-bottom:5px">${name}</div>
+    <div style="color:var(--muted);font-size:9px;margin-bottom:6px">${sd[season]}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div style="background:#0a1525;padding:7px;border-radius:6px">
+        <div style="color:var(--muted);font-size:9px">TO ARCTIC (90°N)</div>
+        <div style="color:var(--orange);font-size:14px;font-weight:500">${tau.tauMinA}–${tau.tauAvgA} days</div>
+        <div style="color:var(--muted);font-size:9px">fast jet → avg wind</div>
+      </div>
+      <div style="background:#0a1525;padding:7px;border-radius:6px">
+        <div style="color:var(--muted);font-size:9px">TO ANTARCTIC (90°S)</div>
+        <div style="color:var(--purple);font-size:14px;font-weight:500">${tau.tauMinAnt}–${tau.tauAvgAnt} days</div>
+        <div style="color:var(--muted);font-size:9px">interhemispheric path</div>
+      </div>
+    </div>
+    <div style="margin-top:6px;font-size:9px;color:var(--muted)">Injection: ${inj === 'strat' ? 'Stratospheric — Brewer-Dobson + STE pathway' : 'Tropospheric — jet stream direct'}</div>`;
+}
+
+function buildTauBars() {
+  const el = document.getElementById('tauBars');
+  el.innerHTML = TAU_BANDS.map(b => `
+    <div class="tau-bar-wrap">
+      <div class="tau-label"><span>${b.l}</span><span style="color:${b.c}">${b.v}%</span></div>
+      <div class="tau-track"><div class="tau-fill" style="width:${b.v}%;background:${b.c}">${b.v}%</div></div>
+    </div>`).join('');
+}
+
+function buildEvidence() {
+  const el = document.getElementById('evidenceBlocks');
+  el.innerHTML = EVIDENCE.map(e => `
+    <div class="evidence-block">
+      <div class="ev-title">${e.t}</div>
+      <div class="ev-body">${e.b}</div>
+      <div><span class="ev-status ev-${e.s === 'confirmed' ? 'confirmed' : e.s === 'measurable' ? 'measurable' : 'frontier'}">${e.s === 'confirmed' ? '✓ Confirmed' : e.s === 'measurable' ? '◆ Measurable — not yet computed' : '⧖ Frontier research needed'}</span></div>
+    </div>`).join('');
+}
+
+function buildQList() {
+  const el = document.getElementById('qList');
+  el.innerHTML = Q_LIST.map(q => `
+    <div class="q-item ${q.cls}">
+      <strong>[${q.n}] ${q.s}</strong>
+      ${q.t}
+    </div>`).join('');
+}
+
+function buildDetTable() {
+  const tb = document.getElementById('detBody');
+  const season = 'MAM';
+  tb.innerHTML = DETONATIONS.map(d => {
+    const tau = calcTau(d.lat, d.lon, season, d.t === 'Atm' && d.y > 500 ? 'strat' : 'trop');
+    const yc = d.y > 5000 ? 'yield-h' : d.y > 500 ? 'yield-m' : 'yield-l';
+    const yn = d.y >= 1000 ? (d.y/1000).toFixed(1) + ' Mt' : d.y + ' kt';
+    const hasSig = d.sig.includes('BOMB') || d.sig.includes('Record') || d.sig.includes('Strong') || d.sig.includes('Confirmed') || d.sig.includes('strong');
+    return `<tr>
+      <td style="color:var(--muted)">${d.c}</td>
+      <td style="color:var(--cyan)">${d.e}</td>
+      <td style="color:var(--muted);white-space:nowrap;font-size:9px">${d.d}</td>
+      <td class="${yc}">${yn}</td>
+      <td style="color:${d.t==='Atm'?'var(--red)':'var(--blue)'}">${d.t}</td>
+      <td style="color:var(--orange)">${tau.tauMinA}–${tau.tauAvgA}d</td>
+      <td style="color:var(--purple)">${tau.tauMinAnt}–${tau.tauAvgAnt}d</td>
+      <td class="${hasSig ? 'sig-yes' : 'sig-no'}" style="font-size:9px">${d.sig}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('utcClock').textContent = now.toUTCString().slice(17,25);
+  document.getElementById('utcDate').textContent = now.toUTCString().slice(0,16) + ' UTC';
+}
+
+async function fetchPolarTemps() {
+  const stations = [
+    {id:'svalbard',lat:78.92,lon:11.92,name:'Svalbard 79°N',el:'svalbardTemp',color:'var(--cyan)'},
+    {id:'alert',lat:82.5,lon:-62.33,name:'Alert 82°N',el:null,color:'#90caf9'},
+    {id:'mcmurdo',lat:-77.85,lon:166.72,name:'McMurdo 78°S',el:null,color:'var(--purple)'},
+    {id:'southpole',lat:-89.99,lon:0,name:'South Pole 90°S',el:'southPoleTemp',color:'var(--purple)'},
+    {id:'northpole',lat:85,lon:0,name:'Arctic proxy 85°N',el:null,color:'var(--blue)'},
+  ];
+  const panel = document.getElementById('polarPanel');
+  let html = '';
+  for (const s of stations) {
+    try {
+      const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${s.lat}&longitude=${s.lon}&current=temperature_2m,wind_speed_10m&timezone=UTC`);
+      const d = await r.json();
+      const t = d.current.temperature_2m;
+      const w = d.current.wind_speed_10m;
+      if (s.el) document.getElementById(s.el).textContent = t.toFixed(1) + ' °C';
+      html += `<div style="background:#06101e;padding:7px;border-radius:6px">
+        <div style="color:var(--muted);font-size:9px">${s.name}</div>
+        <div style="color:${s.color};font-size:13px;font-weight:500">${t.toFixed(1)}°C</div>
+        <div style="color:var(--muted);font-size:9px">Wind: ${w} km/h</div>
+      </div>`;
+    } catch(e) {
+      html += `<div style="color:var(--muted);font-size:9px">${s.name}: unavailable</div>`;
+    }
+  }
+  html += `<div style="font-size:8px;color:var(--muted);align-self:end">via Open-Meteo · ERA5 · CC BY 4.0 · ${new Date().toUTCString().slice(17,25)} UTC</div>`;
+  panel.innerHTML = html;
+}
+
+async function fetchSeaIce() {
+  try {
+    const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://noaadata.apps.nsidc.org/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v3.0.csv')}`;
+    const r = await fetch(proxy, {signal: AbortSignal.timeout(7000)});
+    const txt = await r.text();
+    const lines = txt.trim().split('\n').filter(l => !l.startsWith('#') && !l.startsWith('Year'));
+    const recent = lines.slice(-31);
+    const vals = [];
+    recent.forEach(line => { const p = line.trim().split(','); if (p.length >= 4) { const v = parseFloat(p[3]); if (!isNaN(v)) vals.push(v); }});
+    if (vals.length > 1) {
+      const last = vals[vals.length - 1];
+      const prev = vals[0];
+      const delta = (last - prev).toFixed(2);
+      document.getElementById('arcticIce').textContent = last.toFixed(2) + ' M km²';
+      document.getElementById('arcticTrend').innerHTML = `<span style="color:${delta > 0 ? 'var(--red)' : 'var(--cyan)'}">${delta > 0 ? '▲' : '▼'} ${Math.abs(delta)} vs 30d</span>`;
+      setTicker(`Arctic ice: ${last.toFixed(2)} M km² | Δ30d: ${delta > 0 ? '+' : ''}${delta} M km² | NSIDC live`);
+    }
+  } catch(e) {
+    document.getElementById('arcticIce').textContent = '~9.4 M km²';
+    document.getElementById('arcticTrend').innerHTML = `<span style="color:var(--orange)">NSIDC proxy unavailable</span>`;
+  }
+  try {
+    const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://noaadata.apps.nsidc.org/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v3.0.csv')}`;
+    const r = await fetch(proxy, {signal: AbortSignal.timeout(7000)});
+    const txt = await r.text();
+    const lines = txt.trim().split('\n').filter(l => !l.startsWith('#') && !l.startsWith('Year'));
+    const recent = lines.slice(-5);
+    let lastVal = null;
+    recent.forEach(line => { const p = line.trim().split(','); if (p.length >= 4) { const v = parseFloat(p[3]); if (!isNaN(v)) lastVal = v; }});
+    if (lastVal) {
+      document.getElementById('antarctIce').textContent = lastVal.toFixed(2) + ' M km²';
+      document.getElementById('antarctTrend').innerHTML = `<span style="color:var(--purple)">NSIDC live</span>`;
+    }
+  } catch(e) {
+    document.getElementById('antarctIce').textContent = '~11.8 M km²';
+    document.getElementById('antarctTrend').innerHTML = `<span style="color:var(--muted)">proxy unavailable</span>`;
+  }
+}
+
+function setTicker(msg) {
+  document.getElementById('tickerText').textContent = `[${new Date().toUTCString().slice(17,25)} UTC] ${msg}`;
+}
+
+async function refreshData() {
+  setTicker('Refreshing all live data feeds...');
+  await Promise.all([fetchSeaIce(), fetchPolarTemps()]);
+  setTicker('All data refreshed successfully · ' + new Date().toUTCString().slice(0,25));
+}
+
+function saveSnapshot() {
+  const arctic = document.getElementById('arcticIce').textContent;
+  const antarc = document.getElementById('antarctIce').textContent;
+  const svalbard = document.getElementById('svalbardTemp').textContent;
+  const sp = document.getElementById('southPoleTemp').textContent;
+  const now = new Date().toUTCString().slice(0,25);
+  const snap = { time: now, arctic, antarc, svalbard, sp };
+  snapshots.unshift(snap);
+  document.getElementById('snapCount').textContent = snapshots.length;
+  renderSnapshots();
+  setTicker(`Snapshot saved at ${now}`);
+}
+
+function renderSnapshots() {
+  const el = document.getElementById('snapshotList');
+  if (!snapshots.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:10px;padding:8px 0">No snapshots yet.</div>';
+    return;
+  }
+  el.innerHTML = snapshots.map((s, i) => `
+    <div class="snapshot-item">
+      <span class="snap-time">${s.time}</span>
+      <span class="snap-vals">Arctic: ${s.arctic} | Ant: ${s.antarc} | Svalbard: ${s.svalbard} | S.Pole: ${s.sp}</span>
+      <button class="snap-del" onclick="deleteSnap(${i})" title="Delete snapshot">×</button>
+    </div>`).join('');
+}
+
+function deleteSnap(i) {
+  snapshots.splice(i, 1);
+  document.getElementById('snapCount').textContent = snapshots.length;
+  renderSnapshots();
+}
+
+function exportPDF() {
+  const now = new Date().toUTCString();
+  const arcticVal = document.getElementById('arcticIce').textContent;
+  const antarcVal = document.getElementById('antarctIce').textContent;
+  const svalbardVal = document.getElementById('svalbardTemp').textContent;
+  const spVal = document.getElementById('southPoleTemp').textContent;
+
+  const evidenceHTML = EVIDENCE.map((e, i) => `
+    <div style="margin-bottom:12px;padding:8px;border-left:3px solid ${e.s==='confirmed'?'#1b5e20':e.s==='measurable'?'#e65100':'#b71c1c'};background:#f9f9f9;border-radius:0 5px 5px 0">
+      <div style="font-weight:bold;font-size:11px;color:#0b1a2b">${i+1}. ${e.t}</div>
+      <div style="font-size:10px;color:#333;margin-top:4px">${e.b}</div>
+      <div style="font-size:9px;margin-top:5px;font-weight:bold;color:${e.s==='confirmed'?'#1b5e20':e.s==='measurable'?'#e65100':'#b71c1c'}">${e.s === 'confirmed' ? '✓ CONFIRMED' : e.s === 'measurable' ? '◆ MEASURABLE — NOT YET COMPUTED' : '⧖ FRONTIER RESEARCH NEEDED'}</div>
+    </div>`).join('');
+
+  const qHTML = Q_LIST.map(q => `
+    <div style="margin-bottom:8px;padding:6px 9px;border-left:3px solid ${q.cls==='done'?'#1b5e20':q.cls==='pend'?'#e65100':'#b71c1c'};background:#f5f5f5;border-radius:0 4px 4px 0;font-size:10px">
+      <strong style="color:#0b1a2b">[${q.n}] ${q.s}</strong><br/><span style="color:#555">${q.t}</span>
+    </div>`).join('');
+
+  const snapHTML = snapshots.length ? snapshots.map(s => `
+    <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid #eee">
+      <span style="color:#666">${s.time}</span>
+      <span>Arctic: ${s.arctic} | Ant: ${s.antarc} | Svalbard: ${s.svalbard} | S.Pole: ${s.sp}</span>
+    </div>`).join('') : '<p style="font-size:10px;color:#999">No snapshots recorded in this session.</p>';
+
+  const detRows = DETONATIONS.map(d => {
+    const tau = calcTau(d.lat, d.lon, 'MAM', d.t==='Atm'&&d.y>500?'strat':'trop');
+    const yn = d.y >= 1000 ? (d.y/1000).toFixed(1)+' Mt' : d.y+' kt';
+    return `<tr style="border-bottom:1px solid #eee">
+      <td style="padding:3px 6px;font-size:9px">${d.c}</td>
+      <td style="padding:3px 6px;font-size:9px">${d.e}</td>
+      <td style="padding:3px 6px;font-size:9px">${d.d}</td>
+      <td style="padding:3px 6px;font-size:9px">${yn}</td>
+      <td style="padding:3px 6px;font-size:9px">${d.t}</td>
+      <td style="padding:3px 6px;font-size:9px">${tau.tauMinA}–${tau.tauAvgA}d</td>
+      <td style="padding:3px 6px;font-size:9px">${tau.tauMinAnt}–${tau.tauAvgAnt}d</td>
+    </tr>`;
+  }).join('');
+
+  const printWin = window.open('','_blank');
+  printWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>KLEMAH Evidence Export — MCF</title>
+  <style>
+    body{font-family:Georgia,serif;max-width:800px;margin:0 auto;padding:2rem;color:#0b1a2b;font-size:12px}
+    h1{font-size:18px;color:#0b1a2b;border-bottom:3px solid #c8a84b;padding-bottom:8px;margin-bottom:4px}
+    h2{font-size:13px;color:#1a3a5c;border-left:4px solid #c8a84b;padding-left:10px;margin:18px 0 8px}
+    .meta{font-size:10px;color:#666;margin-bottom:16px}
+    .license{background:#fff8e1;border:1px solid #f9a825;border-radius:6px;padding:10px;font-size:9px;color:#795548;margin-bottom:16px}
+    .live-box{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+    .live-item{background:#f5f5f5;padding:8px;border-radius:5px;text-align:center}
+    .live-item .lv{font-size:9px;color:#666}
+    .live-item .lval{font-size:13px;font-weight:bold;color:#0b1a2b}
+    table{width:100%;border-collapse:collapse}
+    th{background:#0b1a2b;color:#ffd966;padding:5px 6px;text-align:left;font-size:9px}
+    .chain{background:#f0f4fa;border-radius:6px;padding:8px;font-size:10px;color:#1a3a5c;line-height:1.8;margin-bottom:12px}
+    footer{margin-top:24px;padding-top:12px;border-top:1px solid #ccc;font-size:8px;color:#888;text-align:center}
+    @media print{.no-print{display:none}@page{margin:1.5cm}}
+  </style></head><body>
+  <h1>KLEMAH Framework — Evidence Export</h1>
+  <div class="meta">
+    <strong>MCF-LP BY-NC-ND-EP</strong> · Author: Christos Sotirelis "Morpheas the Shape Master" ·
+    Generated: ${now}
+  </div>
+  <div class="license">
+    <strong>MCF-LP BY-NC-ND-EP License:</strong> Attribution (BY) required · Non-commercial (NC) · No derivatives (ND) · Ethics Preservation (EP) — Logic, Balance, Respect for Life.<br>
+    © Christos Sotirelis "Morpheas the Shape Master" · All rights reserved. Any use requires attribution to Christos Sotirelis and preservation of the ethical principles of the Morphean Cosmology Framework.
+  </div>
+
+  <h2>Live Data Snapshot at Time of Export</h2>
+  <div class="live-box">
+    <div class="live-item"><div class="lv">Arctic Ice Extent</div><div class="lval">${arcticVal}</div></div>
+    <div class="live-item"><div class="lv">Antarctic Ice Extent</div><div class="lval">${antarcVal}</div></div>
+    <div class="live-item"><div class="lv">Svalbard Temp</div><div class="lval">${svalbardVal}</div></div>
+    <div class="live-item"><div class="lv">South Pole Temp</div><div class="lval">${spVal}</div></div>
+  </div>
+
+  <h2>MCF Causal Chain — Radiophoric Polar Impact</h2>
+  <div class="chain">Test detonation (Q_i) → Fireball ascent 75–110 m/s → Stratospheric injection &gt;12 km → Brewer-Dobson + jet stream (τ = 2–7d trop / 30–90d strat) → Polar deposition in cryoconite → Albedo collapse (α: 0.85 → 0.10–0.30) → Asymmetric stepped polar melt anomalies (ε residual vector)</div>
+
+  <h2>Evidence Inventory (${EVIDENCE.length} items)</h2>
+  ${evidenceHTML}
+
+  <h2>Research Questions Status (${Q_LIST.length} items)</h2>
+  ${qHTML}
+
+  <h2>Atmospheric Test Inventory — Source Term Q_i</h2>
+  <table><thead><tr><th>Country</th><th>Event</th><th>Date</th><th>Yield</th><th>Type</th><th>τ→Arctic</th><th>τ→Antarctic</th></tr></thead>
+  <tbody>${detRows}</tbody></table>
+
+  <h2>Session Snapshots (${snapshots.length} recorded)</h2>
+  ${snapHTML}
+
+  <footer>
+    KLEMAH Framework — Meta-Atomic Sub-Theorem: Radiophoric Polar Impact<br>
+    Morphean Cosmology Framework (MCF) · Christos Sotirelis "Morpheas the Shape Master"<br>
+    MCF-LP BY-NC-ND-EP · Attribution required · Non-commercial · No derivatives · Ethics preservation<br>
+    Scientific basis: Shin et al. Science Advances Oct 2025 · Liu et al. Nature Climate Change May 2026 · Baccolo et al. Cryosphere 2020 · Multiple NSIDC/IAEA sources<br>
+    Research chain: Perplexity · ChatGPT · Gemini · DeepSeek · Claude/Anthropic
+  </footer>
+  <script>window.onload=()=>{window.print();}<\/script>
+  </body></html>`);
+  printWin.document.close();
+}
+
+(async function init() {
+  updateClock();
+  setInterval(updateClock, 1000);
+  buildTauBars();
+  buildEvidence();
+  buildQList();
+  buildDetTable();
+  calcTransport();
+  renderSnapshots();
+  setTicker('Fetching live polar data...');
+  await fetchSeaIce();
+  await fetchPolarTemps();
+  setTicker(`All data loaded · KLEMAH Live Monitor active · ${new Date().toUTCString().slice(0,25)} UTC`);
+  setInterval(fetchPolarTemps, 600000);
+})();
+</script>

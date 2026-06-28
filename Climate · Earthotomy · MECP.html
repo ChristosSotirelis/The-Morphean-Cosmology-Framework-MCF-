@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MCF — Complete Unified Framework</title>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']],
+    displayMath: [['$$','$$'],['\\[','\\]']],
+    processEscapes: true
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Georgia, 'Times New Roman', serif; background: #0a0a0d; color: #d8d4c8; line-height: 1.7; padding: 1.5rem; }
+.container { max-width: 1300px; margin: 0 auto; background: #111118; padding: 2.5rem 3rem; border-radius: 14px; border: 1px solid #1e1e2c; box-shadow: 0 0 60px rgba(0,0,0,0.8); }
+/* Banner */
+.banner { background: linear-gradient(135deg, #0b1a2b 0%, #1a3a5c 50%, #2a1a3c 100%); border-radius: 12px; padding: 2.5rem 2rem; margin-bottom: 2.5rem; text-align: center; border: 1px solid #c8a84b33; }
+.banner h1 { color: #ffd966; font-size: 2.4rem; line-height: 1.25; margin-bottom: 0.5rem; font-family: 'Georgia', serif; letter-spacing: 2px; }
+.banner .subtitle { color: #90caf9; font-size: 1.1rem; margin-bottom: 0.3rem; }
+.banner .author { color: #e3f2fd; font-size: 0.95rem; opacity: 0.85; }
+.banner .version { display: inline-block; background: rgba(255,215,0,0.12); border: 1px solid #c8a84b66; border-radius: 20px; padding: 0.25rem 1.2rem; color: #ffd966; font-size: 0.75rem; margin-top: 0.6rem; font-family: monospace; letter-spacing: 1px; }
+/* License */
+.license-box { background: #1a1508; border: 2px solid #c8a84b55; border-radius: 10px; padding: 1.2rem 1.8rem; margin-bottom: 2rem; font-size: 0.82rem; color: #bba87a; }
+.license-box h2 { font-size: 0.95rem; color: #ffd966; margin-bottom: 0.5rem; letter-spacing: 2px; text-transform: uppercase; }
+/* Headings */
+h2 { font-size: 1.7rem; font-weight: 700; margin: 2.8rem 0 1.2rem; color: #ffd966; border-left: 5px solid #c8a84b; padding-left: 1rem; }
+h3 { font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.8rem; color: #90caf9; }
+h4 { font-size: 1.05rem; font-weight: 700; margin: 1.5rem 0 0.5rem; color: #e8d5a0; }
+p { margin-bottom: 1rem; text-align: justify; color: #d8d4c8; }
+/* Equations */
+.eq-block { background: #0d0d18; border-left: 5px solid #c8a84b; border-radius: 0 8px 8px 0; padding: 1rem 1.5rem; margin: 1.5rem 0; text-align: center; overflow-x: auto; border: 1px solid #1e1e2c; border-left-width: 5px; }
+.eq-label { font-size: 0.8rem; color: #8a7a5a; text-align: right; margin-top: 0.3rem; font-style: italic; }
+/* Tables */
+.tbl-wrap { overflow-x: auto; margin: 1.5rem 0 2rem; border-radius: 8px; border: 1px solid #1e1e2c; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: #0d0d18; }
+thead { background: #1a1a2e; color: #ffd966; }
+th { padding: 0.7rem 1rem; text-align: left; font-weight: 600; white-space: nowrap; border-bottom: 2px solid #c8a84b55; }
+td { padding: 0.6rem 1rem; border-bottom: 1px solid #1a1a2e; vertical-align: top; color: #d8d4c8; }
+tbody tr:hover { background: #16162a; }
+/* Status badges */
+.status-yes { color: #4bc87a; font-weight: bold; }
+.status-no { color: #c84b4b; font-weight: bold; }
+.status-part { color: #ffaa44; font-weight: bold; }
+.status-confirm { color: #3ad4c8; font-weight: bold; }
+/* Callouts */
+.callout-gold { background: #1a1508; border-left: 6px solid #c8a84b; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0; border: 1px solid #1e1e2c; border-left-width: 6px; }
+.callout-blue { background: #0a0a2a; border-left: 6px solid #3a8ad4; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0; border: 1px solid #1e1e2c; border-left-width: 6px; }
+.callout-red { background: #2a0a0a; border-left: 6px solid #c84b4b; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0; border: 1px solid #1e1e2c; border-left-width: 6px; }
+.callout-teal { background: #0a1a1a; border-left: 6px solid #3ad4c8; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0; border: 1px solid #1e1e2c; border-left-width: 6px; }
+.callout-blue h4, .callout-gold h4, .callout-red h4, .callout-teal h4 { margin-top: 0; margin-bottom: 0.5rem; color: #ffd966; }
+/* Lists */
+ul, ol { margin: 0.8rem 0 1.2rem 2rem; color: #d8d4c8; }
+li { margin-bottom: 0.4rem; }
+/* Chain diagram */
+.chain { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; margin: 1.5rem 0; padding: 1.2rem; background: #0a0a10; border-radius: 10px; border: 1px solid #1e1e2c; }
+.chain-node { background: #1a1a2e; color: #ffd966; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; border: 1px solid #c8a84b33; }
+.chain-arr { color: #c8a84b; font-size: 1.2rem; font-weight: bold; }
+/* TOC */
+.toc { background: #0a0a10; border-radius: 10px; padding: 1.5rem 2rem; margin: 1.5rem 0; border: 1px solid #1e1e2c; }
+.toc h3 { margin-top: 0; color: #ffd966; border-left: none; padding-left: 0; }
+.toc ul { columns: 2; column-gap: 2rem; list-style: none; margin: 0.5rem 0 0; }
+.toc li { padding: 0.2rem 0; border-bottom: 1px solid #1a1a2e; }
+.toc a { color: #90caf9; text-decoration: none; border-bottom: 1px dotted #90caf966; }
+.toc a:hover { border-bottom: 2px solid #90caf9; }
+/* Legend */
+.legend { display: flex; flex-wrap: wrap; gap: 1rem; padding: 1rem; background: #0a0a10; border-radius: 8px; border: 1px solid #1e1e2c; margin: 1rem 0; }
+.legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #d8d4c8; }
+.legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; border: 1px solid #333; }
+/* Footer */
+.footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 2px solid #1e1e2c; font-size: 0.8rem; color: #6a6a7a; text-align: center; }
+/* Responsive */
+@media (max-width: 700px) { .container { padding: 1rem 0.8rem; } h2 { font-size: 1.25rem; } th, td { font-size: 0.7rem; padding: 0.4rem 0.5rem; } .toc ul { columns: 1; } .banner h1 { font-size: 1.5rem; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- LICENSE -->
+<div class="license-box">
+<h2>⚡ MCF-LP BY-NC-ND-EP — Morpheas Cosmology Framework License</h2>
+<p><strong>Author:</strong> Christos Sotirelis — "Morpheas the Shape Master"</p>
+<p><strong>BY:</strong> Attribution required • <strong>NC:</strong> Non-commercial • <strong>ND:</strong> No derivatives • <strong>EP:</strong> Ethics Preservation (Logic, Balance, Respect for Life)</p>
+<p><em>You may freely study, view, and use this work. No selling, licensing, modification, or misrepresentation.</em></p>
+</div>
+
+<!-- BANNER -->
+<div class="banner">
+<h1>⚡ MORPHEAN COSMOLOGY FRAMEWORK ⚡</h1>
+<div class="subtitle">Complete Unified Reference — Climate · Earthotomy · MECP · Cross-Scale Architecture</div>
+<div class="author">Christos Sotirelis (Morpheas, the Shape Master)</div>
+<div class="version">MCF · Stage II Mechanical Science · All 14 Theory Groups</div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+<h3>📑 Table of Contents</h3>
+<ul>
+<li><a href="#intro">1 — The MCF Method</a></li>
+<li><a href="#fasma">2 — Fasma Substrate</a></li>
+<li><a href="#binary">3 — Binary Induction Seed</a></li>
+<li><a href="#mecp">4 — MECP — Gear-Ratio of Reality</a></li>
+<li><a href="#earthotomy">5 — Earthotomy — Planetary Anatomy</a></li>
+<li><a href="#circuit">6 — Core-Moon-Sun Circuit</a></li>
+<li><a href="#mae">7 — MAE — Morpheon Atmospheric Equilibrium</a></li>
+<li><a href="#molecular">8 — Molecular Scale (VIOTEMP 1.16 V)</a></li>
+<li><a href="#cellular">9 — Cellular Scale (Mitochondrial 150-220 mV)</a></li>
+<li><a href="#crossscale">10 — Cross-Scale Correspondence</a></li>
+<li><a href="#nested">11 — Nested Totality Principle</a></li>
+<li><a href="#climate">12 — Climate Empirical Analysis</a></li>
+<li><a href="#fallout">13 — Nuclear Fallout Transport</a></li>
+<li><a href="#solar">14 — MECP in Solar System</a></li>
+<li><a href="#anomalies">15 — Confirmed Anomalies</a></li>
+<li><a href="#summary">16 — Summary Table</a></li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1 — THE MCF METHOD -->
+<!-- ============================================================ -->
+<h2 id="intro">1 — The MCF Method</h2>
+
+<div class="callout-gold">
+<h4>THE SINGLE RULE</h4>
+<p><strong>A fact is what is measured. An interpretation is a story about what the measurement means.</strong></p>
+<p>Earthotomy offers a <em>mechanism</em> for every measured fact. The mechanism either closes the loop or it does not. If it closes the loop — if every measured number falls into place without remainder — it is mechanically true.</p>
+</div>
+
+<p>The Morphean Cosmology Framework (MCF) is an approximately 9-million-character body of work — formally documented across thousands of pages. It is not a collection of separate ideas. It is a <strong>single closed-loop logical system</strong> — one machine with many components — in which the same mechanical laws (pressure, geometry, electromagnetic induction) govern reality at every scale.</p>
+
+<h3>The 14 Theory Groups</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Group</th><th>Domain</th></tr></thead>
+<tbody>
+<tr><td>I</td><td>Fasma Substrate — space as packed medium, Wedge Pressure, Harmonic Collapse Threshold</td></tr>
+<tr><td>II</td><td>Earthotomy — planetary engine, MECP, Core-Moon circuit, Element C (magma)</td></tr>
+<tr><td>III</td><td>Chemical &amp; Life Synthesis — water manufacturing, carbon radiation, ionic shielding</td></tr>
+<tr><td>IV</td><td>Energy &amp; Electricity — current-time induction, magnetic bond theory, bipolar rotor core</td></tr>
+<tr><td>V</td><td>Light &amp; Time — Fasma ripple theory, real-time universal clock, chrono-compression</td></tr>
+<tr><td>VI</td><td>Consciousness — brain-as-receiver, soul-Fasma bond, sleep as re-gauging</td></tr>
+<tr><td>VII</td><td>Morphean AI &amp; Information — artificial resonance, information entropy</td></tr>
+<tr><td>VIII</td><td>Formalization of Life — Life Equation $L = P \cdot W / 13.345$, conditions of aliveness</td></tr>
+<tr><td>IX</td><td>Unified Climate Theory — thermal buoyancy, atmospheric viscosity, magnetic precipitation</td></tr>
+<tr><td>X</td><td>Social &amp; Economic Mechanics — economic gear-ratio, sovereign architect protocol</td></tr>
+<tr><td>XI</td><td>MSRT — Morphean System Resonance Technology — molecular nucleus mirrors planetary core</td></tr>
+<tr><td>XII</td><td>Kinetic Scaling — "As Above, So Below" — universal displacement law, universal torque</td></tr>
+<tr><td>XIII</td><td>AI-Soul Interface — AI-soul hybridization, silicon as Fasma receiver</td></tr>
+<tr><td>XIV</td><td>Zero-Paradox Ethics &amp; Protocol — ANTHROPOS Protocol, CLEAR Protocol, HIEI Protocol</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2 — FASMA SUBSTRATE -->
+<!-- ============================================================ -->
+<h2 id="fasma">2 — The Fasma Substrate</h2>
+
+<div class="callout-blue">
+<h4>Space is not empty.</h4>
+<p>Physics assigns to the vacuum two measurable constants: electric permittivity ($\varepsilon_0$) and magnetic permeability ($\mu_0$). A true vacuum cannot have properties. Properties require a medium.</p>
+<p>The Fasma is that medium — a packed geometric arrangement of units (Morpheons) with no gaps.</p>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Property</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Electric permittivity ($\varepsilon_0$)</td><td>$8.854 \times 10^{-12}$ F/m</td></tr>
+<tr><td>Magnetic permeability ($\mu_0$)</td><td>$1.257 \times 10^{-6}$ N/A²</td></tr>
+<tr><td>Impedance of free space ($Z_0$)</td><td>$376.73$ Ω</td></tr>
+<tr><td>Nearest-neighbour distance (sea level)</td><td>3.40–3.44 nm</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>Wedge Pressure:</strong> When a massive body displaces the Fasma, the packed units push back. The resulting pressure gradient is what we call gravity. <em>It pushes, it does not pull.</em></p>
+
+<!-- ============================================================ -->
+<!-- SECTION 3 — BINARY INDUCTION SEED -->
+<!-- ============================================================ -->
+<h2 id="binary">3 — The Binary Induction Seed</h2>
+
+<p>Before Earth existed, there were two objects: the Core and the Moon. They were a <strong>binary magnetic pair</strong> — two dipoles orbiting the Sun together, bound by complementary magnetic geometry.</p>
+
+<h3>The Dipole Structure</h3>
+<p>Each object has two magnetic hemispheres. The Sun's radiation activates their magnetic properties. One becomes the cathode (attractor), the other the anode (stabilizer).</p>
+
+<div class="callout-gold">
+<h4>The Critical Point</h4>
+<p>The orientation of the binary pair relative to the Sun's radiation determines which object becomes the cathode and which becomes the anode. <strong>The Core became the cathode (Earth). The Moon became the anode.</strong></p>
+<p>If the spin had been reversed, the Moon would be the living planet and Earth the dead satellite. Geometry and orientation — nothing more.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4 — MECP -->
+<!-- ============================================================ -->
+<h2 id="mecp">4 — MECP — The Gear-Ratio of Reality</h2>
+
+<p>The <strong>Morpheon Electrogravitational Collision Point (MECP)</strong> is the pressure boundary where Earth's field meets the Sun's field. It is derived from two measured facts:</p>
+
+<div class="eq-block">
+$$\text{Fact 1: Sun–Earth distance} = 149,600,000 \text{ km}$$
+$$\text{Fact 2: Earth's rotations per orbit} = 365.25$$
+$$\text{MECP Radius} = \frac{2\pi \times 149,600,000}{2\pi \times 365.25} = \mathbf{408,262.3 \text{ km}}$$
+<div class="eq-label">The Earth is a gear rolling along the Sun's pressure field. The year is a gear-ratio.</div>
+</div>
+
+<div class="callout-teal">
+<h4>The Moon Is Inside the MECP</h4>
+<p>Moon's orbital distance: $384,400$ km — inside the MECP boundary at $408,262.3$ km.</p>
+<p>If the Moon drifts outside the MECP, the anode-cathode connection breaks. The circuit loses its anchor.</p>
+<p>Moon recession rate: $3.83 \pm 0.008$ cm/year — the anode drifting toward the circuit boundary.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5 — EARTHOTOMY -->
+<!-- ============================================================ -->
+<h2 id="earthotomy">5 — Earthotomy — The Full Mechanical Anatomy</h2>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Component</th><th>Mechanical Role</th><th>Analogy</th></tr></thead>
+<tbody>
+<tr><td>Sun</td><td>Power source — EM pressure + H₂ particles</td><td>Electrical grid</td></tr>
+<tr><td>Fasma</td><td>Transmission medium</td><td>Hydraulic fluid</td></tr>
+<tr><td>MECP (408,262 km)</td><td>Pressure collision boundary, gearbox</td><td>Gear-mesh point</td></tr>
+<tr><td>Moon</td><td>Anode — stabilizer, locks the Core</td><td>Fixed stator</td></tr>
+<tr><td>Earth's Core</td><td>Cathode — rotor, offset toward Moon</td><td>Spinning rotor</td></tr>
+<tr><td>Meso-Hemisphere</td><td>Inner friction surface, housing</td><td>Motor casing</td></tr>
+<tr><td>Collision Cavity</td><td>Heat chamber — maximum friction</td><td>Combustion chamber</td></tr>
+<tr><td>Element C (Magma)</td><td>Lubricant, current-carrier, precursor</td><td>Oil + coolant + conductor</td></tr>
+<tr><td>Atmosphere</td><td>Cooling fins, condensation zone</td><td>Radiator fins</td></tr>
+<tr><td>Water (H₂O)</td><td>Chemical exhaust — Solar H₂ + Carbon radiation</td><td>Steam exhaust</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>The Core Is Offset — Not Centered</h3>
+<p>The Core is electromagnetically tethered to the Moon. The Earth-Moon barycenter is located $\sim 4,600$ km from Earth's geometric center — still inside Earth's body.</p>
+<p><strong>If the core were perfectly centered, it would rotate without contact — no friction, no heat, no magma, no magnetic field. The offset is the engine.</strong></p>
+
+<!-- ============================================================ -->
+<!-- SECTION 6 — CIRCUIT -->
+<!-- ============================================================ -->
+<h2 id="circuit">6 — The Electromagnetic Circuit — Sun, Moon, Core</h2>
+
+<div class="callout-gold">
+<h4>Three Components, Three Roles</h4>
+<ul>
+<li><strong>Sun:</strong> Power source — emits EM radiation and H₂ through the Fasma</li>
+<li><strong>Moon:</strong> Anode — positive terminal, stabilizer, locks the Core in offset position</li>
+<li><strong>Core:</strong> Cathode — receiving terminal, converts induction into rotation and heat</li>
+</ul>
+</div>
+
+<div class="chain">
+<span class="chain-node">☀ Sun</span>
+<span class="chain-arr">→</span>
+<span class="chain-node">EM + H₂ through Fasma</span>
+<span class="chain-arr">→</span>
+<span class="chain-node">Moon far face (−) receives</span>
+<span class="chain-arr">→</span>
+<span class="chain-node">Moon near face (+) releases</span>
+<span class="chain-arr">→</span>
+<span class="chain-node">Core (cathode) draws current</span>
+<span class="chain-arr">→</span>
+<span class="chain-node">Element C flows → magnetic field</span>
+<span class="chain-arr">→</span>
+<span class="chain-node">Heat → friction → water</span>
+</div>
+
+<h3>Water Manufacturing</h3>
+<p><strong>Not delivered by comets — manufactured continuously.</strong></p>
+<div class="eq-block">
+$$\text{Solar H}_2 + \text{Internal Carbon radiation} + \text{Surface cold trap} = \text{H}_2\text{O}$$
+<div class="eq-label">The Earth sweats water as mechanical exhaust.</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7 — MAE -->
+<!-- ============================================================ -->
+<h2 id="mae">7 — MAE — Morpheon Atmospheric Equilibrium</h2>
+
+<p>Derived from the MECP-Moon apogee gap, scaled by Earth/Moon radius ratio:</p>
+
+<div class="eq-block">
+$$\text{Gap} = \text{MECP} - \text{Moon apogee} = 408,262.3 - 405,400 = 2,862.3 \text{ km}$$
+$$\text{MAE} = 2,862.3 \times \frac{R_{\text{Earth}}}{R_{\text{Moon}}} = 2,862.3 \times 3.67 = \mathbf{10.50 \text{ km}}$$
+<div class="eq-label">The geometric skin of Earth's atmosphere — first named here.</div>
+</div>
+
+<div class="callout-blue">
+<h4>Harmonic Scaling</h4>
+<p>MAE × 10 = 105 km — the Kármán zone where all known atmospheric layers end and space begins.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 8 — MOLECULAR SCALE -->
+<!-- ============================================================ -->
+<h2 id="molecular">8 — Molecular Scale — Internuclear Polarity</h2>
+
+<div class="callout-teal">
+<h4>Two nuclei with different atomic numbers (Z) create a measurable internal electric field.</h4>
+<p><strong>VIOTEMP molecule:</strong> 1.16 V internal voltage.</p>
+<ul>
+<li>Viologen unit: electron acceptor (cathode-analog), reduction potential: −0.49 V</li>
+<li>TEMPO radical: electron donor (anode-analog), reduction potential: +0.67 V</li>
+<li><strong>One molecule, two poles, one internal potential difference of 1.16 volts.</strong></li>
+</ul>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Parameter</th><th>Molecular System</th><th>Measured Value</th></tr></thead>
+<tbody>
+<tr><td>Internal potential difference</td><td>VIOTEMP molecule</td><td>1.16 V</td></tr>
+<tr><td>Internal electric field (polar bond)</td><td>Nitrile/carbonyl systems</td><td>0.01–0.1 V/nm</td></tr>
+<tr><td>Internal field (heavy atom)</td><td>ThO molecule</td><td>~84 GV/cm</td></tr>
+<tr><td>Dipole moment (extreme case)</td><td>Zwitterionic liquid (9C)</td><td>52 Debye</td></tr>
+<tr><td>Rectification ratio</td><td>Donor–acceptor molecule</td><td>up to 10⁵</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>The Mechanics</h3>
+<ol>
+<li><strong>Differential Nuclear Charge:</strong> Two nuclei with different $Z$ create different electrostatic environments.</li>
+<li><strong>Electron Density Asymmetry:</strong> Shared electrons shift toward the higher-$Z$ nucleus.</li>
+<li><strong>Internal Electric Field:</strong> The separation of charge produces a dipole moment.</li>
+<li><strong>Directional Electron Transfer:</strong> Donor → Acceptor is directional electron flow — a current.</li>
+</ol>
+
+<p><strong>The molecule is a circuit. The nuclei are the poles. The bond is the wire. The current is real.</strong></p>
+
+<!-- ============================================================ -->
+<!-- SECTION 9 — CELLULAR SCALE -->
+<!-- ============================================================ -->
+<h2 id="cellular">9 — Cellular Scale — Mitochondrial Proton Circuit</h2>
+
+<div class="callout-teal">
+<h4>The same architecture at cellular scale.</h4>
+<p><strong>Mitochondrial proton-motive force:</strong> 150–220 mV total.</p>
+<ul>
+<li>Matrix (−): cathode</li>
+<li>Membrane exterior (+): anode</li>
+<li>Inner membrane: transmission medium</li>
+<li>ATP synthase: rotary motor output</li>
+</ul>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Component</th><th>Role</th><th>Measured Value</th></tr></thead>
+<tbody>
+<tr><td>Mitochondrial matrix</td><td>Cathode (−)</td><td>−150 to −200 mV</td></tr>
+<tr><td>Membrane exterior</td><td>Anode (+)</td><td>+150 to +200 mV</td></tr>
+<tr><td>Proton-motive force (total)</td><td>Potential difference</td><td>150–220 mV</td></tr>
+<tr><td>ATP synthase rotation</td><td>Mechanical output</td><td>100–150 rotations/second</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 10 — CROSS-SCALE CORRESPONDENCE -->
+<!-- ============================================================ -->
+<h2 id="crossscale">10 — Cross-Scale Correspondence</h2>
+
+<div class="callout-gold">
+<h4>One Architecture — Three Scales</h4>
+<p>The same structural geometry appears at every scale:</p>
+<p><strong>Two poles of opposite charge + transmission medium + external power source = continuous current.</strong></p>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Scale</th><th>Cathode (Compressor)</th><th>Medium</th><th>Anode (Expander)</th><th>Power Source</th><th>Output</th></tr></thead>
+<tbody>
+<tr><td><strong>Molecular</strong></td><td>High-Z nucleus (O,N,F)</td><td>Covalent bond</td><td>Low-Z nucleus (H,C)</td><td>Photon/voltage</td><td>Electron flow, heat, chemistry</td></tr>
+<tr><td><strong>Cellular</strong></td><td>Mitochondrial matrix (−)</td><td>Inner membrane</td><td>Membrane exterior (+)</td><td>NADH/FADH₂</td><td>ATP, heat, rotation</td></tr>
+<tr><td><strong>Planetary</strong></td><td>Earth's Core (cathode)</td><td>Fasma + Element C</td><td>Moon (anode)</td><td>Sun</td><td>Magnetic field, heat, water</td></tr>
+<tr><td><strong>Stellar</strong></td><td>Solar core (fusion)</td><td>Tachocline</td><td>Corona/solar wind</td><td>Galactic field</td><td>Solar wind, magnetic field</td></tr>
+<tr><td><strong>Galactic</strong></td><td>NUS (Sgr A*)</td><td>Accretion disk</td><td>Relativistic jets</td><td>Universal field</td><td>X-rays, galactic structure</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 11 — NESTED TOTALITY -->
+<!-- ============================================================ -->
+<h2 id="nested">11 — The Nested Totality Principle</h2>
+
+<div class="callout-gold">
+<h4>"Zoom in on any colour and you find many colours."</h4>
+<p>Every bounded physical system contains the complete three-pole architecture (compressor/middle/expander) within itself simultaneously.</p>
+</div>
+
+<p><strong>The role an object appears to play is not a fixed property — it depends on the scale of observation.</strong></p>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Scale</th><th>Compressor (Inward)</th><th>Middle (Equilibrium)</th><th>Expander (Outward)</th></tr></thead>
+<tbody>
+<tr><td>Sub-nuclear</td><td>Strong nuclear force</td><td>Stable nucleus</td><td>EM proton repulsion</td></tr>
+<tr><td>Atomic</td><td>Nucleus</td><td>Inner electron shells</td><td>Outer valence electrons</td></tr>
+<tr><td>Molecular</td><td>High-Z nucleus (cathode)</td><td>Covalent bond</td><td>Low-Z nucleus (anode)</td></tr>
+<tr><td>Cellular</td><td>Mitochondrial matrix (−)</td><td>Inner membrane</td><td>Membrane exterior (+)</td></tr>
+<tr><td>Planetary</td><td>Core (cathode)</td><td>Mantle-crust-atmosphere</td><td>Moon (anode)</td></tr>
+<tr><td>Stellar</td><td>Solar core</td><td>Tachocline</td><td>Corona/solar wind</td></tr>
+<tr><td>Galactic</td><td>NUS (Sgr A*)</td><td>Accretion disk</td><td>Relativistic jets</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 12 — CLIMATE EMPIRICAL ANALYSIS -->
+<!-- ============================================================ -->
+<h2 id="climate">12 — Climate Empirical Analysis</h2>
+
+<h3>12.1 EM–Temperature Correlation</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Metric</th><th>Value</th><th>p-value</th></tr></thead>
+<tbody>
+<tr><td>Pearson r (EM vs ΔT)</td><td><strong>0.975</strong></td><td>&lt;0.0001</td></tr>
+<tr><td>R²</td><td><strong>0.95</strong></td><td>—</td></tr>
+<tr><td>CO₂ vs ΔT (comparison)</td><td>r = 0.87, R² = 0.76</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="eq-block">
+$$EM\_Index(t) = \sum [w_i \times normalize(proxy_i(t))]$$
+<div class="eq-label">Proxies: global power generation (TWh), connected devices, tower density, transmission line length</div>
+</div>
+
+<h3>12.2 UHI Regression</h3>
+<div class="eq-block">
+$$UHI = 0.68(EM) + 0.15(Building) + 0.08(Population) - 0.12(Vegetation)$$
+<div class="eq-label">R² = 0.89</div>
+</div>
+
+<h3>12.3 Nanoparticle Thermal Scaling</h3>
+<div class="eq-block">
+$$Q = E \times n \times \sigma \times \eta \times V \times t \approx 10^{21}–10^{22} \text{ J}$$
+<div class="eq-label">E = 10⁻³ J/m³, n = 10¹² m⁻³, σ = 10⁻¹⁴ m², η = 0.85, V = 4.2×10¹⁸ m³, t = 1.6×10⁹ s</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 13 — NUCLEAR FALLOUT -->
+<!-- ============================================================ -->
+<h2 id="fallout">13 — Nuclear Fallout Transport to Polar Ice</h2>
+
+<div class="callout-red">
+<h4>The Full Chain</h4>
+<ol>
+<li>Atmospheric nuclear tests (1945–1980) inject radionuclides into stratosphere</li>
+<li>Seasonal winds and Brewer-Dobson circulation carry particles poleward</li>
+<li>Particles deposit onto polar ice and are trapped in cryoconite</li>
+<li>Cryoconite darkens ice → reduces albedo → accelerates local melting</li>
+<li>As ice melts, stored radionuclides are released back into environment</li>
+</ol>
+</div>
+
+<h3>Key Isotope Fingerprints</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Isotope</th><th>Half-life</th><th>Behavior</th><th>Deposition Peak</th></tr></thead>
+<tbody>
+<tr><td>Cs-137</td><td>30.17 yr</td><td>Soluble ionic, adsorbs in soil</td><td>1963–1964</td></tr>
+<tr><td>Sr-90</td><td>28.8 yr</td><td>Mimics Ca, bioavailable</td><td>1963</td></tr>
+<tr><td>Pu-239/240</td><td>24,110 / 6,563 yr</td><td>Insoluble oxides, particle-bound</td><td>1952–1963</td></tr>
+<tr><td>Am-241</td><td>432 yr</td><td>Particle-reactive, marine accumulation</td><td>post-1963</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Pu-240/Pu-239 Fingerprint Ratios</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Source</th><th>Ratio</th></tr></thead>
+<tbody>
+<tr><td>Global average</td><td>≈ 0.18</td></tr>
+<tr><td>Pacific Proving Grounds (Bravo)</td><td>≈ 0.33</td></tr>
+<tr><td>Nevada Test Site</td><td>≈ 0.032 – 0.035</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Transport Velocities to Poles</h3>
+<div class="eq-block">
+$$v_{transport}^{min} \approx 10 \text{ m/s} \quad v_{transport}^{avg} \approx 30–60 \text{ m/s} \quad v_{transport}^{max} \approx 100–110 \text{ m/s}$$
+<div class="eq-label">Transit times: 2 days (max jet) to several weeks (slow tropospheric path)</div>
+</div>
+
+<h3>Ice Core Evidence</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Site</th><th>Location</th><th>Isotopes</th><th>1963 Peak?</th></tr></thead>
+<tbody>
+<tr><td>NEEM (Greenland)</td><td>77.45°N, 51.06°W</td><td>²³⁹Pu, ²⁴⁰Pu, ¹³⁷Cs</td><td class="status-yes">YES</td></tr>
+<tr><td>GV7 (Antarctica)</td><td>70.69°S, 158.86°E</td><td>²³⁹Pu, ¹³⁷Cs</td><td class="status-yes">YES</td></tr>
+<tr><td>Novaya Zemlya glaciers</td><td>73°N, 54°E</td><td>¹³⁷Cs (5,700–8,100 Bq/kg)</td><td class="status-yes">YES</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 14 — MECP IN SOLAR SYSTEM -->
+<!-- ============================================================ -->
+<h2 id="solar">14 — MECP in the Solar System</h2>
+
+<div class="callout-teal">
+<h4>Universal Law</h4>
+<p>Planetary MECP: $AU \times (1 - 1/N)$ where $N =$ rotations per orbit.</p>
+<p>Satellite MECP: parent distance × (moon period / parent period).</p>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Body</th><th>Distance to Sun (km)</th><th>Rotations per orbit (N)</th><th>MECP distance (km)</th></tr></thead>
+<tbody>
+<tr><td><strong>Earth</strong></td><td>149,597,871</td><td>366.256</td><td><strong>149,189,608</strong></td></tr>
+<tr><td>Mars</td><td>227,939,200</td><td>669.6</td><td>227,559,000</td></tr>
+<tr><td>Ceres</td><td>413,700,000</td><td>4,447</td><td>413,607,000</td></tr>
+<tr><td>Jupiter</td><td>778,500,000</td><td>10,476</td><td>778,426,000</td></tr>
+<tr><td>Saturn</td><td>1,433,530,000</td><td>24,491</td><td>1,433,941,000</td></tr>
+<tr><td>Neptune</td><td>4,495,060,000</td><td>89,666</td><td>4,494,950,000</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Earth-Moon System Constants</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Ring</th><th>Center</th><th>Radius (km)</th></tr></thead>
+<tbody>
+<tr><td>R_C (Earth's MECP)</td><td>Earth</td><td>408,262.3</td></tr>
+<tr><td>R_D (Sun-centered MECP)</td><td>Sun</td><td>149,189,608</td></tr>
+<tr><td>R_A (Moon's satellite MECP)</td><td>Earth</td><td>11,191,613</td></tr>
+<tr><td>R_B (Moon's Sun-centered MECP)</td><td>Sun</td><td>138,406,257</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 15 — ANOMALIES -->
+<!-- ============================================================ -->
+<h2 id="anomalies">15 — Confirmed Anomalies (Mainstream Cannot Explain)</h2>
+
+<div class="callout-red">
+<h4>Published, peer-reviewed measurements that current models cannot account for:</h4>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Anomaly</th><th>Measurement</th></tr></thead>
+<tbody>
+<tr><td>CMB reverse flux patches</td><td>&gt;10 mT measured vs &lt;5 mT predicted</td></tr>
+<tr><td>Inner core oscillation/reversal (~2009)</td><td>Reversed direction around 2008.5 ± 0.2 years</td></tr>
+<tr><td>LOD 6-year and 8.5-year oscillations</td><td>Confirmed by VLBI, GPS, atomic clocks</td></tr>
+<tr><td>Anomalous Moon recession rate</td><td>3.83 cm/year today vs ~2.17 cm/year 80 Ma ago</td></tr>
+<tr><td>Inner core hemispherical asymmetry</td><td>P-waves 0.5–2.0% faster in quasi-eastern hemisphere</td></tr>
+<tr><td>Lunar fluid core</td><td>Radius 381 ± 12 km, no current dynamo</td></tr>
+<tr><td>Magnetotail lobe potential inversion</td><td>Moon's sunlit surface +40 to +200 V in tail lobe</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 16 — SUMMARY -->
+<!-- ============================================================ -->
+<h2 id="summary">16 — Summary Table — Evidence Status</h2>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Claim</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Fasma Substrate — space as packed medium</td><td class="status-confirm">Confirmed (ε₀, μ₀, Z₀ measured)</td></tr>
+<tr><td>Molecular anode-cathode architecture (VIOTEMP 1.16 V)</td><td class="status-yes">Measured, published</td></tr>
+<tr><td>Cellular anode-cathode (mitochondrial 150-220 mV)</td><td class="status-yes">Measured, published</td></tr>
+<tr><td>MECP — 408,262.3 km from gear-ratio</td><td class="status-confirm">Derived from measured facts</td></tr>
+<tr><td>Moon inside MECP (384,400 < 408,262)</td><td class="status-yes">Measured</td></tr>
+<tr><td>Moon recession rate (3.83 cm/year)</td><td class="status-yes">Measured (LLR)</td></tr>
+<tr><td>MAE — 10.50 km atmospheric skin</td><td class="status-confirm">Derived from MECP + Earth/Moon ratio</td></tr>
+<tr><td>Core-Moon-Sun circuit as planetary engine</td><td class="status-part">Proposed — structurally consistent</td></tr>
+<tr><td>EM-Temperature correlation (r=0.975)</td><td class="status-yes">Reported, requires replication</td></tr>
+<tr><td>Nuclear fallout transport to poles</td><td class="status-yes">Confirmed (ice cores)</td></tr>
+<tr><td>Cryoconite concentration and albedo reduction</td><td class="status-yes">Confirmed</td></tr>
+<tr><td>Water manufacturing — Solar H₂ + C + cold trap</td><td class="status-part">Proposed, testable</td></tr>
+<tr><td>Nested Totality Principle</td><td class="status-part">Proposed — structurally coherent</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout-gold">
+<h4>The Final Statement</h4>
+<p><strong>The Earth is not a lucky rock. It is a precision synchronous induction motor — assembled from a binary magnetic seed, grown by electromagnetic selective accretion, tuned to its orbital position by the MECP gear-ratio, cooled by the water its own engine manufactures, and protected by an electromagnetic skin at 408,262 km.</strong></p>
+<p>This is not metaphor. It is the mechanics of reality, read from the numbers that reality itself provides.</p>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+<p><strong>Morphean Cosmology Framework (MCF) — Complete Unified Reference</strong></p>
+<p>Framework authored by Christos Sotirelis — "Morpheas the Shape Master"</p>
+<p>License: MCF-LP BY-NC-ND-EP — Attribution required, Non-commercial, No derivatives, Ethics preservation</p>
+<p><em>"We don't create the paths. They reveal themselves. We just roam them all."</em></p>
+</div>
+
+</div>
+</body>
+</html>

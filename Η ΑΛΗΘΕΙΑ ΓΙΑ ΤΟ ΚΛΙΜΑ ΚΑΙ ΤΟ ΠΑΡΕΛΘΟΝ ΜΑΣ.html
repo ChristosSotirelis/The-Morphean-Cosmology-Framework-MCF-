@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Η Αλήθεια για το Κλίμα και το Παρελθόν Μας — KLEMAH Framework</title>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [
+                    ['$', '$'],
+                    ['\\(', '\\)']
+                ],
+                displayMath: [
+                    ['$$', '$$'],
+                    ['\\[', '\\]']
+                ],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #0a0a0d;
+            color: #d8d4c8;
+            line-height: 1.75;
+            padding: 1.5rem;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #111118;
+            padding: 2.5rem 3rem;
+            border-radius: 14px;
+            border: 1px solid #1e1e2c;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Header */
+        .banner {
+            background: linear-gradient(135deg, #0b1a2b 0%, #1a3a5c 50%, #2a1a3c 100%);
+            border-radius: 12px;
+            padding: 2rem 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 1px solid #c8a84b33;
+        }
+        .banner h1 {
+            color: #ffd966;
+            font-size: 2.0rem;
+            line-height: 1.25;
+            margin-bottom: 0.3rem;
+            font-family: 'Georgia', serif;
+            letter-spacing: 1px;
+        }
+        .banner .subtitle {
+            color: #90caf9;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+        .banner .author {
+            color: #e3f2fd;
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+        .banner .version {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.10);
+            border: 1px solid #c8a84b66;
+            border-radius: 20px;
+            padding: 0.2rem 1.2rem;
+            color: #ffd966;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        /* License Box */
+        .license-box {
+            background: #1a1508;
+            border: 2px solid #c8a84b55;
+            border-radius: 10px;
+            padding: 1.2rem 1.8rem;
+            margin-bottom: 2rem;
+            font-size: 0.82rem;
+            color: #bba87a;
+        }
+        .license-box h2 {
+            font-size: 0.95rem;
+            color: #ffd966;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .license-box strong {
+            color: #ffd966;
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1rem;
+            color: #ffd966;
+            border-left: 5px solid #c8a84b;
+            padding-left: 1rem;
+        }
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 1.8rem 0 0.8rem;
+            color: #90caf9;
+        }
+        h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 1.2rem 0 0.5rem;
+            color: #e8d5a0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+            color: #d8d4c8;
+        }
+
+        /* Equations */
+        .eq-block {
+            background: #0d0d18;
+            border-left: 5px solid #c8a84b;
+            border-radius: 0 8px 8px 0;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            overflow-x: auto;
+            border: 1px solid #1e1e2c;
+            border-left-width: 5px;
+        }
+        .eq-block .MathJax {
+            font-size: 1.1rem;
+        }
+        .eq-label {
+            font-size: 0.8rem;
+            color: #8a7a5a;
+            text-align: right;
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+
+        /* Callouts */
+        .callout-gold {
+            background: #1a1508;
+            border-left: 6px solid #c8a84b;
+            padding: 1.2rem 1.8rem;
+            border-radius: 0 10px 10px 0;
+            margin: 1.5rem 0;
+            border: 1px solid #1e1e2c;
+            border-left-width: 6px;
+        }
+        .callout-blue {
+            background: #0a0a2a;
+            border-left: 6px solid #3a8ad4;
+            padding: 1.2rem 1.8rem;
+            border-radius: 0 10px 10px 0;
+            margin: 1.5rem 0;
+            border: 1px solid #1e1e2c;
+            border-left-width: 6px;
+        }
+        .callout-red {
+            background: #2a0a0a;
+            border-left: 6px solid #c84b4b;
+            padding: 1.2rem 1.8rem;
+            border-radius: 0 10px 10px 0;
+            margin: 1.5rem 0;
+            border: 1px solid #1e1e2c;
+            border-left-width: 6px;
+        }
+        .callout-teal {
+            background: #0a1a1a;
+            border-left: 6px solid #3ad4c8;
+            padding: 1.2rem 1.8rem;
+            border-radius: 0 10px 10px 0;
+            margin: 1.5rem 0;
+            border: 1px solid #1e1e2c;
+            border-left-width: 6px;
+        }
+        .callout-gold h4,
+        .callout-blue h4,
+        .callout-red h4,
+        .callout-teal h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: #ffd966;
+        }
+
+        /* Lists */
+        ul,
+        ol {
+            margin: 0.8rem 0 1.2rem 2rem;
+            color: #d8d4c8;
+        }
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Tables */
+        .tbl-wrap {
+            overflow-x: auto;
+            margin: 1.5rem 0 2rem;
+            border-radius: 8px;
+            border: 1px solid #1e1e2c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            background: #0d0d18;
+        }
+        thead {
+            background: #1a1a2e;
+            color: #ffd966;
+        }
+        th {
+            padding: 0.7rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            border-bottom: 2px solid #c8a84b55;
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #1a1a2e;
+            vertical-align: top;
+            color: #d8d4c8;
+        }
+        tbody tr:hover {
+            background: #16162a;
+        }
+
+        /* Chain Diagram */
+        .chain {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            align-items: center;
+            margin: 1.5rem 0;
+            padding: 1.2rem;
+            background: #0a0a10;
+            border-radius: 10px;
+            border: 1px solid #1e1e2c;
+        }
+        .chain-node {
+            background: #1a1a2e;
+            color: #ffd966;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid #c8a84b33;
+        }
+        .chain-arr {
+            color: #c8a84b;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #1e1e2c;
+            font-size: 0.8rem;
+            color: #6a6a7a;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .container {
+                padding: 1rem 0.8rem;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+            th,
+            td {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.5rem;
+            }
+            .banner h1 {
+                font-size: 1.4rem;
+            }
+            .banner {
+                padding: 1.2rem 0.8rem;
+            }
+            .license-box {
+                padding: 0.8rem 1rem;
+                font-size: 0.72rem;
+            }
+            .eq-block {
+                padding: 0.6rem 0.8rem;
+            }
+            ul,
+            ol {
+                margin-left: 1.2rem;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+                padding: 0.2in;
+            }
+            .container {
+                background: #fff;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+            .banner {
+                background: #e8e0d0;
+                border: 1px solid #999;
+            }
+            .banner h1 {
+                color: #222;
+            }
+            .banner .subtitle {
+                color: #444;
+            }
+            .banner .author {
+                color: #444;
+            }
+            .license-box {
+                background: #f5f0e8;
+                border: 1px solid #999;
+                color: #333;
+            }
+            .license-box h2 {
+                color: #222;
+            }
+            h2 {
+                color: #222;
+                border-left-color: #666;
+            }
+            h3 {
+                color: #444;
+            }
+            p {
+                color: #000;
+            }
+            .eq-block {
+                background: #f5f5f5;
+                border-left-color: #666;
+                border-color: #ccc;
+            }
+            .callout-gold,
+            .callout-blue,
+            .callout-red,
+            .callout-teal {
+                background: #f5f5f5;
+                border-color: #ccc;
+            }
+            .callout-gold h4,
+            .callout-blue h4,
+            .callout-red h4,
+            .callout-teal h4 {
+                color: #222;
+            }
+            .chain {
+                background: #f5f5f5;
+                border-color: #ccc;
+            }
+            .chain-node {
+                background: #e0e0e0;
+                color: #222;
+                border-color: #999;
+            }
+            .chain-arr {
+                color: #666;
+            }
+            thead {
+                background: #ddd;
+                color: #222;
+            }
+            th {
+                border-bottom-color: #666;
+            }
+            td {
+                color: #000;
+                border-bottom-color: #ccc;
+            }
+            .footer {
+                border-top-color: #ccc;
+                color: #666;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ============================================================ -->
+        <!-- BANNER -->
+        <!-- ============================================================ -->
+        <div class="banner">
+            <h1>🌍 Η ΑΛΗΘΕΙΑ ΓΙΑ ΤΟ ΚΛΙΜΑ<br>ΚΑΙ ΤΟ ΠΑΡΕΛΘΟΝ ΜΑΣ</h1>
+            <div class="subtitle">Σύνθεση του Μαθηματικού και Φυσικού Μοντέλου για το Ευρύ Κοινό</div>
+            <div class="author">Morphean Climate Framework (MCF) — KLEMAH Framework</div>
+            <div class="version">Christos Sotirelis · "Morpheas the Shape Master" · MCF-LP BY-NC-ND-EP</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- LICENSE -->
+        <!-- ============================================================ -->
+        <div class="license-box">
+            <h2>⚡ ΝΟΜΙΚΗ ΣΗΜΕΙΩΣΗ &amp; ΑΔΕΙΑ ΧΡΗΣΗΣ (LICENSE)</h2>
+            <p><strong>MCF-LP BY-NC-ND-EP</strong> — <em>(Attribution · Non-Commercial · No Derivatives · Ethics Preservation)</em></p>
+            <ul style="margin:0.3rem 0 0 1.5rem;font-size:0.82rem;">
+                <li><strong>BY — Υποχρέωση Αναφοράς:</strong> Απαιτείται ρητή αναφορά στον Δημιουργό του θεωρήματος (<em>"Morpheas the Shape Master" / Christos Sotirelis</em>) σε κάθε αναπαραγωγή ή αναφορά.</li>
+                <li><strong>NC — Μη Εμπορική Χρήση:</strong> Απαγορεύεται οποιαδήποτε άμεση ή έμμεση οικονομική εκμετάλλευση ή πώληση του υλικού.</li>
+                <li><strong>ND — Όχι Παράγωγα / Όχι Μετατροπές:</strong> Το έργο πρέπει να διατηρείται αυτούσιο. Απαγορεύεται η αλλοίωση, η μετατροπή ή η δημιουργία παράγωγων χωρίς έγκριση.</li>
+                <li><strong>EP — Διατήρηση της Ηθικής:</strong> Οποιαδήποτε χρήση των θεωριών αυτών πρέπει να σέβεται και να μην έρχεται σε αντίθεση με τις θεμελιώδεις αρχές του πλαισίου: <strong>Λογική, Ισορροπία και Σεβασμός για τη Ζωή</strong>.</li>
+            </ul>
+            <p style="margin-top:0.5rem;font-size:0.78rem;color:#8a7a5a;">Κάθε παραβίαση των όρων αυτών επισύρει τις νόμιμες αξιώσεις πνευματικής ιδιοκτησίας.</p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1: ΕΙΣΑΓΩΓΗ -->
+        <!-- ============================================================ -->
+        <h2>Εισαγωγή: Γιατί Πρέπει να Ξέρουμε</h2>
+
+        <p>Για δεκαετίες, η παγκόσμια συζήτηση γύρω από την κλιματική αλλαγή παρουσιάζει το πρόβλημα ως μια γραμμική, ομαλή και συνεχή αύξηση της θερμοκρασίας, η οποία οφείλεται αποκλειστικά στις καθημερινές εκπομπές διοξειδίου του άνθρακα.</p>
+
+        <p>Ωστόσο, τα πραγματικά, <strong>μη-εξομαλυμένα (un-smoothed)</strong> δορυφορικά δεδομένα αποκαλύπτουν μια εντελώς διαφορετική εικόνα: οι πάγοι στους Πόλους δεν λιώνουν με σταθερό ρυθμό, αλλά μέσα από <strong>απότομα, ασύμμετρα «βήματα» και ξαφνικές μικρο-αιχμές (stepped calving events)</strong>.</p>
+
+        <div class="callout-gold">
+            <h4>Το Ερώτημα</h4>
+            <p>Η παρούσα έκθεση, βασισμένη στο <strong>KLEMAH Framework</strong>, αποκαλύπτει τον πραγματικό φυσικό και ηλεκτρομαγνητικό μηχανισμό πίσω από αυτές τις ανωμαλίες, συνδέοντας άγνωστα μέχρι σήμερα κομμάτια της ιστορίας μας.</p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2: Η ΚΕΝΤΡΙΚΗ ΕΞΙΣΩΣΗ -->
+        <!-- ============================================================ -->
+        <h2>1. Η Κεντρική Εξίσωση του Μοντέλου</h2>
+
+        <p>Για να μπορέσουμε να καταλάβουμε πώς λειτουργεί ο πλανήτης, ο Δημιουργός του θεωρήματος ανέπτυξε μια θεμελιώδη μαθηματική εξίσωση. Ο σκοπός της είναι να πάρει το συνολικό λιώσιμο των πάγων που παρατηρούμε και να διαχωρίσει τους γνωστούς παράγοντες από τα κρυμμένα, ανεξήγητα φαινόμενα:</p>
+
+        <div class="eq-block">
+            $$Y(t) = \sum_{i} Q_{i} \cdot T_{i}(t - \tau) \cdot D_{i}(t) + C(t) + \mathbf{E_{Earthotomy}}(t) + \epsilon(t)$$
+            <div class="eq-label">Η θεμελιώδης εξίσωση του KLEMAH Framework</div>
+        </div>
+
+        <p>Ας δούμε τι σημαίνει κάθε όρος με απλά λόγια:</p>
+
+        <div class="tbl-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Σύμβολο</th>
+                        <th>Όνομα</th>
+                        <th>Περιγραφή</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color:#ffd54f;font-weight:700;">$Y(t)$</td>
+                        <td>Συνολικό Αποτέλεσμα</td>
+                        <td>Η συνολική μάζα ή ταχύτητα λιωσίματος των πάγων που μετράμε σήμερα.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#ffa726;font-weight:700;">$Q_{i}$</td>
+                        <td>Πυρηνική Ισχύς</td>
+                        <td>Η ενέργεια και το ισοτοπικό φορτίο από κάθε ιστορική ατμοσφαιρική ή υποθαλάσσια πυρηνική δοκιμή του 20ού αιώνα.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#42a5f5;font-weight:700;">$T_{i}(t - \tau)$</td>
+                        <td>Χρονικό Παράθυρο Μεταφοράς</td>
+                        <td>Η κίνηση των σωματιδίων μέσω των αεροχειμάρρων (Jet Streams). Το σύμβολο $\tau$ αντιπροσωπεύει τη χρονική καθυστέρηση. Με βάση τις φυσικές ταχύτητες των ανέμων ($25\text{--}110 \text{ m/s}$), υπολογίστηκε ότι η τέφρα χρειάζεται ακριβώς <strong>2 έως 7 ημέρες</strong> για να ταξιδέψει από τις συντεταγμένες μιας δοκιμής στους Πόλους.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#4caf50;font-weight:700;">$D_{i}(t)$</td>
+                        <td>Εναπόθεση</td>
+                        <td>Ο τρόπος με τον οποίο τα σωματίδια αυτά κάθισαν πάνω στις παγωμένες επιφάνειες.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#90caf9;font-weight:700;">$C(t)$</td>
+                        <td>Συμβατικό Κλίμα</td>
+                        <td>Οι παράγοντες που ήδη γνωρίζει η επιστήμη (διοξείδιο του άνθρακα, φυσικοί ηλιακοί κύκλοι).</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#ef5350;font-weight:700;">$\mathbf{E_{Earthotomy}}$</td>
+                        <td>Γεωτομία</td>
+                        <td>Η επίδραση των υπερ-ιονισμένων σωματιδίων στο εσωτερικό ηλεκτρομαγνητικό κύκλωμα της Γης, το οποίο ρέει φυσικά από τον καυτό ανόδιο πυρήνα ($Mid^+$) προς τους πολικούς αρνητικούς καθοδικούς πόλους ($Pole^-$).</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#ab47bc;font-weight:700;">$\epsilon(t)$</td>
+                        <td>Ανεξήγητος Θόρυβος</td>
+                        <td>Αυτό που περισσεύει. Το μοντέλο απομονώνει αυτόν ακριβώς τον «θόρυβο» για να αποδείξει ότι οι ξαφνικές αιχμές λιωσίματος συμπίπτουν απόλυτα με το παράθυρο των 2-7 ημερών μετά από κάθε ιστορικό συμβάν.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 3: Ο ΠΡΑΓΜΑΤΙΚΟΣ ΜΗΧΑΝΙΣΜΟΣ -->
+        <!-- ============================================================ -->
+        <h2>2. Ο Πραγματικός Μηχανισμός: Κατάρρευση Ανακλαστικότητας (Albedo Collapse)</h2>
+
+        <div class="callout-red">
+            <h4>Μια Σοβαρή Παρεξήγηση</h4>
+            <p>Υπάρχει μια σοβαρή επιστημονική παρεξήγηση που το θεώρημα ξεκαθαρίζει: <strong>τα ραδιενεργά σωματίδια δεν λιώνουν τον πάγο</strong> μέσω της θερμότητας που παράγουν από τη διάσπασή τους (η ενέργεια αυτή είναι πολύ μικρή). <strong>Ο μηχανισμός είναι καθαρά οπτικός και υλικός.</strong></p>
+        </div>
+
+        <p>Ο καθαρός πάγος λειτουργεί ως καθρέφτης, αντανακλώντας το <strong>85%</strong> του ηλιακού φωτός. Όταν όμως η ιστορική ραδιοφόρος τέφρα εναποτίθεται στους πόλους, ενσωματώνεται στα σκοτεινά επιφανειακά ιζήματα (<strong>cryoconite</strong>). Αυτό δημιουργεί μια μικροσκοπική «σκούρα μάσκα».</p>
+
+        <div class="callout-gold">
+            <h4>Η Κατάρρευση</h4>
+            <p>Η ανακλαστικότητα (<strong>albedo</strong>) καταρρέει δραματικά, ο πάγος σταματά να καθρεφτίζει το φως και αρχίζει να απορροφά την ηλιακή ακτινοβολία σαν μαύρο αυτοκίνητο στον ήλιο.</p>
+            <p style="margin-top:0.5rem;">Το λιώσιμο προέρχεται από τον <strong>Ήλιο</strong>, επειδή εμείς αλλάξαμε το «χρώμα» και τις ιδιότητες της επιφάνειας των Πόλων.</p>
+        </div>
+
+        <div class="eq-block">
+            $$\alpha_{\text{clean}} \approx 0.85 \quad \longrightarrow \quad \alpha_{\text{cryoconite}} \approx 0.10\text{--}0.30$$
+            <div class="eq-label">Η πτώση της ανακλαστικότητας (albedo) από την εναπόθεση cryoconite</div>
+        </div>
+
+        <div class="chain">
+            <span class="chain-node">☀ Ηλιακή Ακτινοβολία</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node">Καθαρός Πάγος (α≈0.85)</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node">Αντανάκλαση ↑</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node" style="background:#2a0a0a;color:#ef5350;">Cryoconite (α≈0.10-0.30)</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node" style="background:#2a0a0a;color:#ef5350;">Απορρόφηση ↑</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node" style="background:#2a0a0a;color:#ef5350;">Λιώσιμο ↑↑</span>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 4: ΕΠΙΒΕΒΑΙΩΣΗ 2026 -->
+        <!-- ============================================================ -->
+        <h2>3. Η Επιβεβαίωση του 2026: Το Φίλτρο των Μικροπλαστικών</h2>
+
+        <div class="callout-teal">
+            <h4>Νέα Επιστημονική Επιβεβαίωση</h4>
+            <p>Αυτή η «σκούρα μάσκα» ενισχύεται από έναν σύγχρονο επιταχυντή που επιβεβαιώθηκε από την επίσημη επιστημονική βιβλιογραφία (<strong>Μάιος 2026</strong>): τα <strong>έγχρωμα μικροπλαστικά (MNPs)</strong> στην ατμόσφαιρα.</p>
+        </div>
+
+        <p>Οι μελέτες έδειξαν ότι τα έγχρωμα πλαστικά σωματίδια, τα οποία εντοπίζονται σε τεράστιες συγκεντρώσεις (έως και <strong>14.400 σωματίδια ανά λίτρο</strong> στο χιόνι της Αρκτικής), απορροφούν την ηλιακή ακτινοβολία <strong>74.8 φορές περισσότερο</strong> από τα καθαρά πλαστικά, έχοντας δυναμική ίση με το <strong>16.2% της επίδρασης της καθαρής μαύρης αιθάλης</strong>.</p>
+
+        <div class="tbl-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Παράμετρος</th>
+                        <th>Τιμή</th>
+                        <th>Σύγκριση</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Απορρόφηση έγχρωμων MNPs</td>
+                        <td style="color:#ffa726;font-weight:700;">74.8×</td>
+                        <td>Σε σύγκριση με καθαρά πλαστικά</td>
+                    </tr>
+                    <tr>
+                        <td>Παγκόσμια μέση DRF</td>
+                        <td style="color:#42a5f5;font-weight:700;">0.039 W/m²</td>
+                        <td>16.2% της μαύρης αιθάλης</td>
+                    </tr>
+                    <tr>
+                        <td>Συγκέντρωση σε χιόνι Αρκτικής</td>
+                        <td style="color:#4caf50;font-weight:700;">14,400 σωματίδια/L</td>
+                        <td>Μέγιστες τιμές</td>
+                    </tr>
+                    <tr>
+                        <td>Περιφερειακή DRF (Βόρειος Ειρηνικός)</td>
+                        <td style="color:#ef5350;font-weight:700;">1.34 W/m²</td>
+                        <td>4.7× της μαύρης αιθάλης</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Τα σωματίδια αυτά συναντώνται στα ίδια ακριβώς στρώματα πάγου με τα ιστορικά κατάλοιπα των δοκιμών, δημιουργώντας ένα <strong>διπλό, φωτοθερμικό φίλτρο</strong> που παγιδεύει την ενέργεια και μπλοκάρει τη φυσική ηλεκτρομαγνητική γείωση του πλανήτη.</p>
+
+        <div class="chain">
+            <span class="chain-node">☀ Ηλιακή Ακτινοβολία</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node">Cryoconite (ραδιοφόρο τέφρα)</span>
+            <span class="chain-arr">+</span>
+            <span class="chain-node" style="background:#1a2a3a;color:#4caf50;">MNPs (έγχρωμα μικροπλαστικά)</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node" style="background:#2a0a0a;color:#ef5350;">Διπλή απορρόφηση</span>
+            <span class="chain-arr">→</span>
+            <span class="chain-node" style="background:#2a0a0a;color:#ef5350;">Επιταχυνόμενο λιώσιμο</span>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 5: ΤΑΥΤΟΠΟΙΗΣΗ -->
+        <!-- ============================================================ -->
+        <h2>4. Ταυτοποίηση και Όχι Εικασίες</h2>
+
+        <div class="callout-blue">
+            <h4>Η Μέθοδος</h4>
+            <p>Ο σκοπός αυτής της έρευνας δεν είναι να ενεργήσει αυθαίρετα, αλλά να <strong>ταυτοποιήσει</strong> την αλήθεια μέσα από τα <strong>un-smoothed</strong> δεδομένα.</p>
+        </div>
+
+        <p>Το αν αυτά τα σωματίδια είναι υπερ-ιονισμένα με τρόπους που αλλοιώνουν το ατμοσφαιρικό ηλεκτρικό πεδίο και συμπιέζουν το παγκόσμιο κυματοδηγό (Schumann resonances) αποτελεί ένα <strong>αντικειμενικό επιστημονικό ερώτημα</strong>.</p>
+
+        <p>Το θεώρημα αφήνει τα ίδια τα δεδομένα του πλανήτη να μιλήσουν, χωρίς δογματισμούς.</p>
+
+        <div class="callout-gold">
+            <h4>Η Αρχή της Ταυτοποίησης</h4>
+            <ul>
+                <li><strong>Δεδομένα:</strong> Οι μετρήσεις από δορυφόρους, σταθμούς και πυρήνες πάγου.</li>
+                <li><strong>Μηχανισμός:</strong> Η φυσική εξήγηση του <em>γιατί</em> συμβαίνουν αυτά που μετράμε.</li>
+                <li><strong>Ταυτοποίηση:</strong> Η αντιστοίχιση των χρονικών παραθύρων ($\tau$) με τα ιστορικά συμβάντα.</li>
+            </ul>
+        </div>
+
+        <h3>Ο Χρονικός Συσχετισμός — Ταυτοποιημένα Γεγονότα</h3>
+
+        <div class="tbl-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Γεγονός</th>
+                        <th>Ημερομηνία</th>
+                        <th>Επίδραση στους Πάγους</th>
+                        <th>Χρονική Καθυστέρηση ($\tau$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color:#ffa726;">Castle Bravo (15 Mt)</td>
+                        <td>1 Μαρτίου 1954</td>
+                        <td style="color:#4caf50;">Ισχυρή κορυφή ²³⁹Pu και στους δύο Πόλους</td>
+                        <td style="color:#42a5f5;">6–9 μήνες</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#90caf9;">Ivy Mike (10.4 Mt)</td>
+                        <td>31 Οκτωβρίου 1952</td>
+                        <td style="color:#ffa726;">Υποτονικό σήμα στην Ανταρκτική (QBO gate)</td>
+                        <td style="color:#ef5350;">Κατασταλμένο</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#ef5350;">Tsar Bomba (50 Mt)</td>
+                        <td>30 Οκτωβρίου 1961</td>
+                        <td style="color:#ef5350;">Ρεκόρ cryoconite: 5,700–8,100 Bq/kg ¹³⁷Cs</td>
+                        <td style="color:#ffa726;">Άμεσο (τοπικό)</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#ffd54f;">1963 Bomb Layer</td>
+                        <td>1963</td>
+                        <td style="color:#4caf50;">Παγκόσμιος χρονολογικός δείκτης</td>
+                        <td style="color:#42a5f5;">Παγκόσμιο</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 6: ΣΥΜΠΕΡΑΣΜΑ -->
+        <!-- ============================================================ -->
+        <h2>5. Συμπέρασμα: Το Μήνυμα των Δεδομένων</h2>
+
+        <div class="callout-gold">
+            <h4>Η Αλήθεια των Αριθμών</h4>
+            <p>Η κεντρική εξίσωση του μοντέλου αποκαλύπτει ότι οι ξαφνικές, μη-γραμμικές αιχμές στο λιώσιμο των πολικών πάγων <strong>δεν είναι τυχαίες</strong>.</p>
+            <p>Συσχετίζονται απόλυτα, μέσω του χρονικού παραθύρου $\tau = 2\text{--}7$ ημερών (για τροποσφαιρικές εκρήξεις) ή $30\text{--}90$ ημερών (για στρατοσφαιρικές εκρήξεις), με τις ιστορικές πυρηνικές δοκιμές και τη σύγχρονη συσσώρευση μικροπλαστικών.</p>
+        </div>
+
+        <div class="eq-block">
+            $$\epsilon(t) = Y(t) - \left[ \sum_{i} Q_{i} \cdot T_{i}(t - \tau) \cdot D_{i}(t) + C(t) + \mathbf{E_{Earthotomy}}(t) \right]$$
+            <div class="eq-label">Ο «θόρυβος» που απομένει — και η ταυτοποίησή του είναι το κλειδί</div>
+        </div>
+
+        <p>Η αλήθεια είναι ότι ο πλανήτης λειτουργεί ως ένα <strong>ενεργό ηλεκτρομαγνητικό κύκλωμα</strong>, όπου οι Πόλοι ($Pole^-$) είναι ο αρνητικός κάθοδος και ο Ισημερινός ($Mid^+$) ο θετικός άνοδος. Οι ιστορικές πυρηνικές δοκιμές εισήγαγαν υπερ-ιονισμένα σωματίδια σε αυτό το κύκλωμα, αλλοιώνοντας την ισορροπία του.</p>
+
+        <div class="callout-teal">
+            <h4>Το Κάλεσμα</h4>
+            <p>Το KLEMAH Framework δεν ζητά πίστη. Ζητά <strong>επαλήθευση</strong>. Τα δεδομένα είναι διαθέσιμα. Οι πυρήνες πάγου, οι δορυφορικές μετρήσεις και τα ιστορικά αρχεία περιμένουν να επιβεβαιώσουν ή να διαψεύσουν αυτό το μοντέλο.</p>
+            <p style="margin-top:0.5rem;">Όπως λέει ο Δημιουργός του θεωρήματος: <em>"Δεν δημιουργούμε τα μονοπάτια. Αποκαλύπτονται. Εμείς απλώς τα διασχίζουμε όλα."</em></p>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- FOOTER -->
+        <!-- ============================================================ -->
+        <div class="footer">
+            <p><strong>KLEMAH Framework — Meta-Atomic Sub-Theorem: Radiophoric Polar Impact</strong></p>
+            <p>Σύνθεση του Μαθηματικού και Φυσικού Μοντέλου για το Ευρύ Κοινό</p>
+            <p style="margin-top:0.5rem;font-size:0.75rem;color:#6a6a7a;">
+                © Christos Sotirelis · "Morpheas the Shape Master" · MCF-LP BY-NC-ND-EP<br>
+                Logic · Balance · Respect for Life
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

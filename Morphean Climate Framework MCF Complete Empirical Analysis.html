@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morphean Climate Framework — Complete Analysis</title>
+<script>
+MathJax = {
+    tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Georgia, 'Times New Roman', serif; background: #fafaf8; color: #1e1e1e; line-height: 1.75; padding: 2rem 1rem; }
+.container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 3rem 3.5rem; border-radius: 14px; box-shadow: 0 8px 50px rgba(0,0,0,0.08); }
+.license-box { background: #fff8e1; border: 2px solid #f9a825; border-radius: 10px; padding: 1.4rem 1.8rem; margin-bottom: 2.5rem; font-size: 0.88rem; }
+.license-box h2 { font-size: 1rem; color: #795548; margin-bottom: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
+.banner { background: linear-gradient(135deg, #0b1a2b 0%, #1a3a5c 100%); border-radius: 12px; padding: 2.5rem 2rem; margin-bottom: 2.5rem; text-align: center; }
+.banner h1 { color: #fff; font-size: 1.9rem; line-height: 1.35; margin-bottom: 0.8rem; }
+.banner .subtitle { color: #90caf9; font-size: 1rem; margin-bottom: 0.5rem; }
+.banner .author { color: #e3f2fd; font-size: 0.9rem; opacity: 0.85; }
+.banner .version { display: inline-block; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 0.2rem 1rem; color: #fff; font-size: 0.8rem; margin-top: 0.8rem; }
+.plain-english { background: #e8f5e9; border-left: 6px solid #2e7d32; border-radius: 0 10px 10px 0; padding: 1.4rem 1.8rem; margin: 2rem 0; }
+.plain-english h3 { color: #1b5e20; font-size: 1.1rem; margin-bottom: 0.7rem; }
+h2 { font-size: 1.65rem; font-weight: 700; margin: 3rem 0 1.2rem; color: #0b1a2b; border-left: 5px solid #b31b1b; padding-left: 1rem; }
+h3 { font-size: 1.2rem; font-weight: 700; margin: 2rem 0 0.8rem; color: #1a3a5c; }
+h4 { font-size: 1.05rem; font-weight: 700; margin: 1.5rem 0 0.5rem; color: #2a4a6a; }
+p { margin-bottom: 1rem; text-align: justify; }
+ul, ol { margin: 0.8rem 0 1.2rem 2rem; }
+li { margin-bottom: 0.5rem; }
+.eq-block { background: #f0f4fa; border-left: 5px solid #1565c0; border-radius: 0 8px 8px 0; padding: 1rem 1.5rem; margin: 1.5rem 0; text-align: center; overflow-x: auto; }
+.eq-label { font-size: 0.82rem; color: #1565c0; text-align: right; margin-top: 0.3rem; font-style: italic; }
+.tbl-wrap { overflow-x: auto; margin: 1.8rem 0 2.2rem; border-radius: 10px; border: 1px solid #d0d7de; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+table { width: 100%; border-collapse: collapse; font-size: 0.89rem; background: #fff; }
+thead { background: #0b1a2b; color: #fff; }
+th { padding: 0.75rem 1rem; text-align: left; font-weight: 600; white-space: nowrap; }
+td { padding: 0.65rem 1rem; border-bottom: 1px solid #eaeef2; vertical-align: top; }
+tbody tr:hover { background: #f5f8fd; }
+tbody tr:last-child td { border-bottom: none; }
+.status-yes { color: #1b5e20; font-weight: bold; }
+.status-no { color: #b71c1c; font-weight: bold; }
+.status-part { color: #e65100; font-weight: bold; }
+.callout-blue { background: #e3f2fd; border-left: 6px solid #1565c0; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.8rem 0; }
+.callout-red { background: #fce4ec; border-left: 6px solid #c62828; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.8rem 0; }
+.callout-amber { background: #fff8e1; border-left: 6px solid #e65100; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.8rem 0; }
+.callout-teal { background: #e0f2f1; border-left: 6px solid #00695c; padding: 1.2rem 1.8rem; border-radius: 0 10px 10px 0; margin: 1.8rem 0; }
+.callout-blue h4, .callout-red h4, .callout-amber h4, .callout-teal h4 { margin-top: 0; margin-bottom: 0.5rem; }
+.chain { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1.5rem 0; padding: 1.2rem; background: #f8f9fa; border-radius: 10px; }
+.chain-node { background: #0b1a2b; color: #fff; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+.chain-arr { color: #1565c0; font-size: 1.4rem; font-weight: bold; }
+.toc { background: #f5f7fa; border-radius: 10px; padding: 1.5rem 2rem; margin: 1.5rem 0; }
+.toc h3 { margin-top: 0; color: #0b1a2b; border-left: none; padding-left: 0; }
+.toc ul { columns: 2; column-gap: 2rem; list-style: none; margin: 0.5rem 0 0; }
+.toc li { padding: 0.2rem 0; border-bottom: 1px solid #e8ecf0; }
+.toc a { color: #1a3a5c; text-decoration: none; border-bottom: 1px dotted #1a3a5c; }
+.toc a:hover { border-bottom: 2px solid #1a3a5c; }
+.footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 2px solid #e0e0e0; font-size: 0.82rem; color: #666; }
+@media (max-width:700px) { .container { padding: 1.2rem 0.8rem; } h2 { font-size: 1.25rem; } th, td { font-size: 0.8rem; padding: 0.5rem 0.6rem; } .toc ul { columns: 1; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- LICENSE -->
+<div class="license-box">
+<h2>🔒 MCF-LP BY-NC-ND-EP — Morpheas Cosmology Framework License</h2>
+<p><strong>Author:</strong> Christos Sotirelis — "Morpheas the Shape Master"</p>
+<p><strong>Attribution (BY):</strong> Credit must be given in any use of this work.</p>
+<p><strong>Non-Commercial (NC):</strong> This work may not be sold, licensed, or used for direct financial gain.</p>
+<p><strong>No Derivatives / No Conversion (ND):</strong> No modifications, alterations, or derivative works are permitted without written consent.</p>
+<p><strong>Ethics Preservation (EP):</strong> Any use must preserve the ethical principles, logic, and ideology of Morpheas Cosmology: Logic, Balance, and Respect for Life.</p>
+</div>
+
+<!-- BANNER -->
+<div class="banner">
+<h1>Morphean Climate Framework (MCF)<br/><em>Complete Empirical Analysis</em></h1>
+<div class="subtitle">Merged Canvases of Climatic_Theorem.pdf — All 25 Canvases</div>
+<div class="author">Christos Sotirelis (Morpheas, the Shape Master)</div>
+<div class="version">Complete Framework — Empirical Evidence &amp; Statistical Validation</div>
+</div>
+
+<!-- PLAIN ENGLISH SUMMARY -->
+<div class="plain-english">
+<h3>🌍 What this document contains</h3>
+<p>This is a complete analysis of the Morphean Climate Framework (MCF) as presented in the 25-canvas document "Merged Canvases of Climatic_Theorem.pdf". The framework proposes that global temperature changes are driven by a combination of electromagnetic infrastructure, atmospheric nanoparticles, and atomic-era fallout — in addition to CO₂.</p>
+<p>The document contains empirical data, statistical models, isotope fingerprints, nanoparticle physics, deposition rates, energy calculations, and the author's three-stage solution proposal. All data is presented for independent scientific verification.</p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+<h3>📑 Table of Contents</h3>
+<ul>
+<li><a href="#canvas1">Canvas 1 — Empirical Evidence</a></li>
+<li><a href="#canvas2">Canvas 2 — Isotope Datasets</a></li>
+<li><a href="#canvas3">Canvas 3 — Nanoparticle Measurements</a></li>
+<li><a href="#canvas4">Canvas 4 — Statistical Architecture</a></li>
+<li><a href="#canvas5">Canvas 5 — Climate Mechanisms</a></li>
+<li><a href="#canvas6">Canvas 6 — KLEEMAH EM Mechanism</a></li>
+<li><a href="#canvas7">Canvas 7 — Plastic &amp; Plantation Particles</a></li>
+<li><a href="#canvas8">Canvas 8 — Atomic Fallout Effects</a></li>
+<li><a href="#canvas9">Canvas 9 — Particle Deposition</a></li>
+<li><a href="#canvas10">Canvas 10 — Synergies &amp; Feedback</a></li>
+<li><a href="#canvas11">Canvas 11 — Complete Datasets</a></li>
+<li><a href="#canvas12">Canvas 12 — Geospatial Data</a></li>
+<li><a href="#canvas13">Canvas 13 — Temporal Models</a></li>
+<li><a href="#canvas14">Canvas 14 — Energy Integration</a></li>
+<li><a href="#canvas15">Canvas 15 — Statistical Replication</a></li>
+<li><a href="#canvas16">Canvas 16 — Uncertainty Analysis</a></li>
+<li><a href="#canvas17">Canvas 17 — Verification Needs</a></li>
+<li><a href="#canvas18">Canvas 18 — Methodology</a></li>
+<li><a href="#canvas19">Canvas 19 — Scientific Speech</a></li>
+<li><a href="#canvas20">Canvas 20 — Plain Language</a></li>
+<li><a href="#canvas21">Canvas 21 — Three-Stage Solution</a></li>
+<li><a href="#canvas22">Canvas 22 — Project Proposal</a></li>
+<li><a href="#canvas23">Canvas 23 — License</a></li>
+<li><a href="#canvas24">Canvas 24 — Governance Contract</a></li>
+<li><a href="#canvas25">Canvas 25 — Final License</a></li>
+<li><a href="#summary">Summary Table</a></li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 1 — Empirical Evidence -->
+<!-- ============================================================ -->
+<h2 id="canvas1">Canvas 1 — Empirical Evidence Extract</h2>
+
+<h3>1.1 Global EM–Temperature Correlation</h3>
+<p>The core statistical claim of the framework:</p>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Metric</th><th>Value</th><th>p-value</th></tr></thead>
+<tbody>
+<tr><td>Pearson r (EM vs ΔT)</td><td><strong>0.975</strong></td><td>&lt;0.0001</td></tr>
+<tr><td>R²</td><td><strong>0.95</strong></td><td>—</td></tr>
+<tr><td>CO₂ vs ΔT (comparison)</td><td>r = 0.87, R² = 0.76</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>1.2 EM Index Construction</h3>
+<div class="eq-block">
+$$EM\_Index(t) = \sum [w_i \times normalize(proxy_i(t))]$$
+<div class="eq-label">Proxies: global power generation (TWh), connected devices, tower density, transmission line length</div>
+</div>
+
+<h3>1.3 Historical Data Timeline</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Year</th><th>Temp Anomaly (°C)</th><th>Global Power (TWh)</th><th>Connected Devices (M)</th><th>Cumulative r</th></tr></thead>
+<tbody>
+<tr><td>1900</td><td>+0.05</td><td>10</td><td>0</td><td>—</td></tr>
+<tr><td>1920</td><td>+0.12</td><td>100</td><td>1</td><td>0.89</td></tr>
+<tr><td>1940</td><td>+0.18</td><td>500</td><td>5</td><td>0.91</td></tr>
+<tr><td>1960</td><td>+0.25</td><td>2,000</td><td>50</td><td>0.93</td></tr>
+<tr><td>1980</td><td>+0.38</td><td>7,000</td><td>500</td><td>0.94</td></tr>
+<tr><td>2000</td><td>+0.58</td><td>15,000</td><td>5,000</td><td>0.95</td></tr>
+<tr><td>2010</td><td>+0.82</td><td>21,000</td><td>10,000</td><td>0.96</td></tr>
+<tr><td>2020</td><td>+1.10</td><td>27,000</td><td>15,000</td><td>0.97</td></tr>
+<tr><td>2025</td><td>+1.30</td><td>30,000</td><td>20,000</td><td>0.98</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>1.4 Urban Heat Island (UHI) Regression</h3>
+<div class="eq-block">
+$$UHI = 0.68(EM) + 0.15(Building) + 0.08(Population) - 0.12(Vegetation)$$
+<div class="eq-label">R² = 0.89</div>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>City</th><th>UHI (°C)</th><th>EM Index</th></tr></thead>
+<tbody>
+<tr><td>Tokyo</td><td>5.2</td><td>9.8</td></tr>
+<tr><td>New York</td><td>4.8</td><td>9.5</td></tr>
+<tr><td>London</td><td>4.1</td><td>8.9</td></tr>
+<tr><td>Dubai</td><td>5.8</td><td>9.2</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout-blue">
+<h4>Diurnal Temperature Range (DTR)</h4>
+<p>Nighttime temperatures rise <strong>2–2.5× faster</strong> than daytime — attributed to continuous 24/7 EM forcing.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 2 — Isotope Datasets -->
+<!-- ============================================================ -->
+<h2 id="canvas2">Canvas 2 — Isotope Datasets &amp; Maps</h2>
+
+<h3>2.1 Key Isotope Fingerprints</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Isotope</th><th>Half-life</th><th>Behavior</th><th>Deposition Peak</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td>Cs-137</td><td>30.17 yr</td><td>Soluble ionic, adsorbs in soil</td><td>1963–1964</td><td>Sediment dating, STE indicator</td></tr>
+<tr><td>Sr-90</td><td>28.8 yr</td><td>Mimics Ca, bioavailable</td><td>1963</td><td>Global deposition tracer</td></tr>
+<tr><td>Pu-239/240</td><td>24,110 / 6,563 yr</td><td>Insoluble oxides, particle-bound</td><td>1952–1963</td><td>Source attribution, fingerprinting</td></tr>
+<tr><td>Am-241</td><td>432 yr</td><td>Particle-reactive, marine accumulation</td><td>post-1963</td><td>Marine sediment transport</td></tr>
+<tr><td>Pb-210_ex</td><td>22.3 yr</td><td>Continuous natural flux</td><td>ongoing</td><td>Short-medium term dating</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>2.2 Pu-240/Pu-239 Fingerprint Ratios</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Source</th><th>Ratio</th></tr></thead>
+<tbody>
+<tr><td>Global average</td><td>≈ 0.18</td></tr>
+<tr><td>Pacific Proving Grounds (Bravo)</td><td>≈ 0.33</td></tr>
+<tr><td>Nevada Test Site</td><td>≈ 0.032 – 0.035</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>2.3 Recommended Sampling Sites</h3>
+<ol>
+<li>High-latitude NH mid-latitudes (Cs peaks expected)</li>
+<li>Southern Hemisphere mid-latitudes (lower deposition)</li>
+<li>Former test site proximal cores (Pacific Proving Grounds, Nevada)</li>
+<li>Coastal/deep-sea sediment cores on circulation paths</li>
+<li>River mouth estuaries with known land-use changes</li>
+</ol>
+
+<h3>2.4 Laboratory Methods</h3>
+<ul>
+<li><strong>Cs-137:</strong> HPGe gamma spectrometry (661.7 keV), detection limit ≤0.1 Bq/kg</li>
+<li><strong>Sr-90:</strong> Chemical separation + beta counting or ICP-MS</li>
+<li><strong>Pu-239/240:</strong> Radiochemical separation + alpha spectrometry or MC-ICP-MS</li>
+<li><strong>Am-241:</strong> Alpha spectrometry or ICP-MS</li>
+<li><strong>Pb-210_ex:</strong> Gamma spectrometry (46.5 keV) or Po-210 alpha</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 3 — Nanoparticle Measurements -->
+<!-- ============================================================ -->
+<h2 id="canvas3">Canvas 3 — Nanoparticle Measurements &amp; MAC Lab Data</h2>
+
+<h3>3.1 Measurable Parameters</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Parameter</th><th>Symbol</th><th>Range</th><th>Method</th></tr></thead>
+<tbody>
+<tr><td>Urban particle concentration</td><td>n</td><td>10⁷–10⁸ particles/cm³</td><td>PM2.5 monitoring</td></tr>
+<tr><td>Particle diameter</td><td>d</td><td>10–100 nm</td><td>Microscopy</td></tr>
+<tr><td>MAC (BC)</td><td>—</td><td>~7.5 ± 2 m²/g</td><td>Photothermal</td></tr>
+<tr><td>MAC (Fe₃O₄)</td><td>—</td><td>3–8 m²/g</td><td>Photothermal</td></tr>
+<tr><td>EM field energy density</td><td>E</td><td>~10⁻³ J/m³</td><td>Field surveys</td></tr>
+<tr><td>Absorption cross-section</td><td>σ</td><td>~10⁻¹⁴ m²</td><td>Optical models</td></tr>
+<tr><td>Conversion efficiency</td><td>η</td><td>0.8–0.9</td><td>Lab heating tests</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>3.2 Thermal Scaling Calculation</h3>
+<div class="eq-block">
+$$Q = E \times n \times \sigma \times \eta \times V \times t$$
+<div class="eq-label">E = 10⁻³ J/m³, n = 10¹² m⁻³, σ = 10⁻¹⁴ m², η = 0.85, V = 4.2×10¹⁸ m³, t = 1.6×10⁹ s</div>
+</div>
+
+<div class="callout-teal">
+<h4>Result</h4>
+<p><strong>Q ≈ 5.7×10²¹ J</strong> → ΔT ≈ 1.3°C</p>
+</div>
+
+<h3>3.3 Laboratory Protocols</h3>
+<ol>
+<li><strong>Particle collection:</strong> PM2.5 filters, 4°C storage</li>
+<li><strong>Characterization:</strong> TEM/SEM, EDS, VSM/SQUID magnetometry, XRD</li>
+<li><strong>MAC determination:</strong> Multi-wavelength aethalometer (450, 550, 700, 880 nm)</li>
+<li><strong>EM heating test:</strong> RF chamber (50/60 Hz, 2.4 GHz, 5 GHz), fiber optic thermometry</li>
+<li><strong>Hydration shell:</strong> DLS, zeta potential, chain aggregation observation</li>
+</ol>
+
+<!-- ============================================================ -->
+<!-- CANVAS 4 — Statistical Architecture -->
+<!-- ============================================================ -->
+<h2 id="canvas4">Canvas 4 — Statistical Appendix &amp; Sensitivity Analyses</h2>
+
+<h3>4.1 Multivariate Regression Model</h3>
+<div class="eq-block">
+$$\Delta T = a_1 \cdot EM + a_2 \cdot NP + a_3 \cdot ISO + a_4 \cdot CO_2 + \epsilon$$
+<div class="eq-label">Where: EM = infrastructure index, NP = nanoparticle index, ISO = isotopic deposition factor, CO₂ = atmospheric CO₂ (ppm)</div>
+</div>
+
+<h3>4.2 Regression Results (1900–2025)</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Variable</th><th>Coefficient (β)</th><th>Std Error</th><th>t-Statistic</th><th>p-Value</th><th>Partial R²</th></tr></thead>
+<tbody>
+<tr><td>EM Index</td><td>0.68</td><td>0.05</td><td>13.6</td><td>&lt;0.0001</td><td>0.91</td></tr>
+<tr><td>NP Index</td><td>0.22</td><td>0.07</td><td>3.1</td><td>0.004</td><td>0.04</td></tr>
+<tr><td>ISO Index</td><td>0.08</td><td>0.04</td><td>2.0</td><td>0.048</td><td>0.02</td></tr>
+<tr><td>CO₂</td><td>0.15</td><td>0.06</td><td>2.5</td><td>0.015</td><td>0.03</td></tr>
+<tr><td>Constant</td><td>-0.02</td><td>0.01</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Model R² = 0.95</strong></p>
+
+<h3>4.3 Correlation Matrix (1950–2025)</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Variable</th><th>EM</th><th>NP</th><th>ISO</th><th>CO₂</th><th>ΔT</th></tr></thead>
+<tbody>
+<tr><td>EM</td><td>1.00</td><td>0.92</td><td>0.87</td><td>0.89</td><td><strong>0.97</strong></td></tr>
+<tr><td>NP</td><td>0.92</td><td>1.00</td><td>0.85</td><td>0.83</td><td>0.94</td></tr>
+<tr><td>ISO</td><td>0.87</td><td>0.85</td><td>1.00</td><td>0.78</td><td>0.91</td></tr>
+<tr><td>CO₂</td><td>0.89</td><td>0.83</td><td>0.78</td><td>1.00</td><td>0.88</td></tr>
+<tr><td>ΔT</td><td><strong>0.97</strong></td><td>0.94</td><td>0.91</td><td>0.88</td><td>1.00</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>4.4 Sensitivity Analysis (±10% Perturbation)</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Variable Perturbed</th><th>ΔR² (absolute)</th><th>% ΔT Change</th><th>Comment</th></tr></thead>
+<tbody>
+<tr><td>EM +10%</td><td>+0.028</td><td>+6.8%</td><td>Dominant driver</td></tr>
+<tr><td>NP +10%</td><td>+0.009</td><td>+2.1%</td><td>Moderate</td></tr>
+<tr><td>ISO +10%</td><td>+0.004</td><td>+0.8%</td><td>Small direct</td></tr>
+<tr><td>CO₂ +10%</td><td>+0.006</td><td>+1.5%</td><td>Secondary</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>4.5 Regional Sub-Models (2000–2025)</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Region</th><th>r(EM, ΔT)</th><th>r(NP, ΔT)</th><th>R² total</th><th>Dominant</th></tr></thead>
+<tbody>
+<tr><td>North America</td><td>0.95</td><td>0.91</td><td>0.93</td><td>EM density</td></tr>
+<tr><td>Europe</td><td>0.96</td><td>0.93</td><td>0.94</td><td>EM &amp; NP mix</td></tr>
+<tr><td>Asia</td><td>0.97</td><td>0.95</td><td>0.95</td><td>EM growth</td></tr>
+<tr><td>Africa</td><td>0.89</td><td>0.84</td><td>0.86</td><td>NP, dust coupling</td></tr>
+<tr><td>Oceania</td><td>0.91</td><td>0.86</td><td>0.88</td><td>EM coastal</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>4.6 Residual Diagnostics</h3>
+<ul>
+<li>Durbin-Watson: <strong>1.98</strong> (no autocorrelation)</li>
+<li>Breusch-Pagan p-value: <strong>0.42</strong> (no heteroscedasticity)</li>
+<li>Lag cross-correlation: <strong>r = 0.95</strong> (1-year lag)</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 5 — Climate Mechanisms -->
+<!-- ============================================================ -->
+<h2 id="canvas5">Canvas 5 — Atmospheric &amp; Climate Mechanisms</h2>
+
+<div class="eq-block">
+$$Q \approx E \times n \times \sigma \times \eta \times V \times t \approx 10^{21}–10^{22} \text{ J}$$
+<div class="eq-label">Sufficient to explain ~1°C global warming over 1900–2025</div>
+</div>
+
+<h3>5.1 Radionuclide Atmospheric Residence</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Isotope</th><th>Half-life</th><th>Behavior</th><th>Deposition Peak</th></tr></thead>
+<tbody>
+<tr><td>Cs-137</td><td>30.17 yr</td><td>Soluble, adsorbs in soil</td><td>1963–1964</td></tr>
+<tr><td>Sr-90</td><td>28.8 yr</td><td>Mimics Ca</td><td>1963</td></tr>
+<tr><td>Pu-239/240</td><td>24,110/6,563 yr</td><td>Insoluble oxides</td><td>1952–1963</td></tr>
+<tr><td>Am-241</td><td>432 yr</td><td>Particle-reactive</td><td>post-1963</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 6 — KLEEMAH EM Mechanism -->
+<!-- ============================================================ -->
+<h2 id="canvas6">Canvas 6 — KLEEMAH Electromagnetic Climate Mechanism</h2>
+
+<h3>6.1 Global EM Sources</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Source</th><th>Approx. Quantity</th></tr></thead>
+<tbody>
+<tr><td>Power lines</td><td>~2 billion km</td></tr>
+<tr><td>Cell towers</td><td>~5 million</td></tr>
+<tr><td>Connected wireless devices</td><td>15–20 billion (2025)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>EM Field Energy Density:</strong> E ≈ 10⁻³ J/m³ (continuous 24/7)</p>
+
+<h3>6.2 Urban Heat Island Regression</h3>
+<div class="eq-block">
+$$UHI = 0.68 \cdot EM + 0.15 \cdot Buildings + 0.08 \cdot Population - 0.12 \cdot Vegetation$$
+<div class="eq-label">R² = 0.89</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 7 — Plastic & Plantation Particles -->
+<!-- ============================================================ -->
+<h2 id="canvas7">Canvas 7 — Plastic &amp; Plantation Particulate Climate Effects</h2>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Particle Type</th><th>Size</th><th>Concentration</th><th>Conductivity Effect</th></tr></thead>
+<tbody>
+<tr><td>Microplastics</td><td>1–100 μm</td><td>10³–10⁵ particles/m³</td><td>3.2 ± 0.4 pS/m</td></tr>
+<tr><td>Cotton fibers</td><td>5–50 μm</td><td>10²–10⁴ particles/m³</td><td>2.5 ± 0.3 pS/m</td></tr>
+<tr><td>Tree debris</td><td>10–200 μm</td><td>10²–10³ particles/m³</td><td>1.8 ± 0.2 pS/m</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>7.1 Estimated Absorption Effects</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Particle Type</th><th>ΔT Effect</th><th>Method</th></tr></thead>
+<tbody>
+<tr><td>Microplastics</td><td>≈ 0.15°C</td><td>Controlled EM exposure</td></tr>
+<tr><td>Cotton fibers</td><td>≈ 0.12°C</td><td>Field EM measurements</td></tr>
+<tr><td>Tree debris</td><td>≈ 0.1°C</td><td>Outdoor monitoring</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 8 — Atomic Fallout Effects -->
+<!-- ============================================================ -->
+<h2 id="canvas8">Canvas 8 — Atomic Fallout &amp; Radionuclide Climate Effects</h2>
+
+<h3>8.1 Transport Data</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Region</th><th>Particle Type</th><th>Deposition Rate (Bq/m²)</th></tr></thead>
+<tbody>
+<tr><td>NH mid-latitudes</td><td>Cs-137</td><td>100–150</td></tr>
+<tr><td>Pacific Proving Grounds</td><td>Pu-239/240</td><td>200–250</td></tr>
+<tr><td>Nevada Test Site</td><td>Pu-239/240</td><td>50–70</td></tr>
+<tr><td>Southern Hemisphere</td><td>Cs-137</td><td>30–50</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>8.2 Q_fallout Energy Integration</h3>
+<div class="eq-block">
+$$Q_{fallout} = \Sigma (n \times \sigma \times \eta \times V \times t)$$
+<div class="eq-label">Contributes ΔT ≈ 0.1–0.5°C regionally over decades</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 9 — Particle Deposition -->
+<!-- ============================================================ -->
+<h2 id="canvas9">Canvas 9 — Full Particle Deposition &amp; Climate Impacts</h2>
+
+<h3>9.1 Deposition Rates</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Particle Type</th><th>Location</th><th>Deposition Rate</th></tr></thead>
+<tbody>
+<tr><td>EM nanoparticles</td><td>Urban</td><td>50–100 particles/cm²/day</td></tr>
+<tr><td>Microplastics</td><td>Urban/Plantation</td><td>10–50 particles/cm²/day</td></tr>
+<tr><td>Cotton fibers</td><td>Plantation</td><td>20–80 particles/cm²/day</td></tr>
+<tr><td>Tree debris</td><td>Forest</td><td>5–30 particles/cm²/day</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>9.2 Regional ΔT Observations</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Region</th><th>Particle Type</th><th>ΔT Observed</th></tr></thead>
+<tbody>
+<tr><td>Urban coastal</td><td>EM + microplastics</td><td>0.2–0.5°C</td></tr>
+<tr><td>Agricultural plantation</td><td>Cotton fibers</td><td>0.1–0.3°C</td></tr>
+<tr><td>Forested area</td><td>Tree debris</td><td>0.05–0.15°C</td></tr>
+<tr><td>Ocean coastal</td><td>Nanoparticles + fallout</td><td>0.1–0.3°C</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 10 — Synergies & Feedback -->
+<!-- ============================================================ -->
+<h2 id="canvas10">Canvas 10 — Additional Explanations &amp; Integrated Climate Clarifications</h2>
+
+<div class="callout-blue">
+<h4>Key Synergies</h4>
+<ul>
+<li><strong>Aggregation chains:</strong> Sub-micron nanoparticles attach to microplastics or organic fibers, increasing deposition efficiency and local heating</li>
+<li><strong>Humidity effects:</strong> Amplify particle weight and influence deposition rate</li>
+<li><strong>Electrostatic accumulation:</strong> Charged particles adhere to plant leaves, soil, and infrastructure surfaces</li>
+<li><strong>Cloud condensation nuclei (CCN):</strong> Deposited particles act as nucleation sites for moisture</li>
+<li><strong>Diurnal temperature asymmetry:</strong> Persistent EM and particle interactions explain faster nighttime warming</li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 11 — Complete Datasets -->
+<!-- ============================================================ -->
+<h2 id="canvas11">Canvas 11 — Complete Datasets, Energy Integration &amp; Statistical Validation</h2>
+
+<h3>11.1 Yearly EM Infrastructure Dataset</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Year</th><th>Global Power (TWh)</th><th>Connected Devices (M)</th><th>Tower Density</th><th>EM Index</th></tr></thead>
+<tbody>
+<tr><td>1900</td><td>10</td><td>0</td><td>0.001</td><td>0.00</td></tr>
+<tr><td>1960</td><td>2,000</td><td>50</td><td>0.08</td><td>0.41</td></tr>
+<tr><td>2000</td><td>15,000</td><td>5,000</td><td>0.6</td><td>0.78</td></tr>
+<tr><td>2025</td><td>30,000</td><td>20,000</td><td>0.9</td><td>0.95</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>11.2 Atomic Fallout Dataset</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Year</th><th>Isotope</th><th>Location</th><th>Inventory (Bq/m²)</th><th>Pu-240/Pu-239 Ratio</th></tr></thead>
+<tbody>
+<tr><td>1963</td><td>Cs-137</td><td>NH mid-lat</td><td>120</td><td>—</td></tr>
+<tr><td>1963</td><td>Pu-239/240</td><td>Pacific Proving Grounds</td><td>210</td><td>0.33</td></tr>
+<tr><td>1963</td><td>Pu-239/240</td><td>Nevada Test Site</td><td>55</td><td>0.035</td></tr>
+<tr><td>1970</td><td>Am-241</td><td>Oceans</td><td>12</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 12 — Geospatial Data -->
+<!-- ============================================================ -->
+<h2 id="canvas12">Canvas 12 — Geospatial Data &amp; Mapping</h2>
+
+<h3>12.1 Grid Specifications</h3>
+<ul>
+<li><strong>EM Infrastructure:</strong> 0.5° × 0.5° grid (1900–2025)</li>
+<li><strong>Nanoparticles:</strong> 1 km × 1 km urban, 10 km × 10 km rural</li>
+<li><strong>Microplastics:</strong> 1 km × 1 km urban/agriculture</li>
+<li><strong>Fallout:</strong> 5 km × 5 km global grids (1950–2025)</li>
+<li><strong>Ocean grids:</strong> Surface (0–10 m), mixed layer (10–100 m), thermocline (&gt;100 m)</li>
+<li><strong>Soil grids:</strong> 0–5 cm, 5–20 cm, 20–50 cm</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 13 — Temporal Models -->
+<!-- ============================================================ -->
+<h2 id="canvas13">Canvas 13 — Detailed Temporal Models</h2>
+
+<h3>13.1 Particle Concentration Evolution</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Year</th><th>EM NP (particles/cm³)</th><th>Microplastics</th><th>Cotton Fibers</th><th>Fallout (Bq/m³)</th></tr></thead>
+<tbody>
+<tr><td>1900</td><td>1e6</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>1960</td><td>1e7</td><td>0</td><td>0</td><td>10–50</td></tr>
+<tr><td>1980</td><td>5e7</td><td>1e3</td><td>5e2</td><td>50–100</td></tr>
+<tr><td>2000</td><td>1e8</td><td>2e3</td><td>1e3</td><td>60–120</td></tr>
+<tr><td>2025</td><td>1.6e8</td><td>3.5e3</td><td>1.6e3</td><td>75–150</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>13.2 Temporal Model Integration</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Year</th><th>Modeled ΔT (°C)</th><th>Observed ΔT (°C)</th><th>Difference</th></tr></thead>
+<tbody>
+<tr><td>1900</td><td>0.05</td><td>0.05</td><td>0</td></tr>
+<tr><td>1960</td><td>0.25</td><td>0.25</td><td>0</td></tr>
+<tr><td>2000</td><td>0.58</td><td>0.58</td><td>0</td></tr>
+<tr><td>2025</td><td>1.30</td><td>1.30</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Observation:</strong> Temporal integration accurately reproduces observed anomalies.</p>
+
+<!-- ============================================================ -->
+<!-- CANVAS 14 — Energy Integration -->
+<!-- ============================================================ -->
+<h2 id="canvas14">Canvas 14 — Energy Integration Calculations</h2>
+
+<div class="eq-block">
+$$Q_{total} = \sum_{i} \int_{t_0}^{t} n_i(t) \cdot \sigma_i \cdot \eta_i \cdot V_i \; dt$$
+<div class="eq-label">i = particle type (EM nanoparticles, microplastics, cotton fibers, fallout particles)</div>
+</div>
+
+<h3>14.1 Particle-Specific Parameters</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Particle Type</th><th>n_avg (m⁻³)</th><th>σ (m²)</th><th>η</th><th>V (m³)</th></tr></thead>
+<tbody>
+<tr><td>EM nanoparticles</td><td>1×10¹²</td><td>1×10⁻¹⁴</td><td>0.85</td><td>4.2×10¹⁸</td></tr>
+<tr><td>Microplastics</td><td>1×10⁹</td><td>2×10⁻¹⁵</td><td>0.6</td><td>4.2×10¹⁸</td></tr>
+<tr><td>Cotton fibers</td><td>5×10⁸</td><td>3×10⁻¹⁵</td><td>0.6</td><td>4.2×10¹⁸</td></tr>
+<tr><td>Fallout particles</td><td>1×10¹⁰</td><td>5×10⁻¹⁵</td><td>0.8</td><td>4.2×10¹⁸</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>14.2 Cumulative Energy</h3>
+<ul>
+<li>Q_EM ≈ 5.7×10²¹ J</li>
+<li>Q_MP ≈ 8.0×10¹⁸ J</li>
+<li>Q_CF ≈ 2.0×10¹⁸ J</li>
+<li>Q_FO ≈ 5.4×10¹⁹ J</li>
+<li><strong>Q_total ≈ 5.78×10²¹ J → ΔT ≈ 1.3°C</strong></li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 15 — Statistical Replication -->
+<!-- ============================================================ -->
+<h2 id="canvas15">Canvas 15 — Statistical Replication Files</h2>
+
+<h3>15.1 Regression Table</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Variable</th><th>Coefficient</th><th>Std Error</th><th>t-Statistic</th><th>p-Value</th><th>Partial R²</th></tr></thead>
+<tbody>
+<tr><td>EM</td><td>0.68</td><td>0.05</td><td>13.6</td><td>&lt;0.0001</td><td>0.91</td></tr>
+<tr><td>NP</td><td>0.22</td><td>0.07</td><td>3.1</td><td>0.004</td><td>0.04</td></tr>
+<tr><td>Plastic</td><td>0.05</td><td>0.02</td><td>2.5</td><td>0.015</td><td>0.01</td></tr>
+<tr><td>Cotton</td><td>0.03</td><td>0.01</td><td>2.1</td><td>0.04</td><td>0.008</td></tr>
+<tr><td>Fallout</td><td>0.08</td><td>0.04</td><td>2.0</td><td>0.048</td><td>0.02</td></tr>
+<tr><td>CO₂</td><td>0.15</td><td>0.06</td><td>2.5</td><td>0.015</td><td>0.03</td></tr>
+<tr><td>Constant</td><td>-0.02</td><td>0.01</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>15.2 Monte Carlo Simulation</h3>
+<ul>
+<li><strong>N = 10,000 iterations</strong></li>
+<li><strong>95% confidence interval for ΔT: ±0.07°C</strong></li>
+<li><strong>Confirms R ≈ 0.995</strong></li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 16 — Uncertainty Analysis -->
+<!-- ============================================================ -->
+<h2 id="canvas16">Canvas 16 — Cross-Checks and Uncertainty Analysis</h2>
+
+<h3>16.1 Sources of Uncertainty</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Source</th><th>Estimated Uncertainty</th></tr></thead>
+<tbody>
+<tr><td>EM Index construction</td><td>±10%</td></tr>
+<tr><td>Nanoparticle concentration</td><td>±15%</td></tr>
+<tr><td>Microplastic deposition</td><td>±20%</td></tr>
+<tr><td>Cotton/fiber deposition</td><td>±15%</td></tr>
+<tr><td>Fallout particle inventory</td><td>±8%</td></tr>
+<tr><td>Global temperature dataset</td><td>±5%</td></tr>
+<tr><td>MAC (absorption cross-section)</td><td>±15%</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 17 — Verification Needs -->
+<!-- ============================================================ -->
+<h2 id="canvas17">Canvas 17 — Remaining Evidence and Verification Needs</h2>
+
+<h3>17.1 Recommended Evidence Checklist</h3>
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Evidence Type</th><th>Required Data</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>Atmospheric particles</td><td>High-resolution time series</td><td>Verify EM and particle contribution to ΔT</td></tr>
+<tr><td>Oceans</td><td>Layered particle and temperature measurements</td><td>Confirm energy transfer and deposition</td></tr>
+<tr><td>Soil &amp; Vegetation</td><td>Core and surface deposition</td><td>Validate land-based deposition</td></tr>
+<tr><td>Deposition maps</td><td>Geospatial grids, satellite overlays</td><td>Cross-verify spatial correlations</td></tr>
+<tr><td>Laboratory replication</td><td>MAC, absorption, EM response tests</td><td>Confirm physical properties</td></tr>
+<tr><td>Temporal modeling</td><td>Sub-annual, seasonal, diurnal resolution</td><td>Verify short-term and cumulative ΔT</td></tr>
+<tr><td>Statistical replication</td><td>Regression coefficients, Monte Carlo</td><td>Confirm robustness of R ≈ 0.995</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 18 — Methodology -->
+<!-- ============================================================ -->
+<h2 id="canvas18">Canvas 18 — Methodology Explanation</h2>
+
+<h3>18.1 Data Collection Methodology</h3>
+<ul>
+<li><strong>EM Infrastructure:</strong> Historical records of power generation, telecom registries, connected device counts</li>
+<li><strong>Nanoparticles:</strong> Air sampling, filter collection, TEM/SEM microscopy, EDS</li>
+<li><strong>Microplastics:</strong> Gravimetric sampling, microscopy, urban/plantation air deposition measurements</li>
+<li><strong>Fallout:</strong> Sediment cores, soil surface measurements, isotope analysis (Cs-137, Pu-239/240, Am-241)</li>
+<li><strong>Ocean/Soil:</strong> Layered ocean sampling, soil cores at multiple depths</li>
+</ul>
+
+<h3>18.2 Statistical Analysis</h3>
+<ul>
+<li>Multivariate regression: ΔT vs EM, NP, plastic, cotton, fallout, CO₂</li>
+<li>Pearson correlations and R² calculations</li>
+<li>Residual diagnostics (Durbin-Watson, Breusch-Pagan)</li>
+<li>Monte Carlo simulations for uncertainty propagation</li>
+<li>Sensitivity analysis for ±10% variations</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 19 — Scientific Speech -->
+<!-- ============================================================ -->
+<h2 id="canvas19">Canvas 19 — Scientific Speech Explanation</h2>
+
+<div class="callout-teal">
+<h4>Summary for Scientists</h4>
+<p>The climate system is influenced not only by greenhouse gases but also by electromagnetic infrastructure, airborne nanoparticles, microplastics, plantation fibers, and atomic fallout. Each component contributes measurably to energy absorption, deposition, and atmospheric heating.</p>
+<p><strong>EM infrastructure</strong> correlates with r = 0.975 with temperature anomalies. EM fields interact with airborne particles, enhancing energy absorption.</p>
+<p><strong>Nanoparticles and microplastics</strong> absorb EM energy and contribute to local heating. They aggregate, accumulate on surfaces, and modulate heat retention.</p>
+<p><strong>Atomic fallout</strong> (Cs-137, Pu-239/240, Am-241) provides isotopic fingerprints and contributes to long-term energy retention.</p>
+<p><strong>Statistical integration</strong> achieves R² ≈ 0.95–0.97, approaching R ≈ 0.995.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 20 — Plain Language -->
+<!-- ============================================================ -->
+<h2 id="canvas20">Canvas 20 — Plain-Language Explanation for Non-Scientists</h2>
+
+<div class="plain-english">
+<h3>🌍 In Simple Terms</h3>
+<p>Our climate is influenced by more than just carbon dioxide. Human activities have produced invisible particles in the air — tiny metals from technology, microplastics, fibers from cotton and plants, and leftover particles from historical atomic events.</p>
+<p>The growth of power lines, towers, and connected devices produces electromagnetic fields. These fields interact with the tiny particles in the air, making them absorb energy. This causes subtle heating that adds up over time.</p>
+<p>Particles eventually settle on oceans, land, and vegetation, changing temperatures and affecting how heat is stored. Nighttime temperatures rise faster than daytime because the heating continues even when the sun isn't shining.</p>
+<p>Measurements from 1900 to 2025 show correlations between EM infrastructure, particle presence, and temperature increases. Laboratory tests confirm the physics. The patterns are backed by data and can be independently verified.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- CANVAS 21 — Solution -->
+<!-- ============================================================ -->
+<h2 id="canvas21">Canvas 21 — Author's Solution and Three-Stage Approach</h2>
+
+<h3>Stage 1 — Mitigation of Particle Accumulation</h3>
+<ul>
+<li>Reduce airborne nanoparticles, microplastics, and plantation/cotton fibers</li>
+<li>Implement filtration, capture, or neutralization in industrial, urban, and agricultural zones</li>
+<li>Promote sustainable practices to limit particle generation at source</li>
+</ul>
+
+<h3>Stage 2 — Management of Electromagnetic Influence</h3>
+<ul>
+<li>Optimize EM infrastructure to reduce unnecessary exposure</li>
+<li>Shield or adjust high-density EM zones</li>
+<li>Implement monitoring of EM indices alongside temperature anomalies</li>
+</ul>
+
+<h3>Stage 3 — Deposition and Environmental Recovery</h3>
+<ul>
+<li>Enhance removal or neutralization of existing particles in soil, vegetation, and oceans</li>
+<li>Deploy remediation methods where deposition causes localized heating</li>
+<li>Monitor long-term deposition trends to confirm reduction in cumulative energy absorption</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 22 — Proposal -->
+<!-- ============================================================ -->
+<h2 id="canvas22">Canvas 22 — Project Proposal &amp; Terms from the Author</h2>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Item</th><th>Amount</th></tr></thead>
+<tbody>
+<tr><td>Operational funds (facilities, staff, equipment)</td><td><strong>$500M – $1.0B</strong></td></tr>
+<tr><td>Author's leadership salary</td><td><strong>$2M/year</strong></td></tr>
+<tr><td>Prototype reward (per validated prototype)</td><td><strong>$3B × 3 prototypes</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Deliverables &amp; Timeline</h3>
+<ul>
+<li><strong>Stage 0 (0–6 months):</strong> Operational test labs and monitoring systems</li>
+<li><strong>Stage 1 (6–12 months):</strong> Delay Mechanism Blueprint</li>
+<li><strong>Stages 2 &amp; 3 (within 5 years):</strong> Reversal &amp; Stabilization Mechanism Blueprints</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- CANVAS 23-25 — Licenses -->
+<!-- ============================================================ -->
+<h2 id="canvas23">Canvas 23–25 — Licenses &amp; Governance</h2>
+
+<div class="callout-blue">
+<h4>MCF-LP BY-NC-ND-EP — License Terms</h4>
+<ul>
+<li><strong>BY:</strong> Attribution required — Christos Sotirelis, "Morpheas the Shape Master"</li>
+<li><strong>NC:</strong> Non-commercial use only — no selling, licensing, or direct financial gain</li>
+<li><strong>ND:</strong> No derivatives / no conversion — no modifications or alterations</li>
+<li><strong>EP:</strong> Ethics Preservation — Logic, Balance, Respect for Life</li>
+</ul>
+</div>
+
+<h3>Canvas 24 — Contract / Agreement</h3>
+<ul>
+<li>Author retains full ownership of theories, data, methodologies, and blueprints</li>
+<li>Blueprints publicly available for research and implementation</li>
+<li>Author receives $2M/year salary, vehicle, accommodation</li>
+<li>$3B prototype rewards upon independent verification</li>
+<li>Independent oversight panel for validation</li>
+</ul>
+
+<h3>Canvas 25 — Final License</h3>
+<ul>
+<li>Definitive licensing terms for all materials</li>
+<li>Open access for research and verification</li>
+<li>Protects Author's intellectual property</li>
+<li>Enforces non-commercial use conditions</li>
+</ul>
+
+<!-- ============================================================ -->
+<!-- SUMMARY TABLE -->
+<!-- ============================================================ -->
+<h2 id="summary">Summary Table — Evidence Status</h2>
+
+<div class="tbl-wrap">
+<table>
+<thead><tr><th>Claim</th><th>Status</th><th>Evidence Quality</th></tr></thead>
+<tbody>
+<tr><td>EM-Temperature correlation (r=0.975)</td><td class="status-yes">Reported, requires replication</td><td>Source data provided</td></tr>
+<tr><td>EM index explains 95% of ΔT variance</td><td class="status-yes">Reported, requires replication</td><td>Regression tables provided</td></tr>
+<tr><td>UHI regression (R²=0.89)</td><td class="status-yes">Reported, requires replication</td><td>City data provided</td></tr>
+<tr><td>Nighttime warming 2–2.5× faster</td><td class="status-yes">Pattern cited</td><td>DTR datasets recommended</td></tr>
+<tr><td>Cs-137, Pu-239/240 isotope fingerprints</td><td class="status-yes">Established science</td><td>Standard values provided</td></tr>
+<tr><td>Nanoparticle MAC measurements</td><td class="status-yes">Laboratory protocol</td><td>Testable methodology</td></tr>
+<tr><td>Q_total ≈ 10²¹–10²² J</td><td class="status-yes">Calculated</td><td>Step-by-step derivation</td></tr>
+<tr><td>Seasonal/lag effects</td><td class="status-yes">Temporal models</td><td>Dataset structure provided</td></tr>
+<tr><td>Microplastic deposition effects</td><td class="status-yes">Reported</td><td>Field measurements cited</td></tr>
+<tr><td>Fallout transport to poles</td><td class="status-yes">Established science</td><td>Isotope tracers, ice core methods</td></tr>
+<tr><td>Particle deposition on oceans/land</td><td class="status-yes">Reported</td><td>Deposition rates provided</td></tr>
+<tr><td>Energy integration matches ΔT</td><td class="status-yes">Model output</td><td>Calculated vs observed</td></tr>
+<tr><td>Three-stage solution</td><td class="status-part">Proposed</td><td>Blueprints to be developed</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER -->
+<!-- ============================================================ -->
+<div class="footer">
+<p><strong>Morphean Climate Framework (MCF) — Complete Empirical Analysis</strong><br/>
+Framework authored by Christos Sotirelis, "Morpheas the Shape Master"<br/>
+Based on "Merged Canvases of Climatic_Theorem.pdf" — all 25 canvases<br/>
+License: MCF-LP BY-NC-ND-EP — Attribution required, Non-commercial, No derivatives, Ethics preservation</p>
+<p><em>This document is a complete analysis of the MCF empirical data, statistical models, isotope fingerprints, nanoparticle physics, and author's solution proposal. All data is presented for independent scientific verification.</em></p>
+</div>
+
+</div>
+</body>
+</html>
