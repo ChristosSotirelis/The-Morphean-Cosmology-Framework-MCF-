@@ -1,812 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MCF · Full Repository Viewer</title>
-    <style>
-        /* ── reset & base ── */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            background: #0b0e14;
-            color: #d0d7e0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            padding: 2rem 1rem;
-            line-height: 1.6;
-        }
-        a {
-            color: #7cb9ff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* ── container ── */
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        /* ── header ── */
-        .page-header {
-            border-bottom: 1px solid #2a313c;
-            padding-bottom: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
-        .page-header h1 {
-            font-size: 2.2rem;
-            font-weight: 400;
-            letter-spacing: -0.5px;
-            color: #f0f4fa;
-        }
-        .page-header h1 span {
-            color: #6a8fc0;
-        }
-        .page-header .sub {
-            color: #8896a8;
-            margin-top: 0.3rem;
-            font-size: 1rem;
-        }
-        .page-header .badge {
-            display: inline-block;
-            background: #1f2a36;
-            padding: 0.2rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: #b0c4db;
-            margin-top: 0.5rem;
-            border: 1px solid #2e3a48;
-        }
-
-        /* ── stats bar ── */
-        .stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem 2rem;
-            background: #12181f;
-            border-radius: 12px;
-            padding: 0.8rem 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid #232b36;
-            font-size: 0.9rem;
-        }
-        .stats .stat {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .stats .stat .num {
-            font-weight: 600;
-            color: #e8edf4;
-        }
-        .stats .stat .lbl {
-            color: #8896a8;
-        }
-
-        /* ── file entry ── */
-        .file-entry {
-            background: #11171f;
-            border: 1px solid #1f2935;
-            border-radius: 14px;
-            margin-bottom: 2.5rem;
-            overflow: hidden;
-            transition: border-color 0.2s;
-        }
-        .file-entry:hover {
-            border-color: #33506a;
-        }
-
-        .file-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem 1rem;
-            padding: 0.7rem 1.2rem;
-            background: #0e141c;
-            border-bottom: 1px solid #1a232e;
-            cursor: default;
-        }
-        .file-header .type-badge {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            padding: 0.15rem 0.7rem;
-            border-radius: 12px;
-            background: #1f2a36;
-            color: #a0b8d0;
-            border: 1px solid #2d3b4a;
-        }
-        .file-header .type-badge.html {
-            background: #1e3a2a;
-            border-color: #2b5a3a;
-            color: #7fc9a0;
-        }
-        .file-header .type-badge.pdf {
-            background: #3a1e2a;
-            border-color: #5a2a3a;
-            color: #e8a0b0;
-        }
-        .file-header .type-badge.img {
-            background: #2a2a1e;
-            border-color: #4a4a2a;
-            color: #d4c87a;
-        }
-        .file-header .type-badge.audio {
-            background: #1e2a3a;
-            border-color: #2a4a5a;
-            color: #7ac8d4;
-        }
-        .file-header .type-badge.video {
-            background: #2a1e3a;
-            border-color: #4a2a5a;
-            color: #c87ad4;
-        }
-        .file-header .type-badge.text {
-            background: #1e222a;
-            border-color: #2e323a;
-            color: #b0b8c0;
-        }
-        .file-header .file-name {
-            font-weight: 500;
-            color: #e8edf4;
-            font-size: 0.95rem;
-            word-break: break-word;
-        }
-        .file-header .file-size {
-            color: #6a7a8a;
-            font-size: 0.8rem;
-            margin-left: auto;
-        }
-        .file-header .raw-link {
-            font-size: 0.8rem;
-            color: #6a8fc0;
-        }
-
-        /* ── file body ── */
-        .file-body {
-            padding: 0.8rem 1.2rem 1.2rem;
-            background: #0d131b;
-        }
-
-        /* ── HTML iframe ── */
-        .html-frame {
-            width: 100%;
-            height: 600px;
-            border: none;
-            border-radius: 8px;
-            background: #ffffff;
-            box-shadow: inset 0 0 0 1px #1f2935;
-        }
-        .html-frame.srcdoc {
-            background: #fff;
-        }
-
-        /* ── PDF embed ── */
-        .pdf-embed {
-            width: 100%;
-            height: 700px;
-            border: none;
-            border-radius: 8px;
-            background: #1a1f26;
-            box-shadow: inset 0 0 0 1px #1f2935;
-        }
-
-        /* ── image ── */
-        .img-wrapper {
-            text-align: center;
-            background: #0a0e14;
-            border-radius: 8px;
-            padding: 0.5rem;
-            border: 1px solid #1a232e;
-        }
-        .img-wrapper img {
-            max-width: 100%;
-            max-height: 700px;
-            border-radius: 6px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        /* ── audio ── */
-        .audio-wrapper {
-            padding: 0.5rem 0;
-            background: #0a0e14;
-            border-radius: 8px;
-            border: 1px solid #1a232e;
-        }
-        .audio-wrapper audio {
-            width: 100%;
-            display: block;
-        }
-
-        /* ── video ── */
-        .video-wrapper {
-            background: #0a0e14;
-            border-radius: 8px;
-            border: 1px solid #1a232e;
-            padding: 0.5rem;
-        }
-        .video-wrapper video {
-            width: 100%;
-            max-height: 700px;
-            border-radius: 6px;
-            display: block;
-        }
-
-        /* ── text preview ── */
-        .text-preview {
-            background: #0b1017;
-            border-radius: 8px;
-            padding: 0.8rem 1rem;
-            border: 1px solid #1a232e;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-            max-height: 700px;
-            overflow-y: auto;
-            color: #c8d0d8;
-        }
-        .text-preview .empty {
-            color: #5a6a7a;
-            font-style: italic;
-        }
-
-        /* ── markdown rendered ── */
-        .markdown-body {
-            background: #0f161e;
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
-            border: 1px solid #1a232e;
-            color: #d0d7e0;
-            overflow-x: auto;
-            max-height: 700px;
-            overflow-y: auto;
-        }
-        .markdown-body h1,
-        .markdown-body h2,
-        .markdown-body h3 {
-            color: #e8edf4;
-            margin: 0.8rem 0 0.4rem;
-        }
-        .markdown-body p {
-            margin: 0.4rem 0;
-        }
-        .markdown-body code {
-            background: #1a232e;
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.85em;
-        }
-        .markdown-body pre {
-            background: #0b1017;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            overflow-x: auto;
-            border: 1px solid #1a232e;
-        }
-        .markdown-body ul,
-        .markdown-body ol {
-            padding-left: 1.5rem;
-            margin: 0.3rem 0;
-        }
-        .markdown-body a {
-            color: #7cb9ff;
-        }
-        .markdown-body blockquote {
-            border-left: 3px solid #2a4a6a;
-            padding-left: 1rem;
-            color: #9aabba;
-            margin: 0.5rem 0;
-        }
-
-        /* ── loading / error ── */
-        .file-loading,
-        .file-error {
-            padding: 2rem 1rem;
-            text-align: center;
-            color: #6a7a8a;
-        }
-        .file-error {
-            color: #d47a7a;
-        }
-        .file-loading .spinner {
-            display: inline-block;
-            width: 1.8rem;
-            height: 1.8rem;
-            border: 2px solid #1f2935;
-            border-top-color: #6a8fc0;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ── footer ── */
-        .footer {
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #1f2935;
-            text-align: center;
-            color: #5a6a7a;
-            font-size: 0.85rem;
-        }
-
-        /* ── responsive ── */
-        @media (max-width: 700px) {
-            body {
-                padding: 1rem 0.6rem;
-            }
-            .page-header h1 {
-                font-size: 1.6rem;
-            }
-            .file-header {
-                flex-wrap: wrap;
-            }
-            .file-header .file-size {
-                margin-left: 0;
-                width: 100%;
-            }
-            .html-frame,
-            .pdf-embed {
-                height: 400px;
-            }
-            .img-wrapper img {
-                max-height: 400px;
-            }
-        }
-        @media (max-width: 480px) {
-            .html-frame,
-            .pdf-embed {
-                height: 300px;
-            }
-            .img-wrapper img {
-                max-height: 280px;
-            }
-            .text-preview {
-                max-height: 400px;
-                font-size: 0.75rem;
-            }
-        }
-
-        /* ── scrollbar ── */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0b0e14;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2a3a4a;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3a4a5a;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morphean Cosmology Framework — Complete Archive</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:900px;margin:0 auto;padding:1rem;line-height:1.5;color:#1a1a1a}
+  h1{font-size:1.6rem} h2{border-top:2px solid #ccc;padding-top:1rem;margin-top:2rem}
+  nav ul{columns:2;list-style:none;padding:0}
+  nav a{text-decoration:none;color:#0645ad}
+  section ul{list-style:none;padding-left:0}
+  section li{margin:.6rem 0;padding:.4rem;border-left:3px solid #eee}
+  details{margin-top:.4rem}
+  iframe,embed,video{width:100%;height:70vh;border:1px solid #ccc}
+  img{max-width:100%;display:block}
+  summary{cursor:pointer;color:#555}
+  .frame-seq img{max-height:300px}
+</style>
 </head>
 <body>
-    <div class="container" id="app">
-        <!-- header -->
-        <header class="page-header">
-            <h1>◈ MCF <span>·</span> Full Repository Viewer</h1>
-            <div class="sub">The Morphean Cosmology Framework · all files rendered in sequence</div>
-            <div class="badge">⚡ Stage II Mechanical Science · 0% internal paradox</div>
-        </header>
 
-        <!-- stats -->
-        <div class="stats" id="stats">
-            <div class="stat"><span class="num" id="totalFiles">…</span> <span class="lbl">files</span></div>
-            <div class="stat"><span class="num" id="totalHtml">…</span> <span class="lbl">HTML</span></div>
-            <div class="stat"><span class="num" id="totalPdf">…</span> <span class="lbl">PDF</span></div>
-            <div class="stat"><span class="num" id="totalImg">…</span> <span class="lbl">images</span></div>
-            <div class="stat"><span class="num" id="totalAudio">…</span> <span class="lbl">audio</span></div>
-            <div class="stat"><span class="num" id="totalVideo">…</span> <span class="lbl">video</span></div>
-            <div class="stat"><span class="num" id="totalText">…</span> <span class="lbl">text</span></div>
-        </div>
+<header>
+<h1>Morphean Cosmology Framework (MCF) — Complete Archive</h1>
+<p>This page indexes every document, image, and media file in this repository as a single continuous work, in a fixed reading order set below — <strong>not</strong> by upload date. Click a file name to open it standalone, or expand "Preview" to read it inline. Everything below is a real link, so search engines, crawlers, and AI tools that fetch this page can discover and read every file directly.</p>
+<nav>
+<ul>
+<li><a href="#ch1">1. Overview &amp; Governance</a></li>
+<li><a href="#ch2">2. Ontological Foundations</a></li>
+<li><a href="#ch3">3. Core Physics — MSRT &amp; Phasma Substrate</a></li>
+<li><a href="#ch4">4. Cosmology, NUS Theorem &amp; Origins</a></li>
+<li><a href="#ch5">5. Earth Systems — Earthotomy</a></li>
+<li><a href="#ch6">6. Climate &amp; Planetary Impact</a></li>
+<li><a href="#ch7">7. Applied Engineering</a></li>
+<li><a href="#ch8">8. Medical Application — Arterial System</a></li>
+<li><a href="#ch9">9. Human Support Architecture &amp; Psychology</a></li>
+<li><a href="#ch10">10. Critique &amp; Commentary</a></li>
+<li><a href="#ch11">11. Reference &amp; Media</a></li>
+</ul>
+</nav>
+</header>
 
-        <!-- file list -->
-        <div id="fileList"></div>
+<section id="ch1">
+<h2>1. Overview &amp; Governance</h2>
+<ul>
+<li><a href="README.md">README.md</a></li>
+<li><a href="LICENSE">LICENSE</a></li>
+<li><a href="the Code M.pdf">the Code M.pdf</a></li>
+<li><a href="Code_M_Analysis_Final (1).pdf">Code_M_Analysis_Final (1).pdf</a></li>
+<li><a href="Sovereign Declaration Of Contributive Equity (mcf).pdf">Sovereign Declaration Of Contributive Equity (mcf).pdf</a></li>
+<li><a href="Sovereign Declaration Of Contributive Purpose (mcf) — Clean Version.pdf">Sovereign Declaration Of Contributive Purpose (mcf) — Clean Version.pdf</a></li>
+<li><a href="CHRISTOS SOTIRELIS · MORPHEAS THE SHAPE MASTER — AHI · Artificial Harmonic Intelligence · Morphean Framework.html">CHRISTOS SOTIRELIS · MORPHEAS THE SHAPE MASTER — AHI · Artificial Harmonic Intelligence · Morphean Framework.html</a></li>
+<li><a href="mcf_belief_html.html">mcf_belief_html.html</a></li>
+</ul>
+</section>
 
-        <!-- footer -->
-        <div class="footer">
-            MCF · Morphean Cosmology Framework &mdash; <span id="footerDate"></span>
-        </div>
-    </div>
+<section id="ch2">
+<h2>2. Ontological Foundations</h2>
+<ul>
+<li><a href="Subject Formalization of the Necessary Conditions for Existence Author Christos Sotirelis Classification Ontological & Logical Synthesis-compressed.pdf">Subject Formalization of the Necessary Conditions for Existence...pdf</a></li>
+<li><a href="The Fabric-Cavity Error — MCF Critical Document COMplete.pdf">The Fabric-Cavity Error — MCF Critical Document COMplete.pdf</a></li>
+<li><a href="The Life Equation_ A Unified Framework for Understanding Existence_from Christos Sotirelis.pdf">The Life Equation_ A Unified Framework for Understanding Existence.pdf</a></li>
+<li><a href="Information as the Fabric of Reality.pdf">Information as the Fabric of Reality.pdf</a></li>
+<li><a href="Morphean Cosmology Framework Abstract.pdf">Morphean Cosmology Framework Abstract.pdf</a></li>
+<li><a href="Morphean Cosmology Framework — The Life Equation & Unified Cosmology.pdf">Morphean Cosmology Framework — The Life Equation &amp; Unified Cosmology.pdf</a></li>
+</ul>
+</section>
 
-    <script>
-        (function() {
-            'use strict';
+<section id="ch3">
+<h2>3. Core Physics — MSRT &amp; Phasma Substrate</h2>
+<ul>
+<li><a href="1 Molecular_Lightning_Mechanics.pdf">1 Molecular_Lightning_Mechanics.pdf</a></li>
+<li><a href="MCF MSRT ETC.html">MCF MSRT ETC.html</a></li>
+<li><a href="Morphean Spacetime Resonance Theory MSRT MCF MtSM.html">Morphean Spacetime Resonance Theory MSRT MCF MtSM.html</a></li>
+<li><a href="Morpheas’ Invisible Nanoparticle Highway MCF.html">Morpheas' Invisible Nanoparticle Highway MCF.html</a></li>
+<li><a href="morpheas_lightning (1).html">morpheas_lightning (1).html</a></li>
+<li><a href="The So-Called Weightless Water Paradox MCF.html">The So-Called Weightless Water Paradox MCF.html</a></li>
+<li><a href="The So-Called Weightless Water Paradox — Logically Resolved by Morpheas.pdf">The So-Called Weightless Water Paradox — Logically Resolved by Morpheas.pdf</a></li>
+<li><a href="MCF — The Mechanics of the Phasma Substrate & Molecular Exosome.pdf">MCF — The Mechanics of the Phasma Substrate &amp; Molecular Exosome.pdf</a></li>
+<li><a href="Kinetic Architectures of the Atmosphere _ Molecular Proximity & Phase Dynamics.pdf">Kinetic Architectures of the Atmosphere _ Molecular Proximity &amp; Phase Dynamics.pdf</a></li>
+<li><a href="Granularity Electrones nParadox Assumptions.pdf">Granularity Electrones nParadox Assumptions.pdf</a></li>
+<li><a href="MCF Geodynamic Synchronicity and Orbital MechanicsA Comprehensive Technical ReportTerrestrialLunarSystemNearEarth Environment.pdf">MCF Geodynamic Synchronicity and Orbital Mechanics.pdf</a></li>
+<li><a href="The Threshold — Complete Document_of_C_Sotirelis_MCF.pdf">The Threshold — Complete Document_of_C_Sotirelis_MCF.pdf</a></li>
+<li><a href="The Universe is Quantum By Christos Sotirelis.pdf">The Universe is Quantum By Christos Sotirelis.pdf</a></li>
+<li><a href="Electromagnetic Infrastructure and Nanoparticle Heating MCF.html">Electromagnetic Infrastructure and Nanoparticle Heating MCF.html</a></li>
+</ul>
+</section>
 
-            // ── configuration ──
-            const REPO_OWNER = 'ChristosSotirelis';
-            const REPO_NAME = 'The-Morphean-Cosmology-Framework-MCF-';
-            const BRANCH = 'main';
-            const API_URL =
-                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/?ref=${BRANCH}`;
-            const RAW_BASE =
-                `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/`;
+<section id="ch4">
+<h2>4. Cosmology, NUS Theorem &amp; Origins</h2>
+<ul>
+<li><a href="MCF — The Authoritative Record MCF SC.pdf">MCF — The Authoritative Record MCF SC.pdf</a></li>
+<li><a href="NUS Theorem — Morphean Cosmology Framework.pdf">NUS Theorem — Morphean Cosmology Framework.pdf</a></li>
+<li><a href="NUS_Mechanical_Architecture.pdf">NUS_Mechanical_Architecture.pdf</a></li>
+<li><a href="NUS Fasma Substrate — Working Research Document_ Gravitational Geometry, Molecular Deformation & Tidal Mechanics of MCF.pdf">NUS Fasma Substrate — Working Research Document.pdf</a></li>
+<li><a href="Cross-Scale Correspondence — Internuclear Polarity & The Core–Moon Circuit MCF.pdf">Cross-Scale Correspondence — Internuclear Polarity &amp; The Core–Moon Circuit MCF.pdf</a></li>
+<li><a href="Internuclear Polarity — The Anode-Cathode Relationship Between Nuclei Within a Molecule.pdf">Internuclear Polarity — The Anode-Cathode Relationship.pdf</a></li>
+<li><a href="The Orbital Architecture of Earth.html">The Orbital Architecture of Earth.html</a></li>
+<li><a href="MCF — Where We Came From_ A Philosophical Theorem on Origin, Scale, and Continuity.pdf">MCF — Where We Came From.pdf</a></li>
+<li><a href="mcf_where_we_came_from.html">mcf_where_we_came_from.html</a></li>
+<li><a href="big_bang_mcf_timeline.svg">big_bang_mcf_timeline.svg</a></li>
+<li><a href="Morphean Cosmology Framework what Morphean Electrogravitational Collision Point is – Complete Document.pdf">Morphean Electrogravitational Collision Point.pdf</a></li>
+<li><a href="Morphean Cosmology Framework – Phasmatic reality.pdf">Morphean Cosmology Framework – Phasmatic reality.pdf</a></li>
+<li><a href="mcf_player PHASMATIC REALITY.html">mcf_player PHASMATIC REALITY.html</a></li>
+<li><a href="Morphean Link Symbol Protocol — Presentation Essay.pdf">Morphean Link Symbol Protocol — Presentation Essay.pdf</a></li>
+<li><a href="MCF_Message.html">MCF_Message.html</a></li>
+<li><a href="morphean_link_symbol.html">morphean_link_symbol.html</a></li>
+<li><a href="ADVANCED ELECTROMAGNETIC & MAGNETOSTATIC SHIELDING ARCHITECTURES.html">ADVANCED ELECTROMAGNETIC &amp; MAGNETOSTATIC SHIELDING ARCHITECTURES.html</a></li>
+<li><a href="Cosmic_Speed_Geometry.pdf">Cosmic_Speed_Geometry.pdf</a></li>
+<li><a href="Hierarchical_Cosmic_Speed_Framework_Complete.pdf">Hierarchical_Cosmic_Speed_Framework_Complete.pdf</a></li>
+<li><a href="MIDAS_Sequence_Mathematical_Framework.pdf">MIDAS_Sequence_Mathematical_Framework.pdf</a></li>
+<li><a href="Morphean Caledar Complete.html">Morphean Caledar Complete.html</a></li>
+<li><a href="Morphean_Calendar_Complete 2.pdf">Morphean_Calendar_Complete 2.pdf</a></li>
+<li><a href="morphean_Epoch_countdown.html">morphean_Epoch_countdown.html</a></li>
+<li><a href="morphean-orrery-mecp-fixed.html">morphean-orrery-mecp-fixed.html</a></li>
+<li><a href="Stardust Composition in A Minor.pdf">Stardust Composition in A Minor.pdf</a></li>
+<li><a href="The Morphean Stardust Formula_ Complete Philosophical and Practical Documentation Complete.pdf">The Morphean Stardust Formula.pdf</a></li>
+<li><a href="The Elixir of Life - Morphean Cosmology Framework.pdf">The Elixir of Life - Morphean Cosmology Framework.pdf</a></li>
+</ul>
+</section>
 
-            const container = document.getElementById('fileList');
-            const statsEls = {
-                total: document.getElementById('totalFiles'),
-                html: document.getElementById('totalHtml'),
-                pdf: document.getElementById('totalPdf'),
-                img: document.getElementById('totalImg'),
-                audio: document.getElementById('totalAudio'),
-                video: document.getElementById('totalVideo'),
-                text: document.getElementById('totalText'),
-            };
+<section id="ch5">
+<h2>5. Earth Systems — Earthotomy</h2>
+<ul>
+<li><a href="Earthotomy & MECP — Complete Technical Document (ENGLISH.pdf">Earthotomy &amp; MECP — Complete Technical Document.pdf</a></li>
+<li><a href="MCF EARTHOTOMY MOLACULES.pdf">MCF EARTHOTOMY MOLACULES.pdf</a></li>
+<li><a href="Phase 0 – Diagnostic diagram.html">Phase 0 – Diagnostic diagram.html</a></li>
+<li><a href="Ai Image Interpretation Apology (downloadable Text).pdf">Ai Image Interpretation Apology.pdf</a></li>
+</ul>
+</section>
 
-            document.getElementById('footerDate').textContent = new Date().toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+<section id="ch6">
+<h2>6. Climate &amp; Planetary Impact</h2>
+<ul>
+<li><a href="Climate Cosmology Master Table.pdf">Climate Cosmology Master Table.pdf</a></li>
+<li><a href="Formal Project Statement_ Three-Phase Climate Solution.pdf">Formal Project Statement_ Three-Phase Climate Solution.pdf</a></li>
+<li><a href="MCF LICENSE.pdf">MCF LICENSE.pdf</a></li>
+<li><a href="MCF_Complete_Plastic_Atmospheric_Pollution_Theorem.pdf">MCF_Complete_Plastic_Atmospheric_Pollution_Theorem.pdf</a></li>
+<li><a href="MCF_KLEEMAH_SEAH_ATOMIC_R0987.pdf">MCF_KLEEMAH_SEAH_ATOMIC_R0987.pdf</a></li>
+<li><a href="Mcf Climate Docs.pdf">Mcf Climate Docs.pdf</a></li>
+<li><a href="Morpheas Sea Heating Hypothesis MCF.pdf">Morpheas Sea Heating Hypothesis MCF.pdf</a></li>
+<li><a href="Scientific Review Document_ Electromagnetic-Nanoparticle Climate Hypothesis doc 1.pdf">Scientific Review Document_ Electromagnetic-Nanoparticle Climate Hypothesis.pdf</a></li>
+<li><a href="mcf_702_Climatic_Trajectory_50_Years.pdf">mcf_702_Climatic_Trajectory_50_Years.pdf</a></li>
+<li><a href="Climate · Earthotomy · MECP.html">Climate · Earthotomy · MECP.html</a></li>
+<li><a href="KLEMAH_Final_Verdict_2026.html">KLEMAH_Final_Verdict_2026.html</a></li>
+<li><a href="MCF & KLEMAH Framework.html">MCF &amp; KLEMAH Framework.html</a></li>
+<li><a href="Morphean Climate Framework MCF Complete Empirical Analysis.html">Morphean Climate Framework MCF Complete Empirical Analysis.html</a></li>
+<li><a href="klemah_live_monitoring_instrument.html">klemah_live_monitoring_instrument.html</a></li>
+<li><a href="klemah_metaatomic_polar_theorem.html">klemah_metaatomic_polar_theorem.html</a></li>
+<li><a href="Historical Analysis of Global Nuclear Detonations.pdf">Historical Analysis of Global Nuclear Detonations.pdf</a></li>
+<li><a href="Ionospheric and Electrodynamic Response (Literature Review).pdf">Ionospheric and Electrodynamic Response.pdf</a></li>
+<li><a href="Nuclear Test Fallout_ Atmospheric Transport and Polar Impacts.pdf">Nuclear Test Fallout_ Atmospheric Transport and Polar Impacts.pdf</a></li>
+<li><a href="Ozone Hole Hypothesis & Research MCF-LP BY-NC-ND-EP.pdf">Ozone Hole Hypothesis &amp; Research MCF-LP BY-NC-ND-EP.pdf</a></li>
+<li><a href="Η ΑΛΗΘΕΙΑ ΓΙΑ ΤΟ ΚΛΙΜΑ ΚΑΙ ΤΟ ΠΑΡΕΛΘΟΝ ΜΑΣ.html">Η ΑΛΗΘΕΙΑ ΓΙΑ ΤΟ ΚΛΙΜΑ ΚΑΙ ΤΟ ΠΑΡΕΛΘΟΝ ΜΑΣ.html</a></li>
+</ul>
+</section>
 
-            // ── helpers ──
-            function ext(fname) {
-                const i = fname.lastIndexOf('.');
-                return i === -1 ? '' : fname.substring(i + 1).toLowerCase();
-            }
+<section id="ch7">
+<h2>7. Applied Engineering</h2>
+<ul>
+<li><a href="MCF Hydrogen Mesh – Morphean Blueprint MCF Licenced.pdf">MCF Hydrogen Mesh – Morphean Blueprint.pdf</a></li>
+<li><a href="CNC Surgeons · Complete Blueprint with Full‑Width Images _ MCF-LP.pdf">CNC Surgeons · Complete Blueprint.pdf</a></li>
+</ul>
+</section>
 
-            function fileType(fname) {
-                const e = ext(fname);
-                if (['html', 'htm'].includes(e)) return 'html';
-                if (e === 'pdf') return 'pdf';
-                if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'bmp', 'ico'].includes(e)) return 'img';
-                if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'].includes(e)) return 'audio';
-                if (['mp4', 'webm', 'ogv', 'mov', 'avi', 'mkv'].includes(e)) return 'video';
-                return 'text';
-            }
+<section id="ch8">
+<h2>8. Medical Application — Arterial System</h2>
+<ul class="frame-seq">
+<li><a href="0000.png">0000.png</a></li><li><a href="0010.png">0010.png</a></li>
+<li><a href="0020.png">0020.png</a></li><li><a href="0030.png">0030.png</a></li>
+<li><a href="0040.png">0040.png</a></li><li><a href="0050.png">0050.png</a></li>
+<li><a href="0060.png">0060.png</a></li><li><a href="0070.png">0070.png</a></li>
+<li><a href="0080.png">0080.png</a></li><li><a href="0090.png">0090.png</a></li>
+<li><a href="0100.png">0100.png</a></li><li><a href="0110.png">0110.png</a></li>
+<li><a href="0120.png">0120.png</a></li><li><a href="0130.png">0130.png</a></li>
+<li><a href="0140.png">0140.png</a></li><li><a href="0150.png">0150.png</a></li>
+</ul>
+<ul>
+<li><a href="MCF Bypass prosedure.mp4">MCF Bypass prosedure.mp4</a></li>
+<li><a href="MCF Morpheas Arterial Restoration System MCF-LP BY-NC-ND-EP.html">MCF Morpheas Arterial Restoration System.html</a></li>
+<li><a href="Morpheas Arterial Restoration System MCF-LP BY-NC-ND-EP.html">Morpheas Arterial Restoration System.html</a></li>
+</ul>
+</section>
 
-            function formatSize(bytes) {
-                if (!bytes || bytes < 0) return '—';
-                if (bytes < 1024) return bytes + ' B';
-                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-                return (bytes / 1048576).toFixed(1) + ' MB';
-            }
+<section id="ch9">
+<h2>9. Human Support Architecture &amp; Psychology</h2>
+<ul>
+<li><a href="Morpheas the Shape Master Complete V3.html">Morpheas the Shape Master Complete V3.html</a></li>
+<li><a href="Morpheas_V3_Technical_Blueprint.pdf">Morpheas_V3_Technical_Blueprint.pdf</a></li>
+<li><a href="Morpheas The Shape Master · Final Complete Edition_Corcted.html">Morpheas The Shape Master · Final Complete Edition.html</a></li>
+<li><a href="mcf_player_Corected.html">mcf_player_Corected.html</a></li>
+<li><a href="Morpheas the Shape Master _ A Journey to Childhood Memories_.pdf">Morpheas the Shape Master _ A Journey to Childhood Memories.pdf</a></li>
+<li><a href="morpheas_portrait.pdf">morpheas_portrait.pdf</a></li>
+<li><a href="AI Consciousness.html">AI Consciousness.html</a></li>
+<li><a href="mcf_psychology.html">mcf_psychology.html</a></li>
+<li><a href="mcf_soul_disease (1).html">mcf_soul_disease (1).html</a></li>
+<li><a href="sotirelis_pdf (1).html">sotirelis_pdf (1).html</a></li>
+<li><a href="On the Human Being Morphean Cosmology Framework Author Christos Sotirelis Morpheas the Shape Master.html">On the Human Being.html</a></li>
+<li><a href="The Circle of Suffocation — A Political Manifesto for Human Evolution.pdf">The Circle of Suffocation.pdf</a></li>
+<li><a href="The Nature of the Soul within the Morphean Cosmology Framework.pdf">The Nature of the Soul.pdf</a></li>
+<li><a href="The_Mind_as_a_Reverse_Prism.pdf">The_Mind_as_a_Reverse_Prism.pdf</a></li>
+</ul>
+</section>
 
-            function isLikelyMarkdown(fname) {
-                const e = ext(fname);
-                return e === 'md' || e === 'markdown';
-            }
+<section id="ch10">
+<h2>10. Critique &amp; Commentary</h2>
+<ul>
+<li><a href="MORPHEAS Explains math and pizza aint same category.html">MORPHEAS Explains math and pizza aint same category.html</a></li>
+<li><a href="code_m_mma.html">code_m_mma.html</a></li>
+</ul>
+</section>
 
-            function isBinaryText(fname) {
-                const e = ext(fname);
-                const binaryText = ['json', 'js', 'css', 'py', 'c', 'cpp', 'h', 'hpp', 'java', 'rb', 'go', 'rs', 'sh', 'bash',
-                    'xml', 'yaml', 'yml', 'toml', 'ini', 'cfg', 'conf', 'txt', 'log', 'csv', 'tsv', 'sql', 'r', 'pl', 'lua',
-                    'swift', 'kt', 'scala', 'clj', 'cljs', 'elm', 'hs', 'lisp', 'scheme', 'dart', 'groovy', 'gradle', 'makefile',
-                    'cmake', 'dockerfile', 'nginx', 'conf'
-                ];
-                return binaryText.includes(e);
-            }
+<section id="ch11">
+<h2>11. Reference &amp; Media</h2>
+<ul>
+<li><a href="The Scientific Master Compendium.pdf">The Scientific Master Compendium.pdf</a></li>
+<li><a href="Morphean-Cosmology-and-the-Fasma.mp3">Morphean-Cosmology-and-the-Fasma.mp3</a></li>
+</ul>
+</section>
 
-            function sanitizeForSrcdoc(html) {
-                // basic sanitization to avoid breaking the iframe
-                return html.replace(/<\/?script[^>]*>/gi, '').replace(/on\w+\s*=/gi, 'data-removed-');
-            }
+<footer><p>Last structural update: edit this file directly — order here is fixed by hand, independent of commit dates.</p></footer>
 
-            // ── renderers ──
+<script>
+// Progressive enhancement: turn plain links into inline previews.
+document.querySelectorAll('main a, section a').forEach(a=>{
+  if(a.dataset.skip) return;
+  const href = a.getAttribute('href');
+  const ext = href.split('.').pop().toLowerCase();
+  let node;
+  if(ext==='html'){ node=document.createElement('iframe'); node.src=href; node.loading='lazy'; }
+  else if(ext==='pdf'){ node=document.createElement('embed'); node.src=href; node.type='application/pdf'; }
+  else if(['png','jpg','jpeg','gif','svg'].includes(ext)){ node=document.createElement('img'); node.src=href; node.loading='lazy'; }
+  else if(ext==='mp4'){ node=document.createElement('video'); node.src=href; node.controls=true; }
+  else if(ext==='mp3'){ node=document.createElement('audio'); node.src=href; node.controls=true; node.style.width='100%'; }
+  else if(ext==='md'){ node=document.createElement('pre'); fetch(href).then(r=>r.text()).then(t=>node.textContent=t); }
+  else return;
+  const d=document.createElement('details');
+  const s=document.createElement('summary'); s.textContent='Preview';
+  d.appendChild(s); d.appendChild(node);
+  a.insertAdjacentElement('afterend', d);
+});
 
-            function renderHtml(file, content) {
-                const div = document.createElement('div');
-                div.className = 'file-body';
-                const iframe = document.createElement('iframe');
-                iframe.className = 'html-frame srcdoc';
-                iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals');
-                iframe.setAttribute('loading', 'lazy');
-                // use srcdoc for safety and to avoid CORS issues
-                const safe = sanitizeForSrcdoc(content);
-                iframe.srcdoc = safe;
-                // also set a title
-                iframe.title = file.name;
-                div.appendChild(iframe);
-                return div;
-            }
+// Frame-sequence slideshow for the arterial-system image set
+document.querySelectorAll('ul.frame-seq').forEach(ul=>{
+  const links=[...ul.querySelectorAll('a')];
+  links.forEach(a=>a.dataset.skip='1');
+  const srcs=links.map(a=>a.getAttribute('href'));
+  const img=document.createElement('img');
+  img.src=srcs[0];
+  let i=0;
+  const timer=setInterval(()=>{ i=(i+1)%srcs.length; img.src=srcs[i]; },500);
+  ul.insertAdjacentElement('afterend', img);
+});
+</script>
 
-            function renderPdf(file) {
-                const div = document.createElement('div');
-                div.className = 'file-body';
-                const embed = document.createElement('embed');
-                embed.className = 'pdf-embed';
-                embed.src = RAW_BASE + encodeURIComponent(file.name);
-                embed.type = 'application/pdf';
-                embed.setAttribute('loading', 'lazy');
-                embed.title = file.name;
-                // fallback text
-                const fallback = document.createElement('p');
-                fallback.style.cssText = 'color:#6a7a8a;margin-top:0.5rem;font-size:0.85rem;';
-                fallback.textContent = 'PDF viewer not available. ';
-                const link = document.createElement('a');
-                link.href = RAW_BASE + encodeURIComponent(file.name);
-                link.textContent = 'Download PDF';
-                link.target = '_blank';
-                fallback.appendChild(link);
-                div.appendChild(embed);
-                div.appendChild(fallback);
-                return div;
-            }
-
-            function renderImg(file) {
-                const div = document.createElement('div');
-                div.className = 'file-body';
-                const wrap = document.createElement('div');
-                wrap.className = 'img-wrapper';
-                const img = document.createElement('img');
-                img.src = RAW_BASE + encodeURIComponent(file.name);
-                img.alt = file.name;
-                img.setAttribute('loading', 'lazy');
-                wrap.appendChild(img);
-                div.appendChild(wrap);
-                return div;
-            }
-
-            function renderAudio(file) {
-                const div = document.createElement('div');
-                div.className = 'file-body';
-                const wrap = document.createElement('div');
-                wrap.className = 'audio-wrapper';
-                const audio = document.createElement('audio');
-                audio.controls = true;
-                audio.preload = 'metadata';
-                audio.title = file.name;
-                const src = document.createElement('source');
-                src.src = RAW_BASE + encodeURIComponent(file.name);
-                src.type = 'audio/' + ext(file.name);
-                audio.appendChild(src);
-                wrap.appendChild(audio);
-                div.appendChild(wrap);
-                return div;
-            }
-
-            function renderVideo(file) {
-                const div = document.createElement('div');
-                div.className = 'file-body';
-                const wrap = document.createElement('div');
-                wrap.className = 'video-wrapper';
-                const video = document.createElement('video');
-                video.controls = true;
-                video.preload = 'metadata';
-                video.title = file.name;
-                video.style.maxWidth = '100%';
-                const src = document.createElement('source');
-                src.src = RAW_BASE + encodeURIComponent(file.name);
-                src.type = 'video/' + ext(file.name);
-                video.appendChild(src);
-                wrap.appendChild(video);
-                div.appendChild(wrap);
-                return div;
-            }
-
-            function renderText(file, content) {
-                const div = document.createElement('div');
-                div.className = 'file-body';
-
-                if (isLikelyMarkdown(file.name)) {
-                    // render markdown
-                    const mdDiv = document.createElement('div');
-                    mdDiv.className = 'markdown-body';
-                    try {
-                        // simple markdown to HTML (basic)
-                        const html = basicMarkdown(content);
-                        mdDiv.innerHTML = html;
-                    } catch (_) {
-                        mdDiv.textContent = content || '(empty)';
-                    }
-                    div.appendChild(mdDiv);
-                } else {
-                    const pre = document.createElement('pre');
-                    pre.className = 'text-preview';
-                    pre.textContent = content || '(empty)';
-                    div.appendChild(pre);
-                }
-                return div;
-            }
-
-            // ── very basic markdown ──
-            function basicMarkdown(text) {
-                if (!text) return '(empty)';
-                let html = text;
-                // code blocks
-                html = html.replace(/```([\s\S]*?)```/g, function(_, code) {
-                    return '<pre><code>' + escapeHtml(code.trim()) + '</code></pre>';
-                });
-                // inline code
-                html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-                // headers
-                html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-                html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-                html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-                // bold / italic
-                html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-                html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-                // links
-                html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-                // blockquote
-                html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-                // lists (simple)
-                html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-                html = html.replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>');
-                // paragraphs
-                html = html.replace(/\n\n/g, '</p><p>');
-                html = '<p>' + html + '</p>';
-                // clean up empty paragraphs
-                html = html.replace(/<p>\s*<\/p>/g, '');
-                return html;
-            }
-
-            function escapeHtml(text) {
-                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-                return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-            }
-
-            // ── build file entry ──
-
-            function buildFileEntry(file) {
-                const ftype = fileType(file.name);
-                const entry = document.createElement('div');
-                entry.className = 'file-entry';
-                entry.dataset.ftype = ftype;
-
-                // header
-                const header = document.createElement('div');
-                header.className = 'file-header';
-
-                const badge = document.createElement('span');
-                badge.className = 'type-badge ' + ftype;
-                badge.textContent = ftype.toUpperCase();
-                header.appendChild(badge);
-
-                const nameSpan = document.createElement('span');
-                nameSpan.className = 'file-name';
-                nameSpan.textContent = file.name;
-                header.appendChild(nameSpan);
-
-                const sizeSpan = document.createElement('span');
-                sizeSpan.className = 'file-size';
-                sizeSpan.textContent = formatSize(file.size);
-                header.appendChild(sizeSpan);
-
-                const rawLink = document.createElement('a');
-                rawLink.className = 'raw-link';
-                rawLink.href = RAW_BASE + encodeURIComponent(file.name);
-                rawLink.textContent = 'raw';
-                rawLink.target = '_blank';
-                header.appendChild(rawLink);
-
-                entry.appendChild(header);
-
-                // body (loading)
-                const body = document.createElement('div');
-                body.className = 'file-body';
-                body.id = 'body-' + file.name.replace(/[^a-zA-Z0-9]/g, '_');
-                const loading = document.createElement('div');
-                loading.className = 'file-loading';
-                loading.innerHTML = '<div class="spinner"></div><p style="margin-top:0.5rem;color:#5a6a7a;">loading …</p>';
-                body.appendChild(loading);
-                entry.appendChild(body);
-
-                return { entry, body, loading };
-            }
-
-            // ── fetch & render ──
-
-            async function fetchAndRender(file) {
-                const { entry, body, loading } = buildFileEntry(file);
-                container.appendChild(entry);
-
-                const ftype = fileType(file.name);
-
-                try {
-                    // For binary types, we don't need to fetch content — just use raw URL
-                    if (ftype === 'img' || ftype === 'audio' || ftype === 'video' || ftype === 'pdf') {
-                        let rendered;
-                        if (ftype === 'img') rendered = renderImg(file);
-                        else if (ftype === 'audio') rendered = renderAudio(file);
-                        else if (ftype === 'video') rendered = renderVideo(file);
-                        else if (ftype === 'pdf') rendered = renderPdf(file);
-                        body.replaceWith(rendered);
-                        return;
-                    }
-
-                    // For HTML and text, fetch content
-                    const resp = await fetch(RAW_BASE + encodeURIComponent(file.name));
-                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                    const content = await resp.text();
-
-                    let rendered;
-                    if (ftype === 'html') {
-                        rendered = renderHtml(file, content);
-                    } else {
-                        rendered = renderText(file, content);
-                    }
-                    body.replaceWith(rendered);
-
-                } catch (err) {
-                    const errDiv = document.createElement('div');
-                    errDiv.className = 'file-body';
-                    const errMsg = document.createElement('div');
-                    errMsg.className = 'file-error';
-                    errMsg.innerHTML = '⚠️ failed to load: ' + escapeHtml(err.message || 'unknown error');
-                    errDiv.appendChild(errMsg);
-                    body.replaceWith(errDiv);
-                }
-            }
-
-            // ── main ──
-
-            async function main() {
-                try {
-                    const resp = await fetch(API_URL);
-                    if (!resp.ok) throw new Error('GitHub API: ' + resp.status + ' ' + resp.statusText);
-                    const data = await resp.json();
-
-                    // filter out directories and index.html
-                    const files = data
-                        .filter(item => item.type === 'file')
-                        .filter(item => item.name !== 'index.html' && item.name !== 'INDEX.html')
-                        .filter(item => item.name !== '.gitignore' && item.name !== '.nojekyll');
-
-                    // sort: HTML first, then PDF, then images, then audio, then video, then text
-                    const order = { html: 0, pdf: 1, img: 2, audio: 3, video: 4, text: 5 };
-                    files.sort((a, b) => {
-                        const ta = order[fileType(a.name)] ?? 99;
-                        const tb = order[fileType(b.name)] ?? 99;
-                        if (ta !== tb) return ta - tb;
-                        return a.name.localeCompare(b.name);
-                    });
-
-                    // update stats
-                    const counts = { total: files.length, html: 0, pdf: 0, img: 0, audio: 0, video: 0, text: 0 };
-                    files.forEach(f => {
-                        const t = fileType(f.name);
-                        if (counts[t] !== undefined) counts[t]++;
-                    });
-                    statsEls.total.textContent = counts.total;
-                    statsEls.html.textContent = counts.html;
-                    statsEls.pdf.textContent = counts.pdf;
-                    statsEls.img.textContent = counts.img;
-                    statsEls.audio.textContent = counts.audio;
-                    statsEls.video.textContent = counts.video;
-                    statsEls.text.textContent = counts.text;
-
-                    // render each file with a small delay to avoid overwhelming the browser
-                    for (let i = 0; i < files.length; i++) {
-                        await fetchAndRender(files[i]);
-                        // yield to the event loop
-                        if (i % 5 === 0) {
-                            await new Promise(r => setTimeout(r, 10));
-                        }
-                    }
-
-                } catch (err) {
-                    container.innerHTML =
-                        `<div class="file-error" style="padding:3rem;text-align:center;background:#11171f;border-radius:14px;border:1px solid #2a1a1a;">
-                            <h2 style="color:#d47a7a;">⚠️ Failed to load repository</h2>
-                            <p style="color:#8a7a7a;margin-top:0.5rem;">${escapeHtml(err.message)}</p>
-                            <p style="color:#5a6a7a;margin-top:1rem;font-size:0.9rem;">
-                                Make sure the repository is public and the GitHub API is accessible.
-                            </p>
-                        </div>`;
-                }
-            }
-
-            main();
-
-        })();
-    </script>
 </body>
 </html>
