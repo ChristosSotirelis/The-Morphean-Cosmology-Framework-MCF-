@@ -1,135 +1,812 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morphean Cosmology Framework (MCF) - Master Synthesis</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCF · Full Repository Viewer</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --accent-color: #38bdf8;
-            --border-color: #334155;
+        /* ── reset & base ── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background: #0b0e14;
+            color: #d0d7e0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 2rem 1rem;
             line-height: 1.6;
-            margin: 0;
-            padding: 2rem;
         }
+        a {
+            color: #7cb9ff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── container ── */
         .container {
-            max-width: 1000px;
+            max-width: 1300px;
             margin: 0 auto;
         }
-        header {
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
+
+        /* ── header ── */
+        .page-header {
+            border-bottom: 1px solid #2a313c;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
         }
-        h1 { color: var(--accent-color); margin-bottom: 0.5rem; }
-        .meta-tag {
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            letter-spacing: -0.5px;
+            color: #f0f4fa;
+        }
+        .page-header h1 span {
+            color: #6a8fc0;
+        }
+        .page-header .sub {
+            color: #8896a8;
+            margin-top: 0.3rem;
+            font-size: 1rem;
+        }
+        .page-header .badge {
             display: inline-block;
-            background: var(--card-bg);
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            font-size: 0.875rem;
+            background: #1f2a36;
+            padding: 0.2rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #b0c4db;
+            margin-top: 0.5rem;
+            border: 1px solid #2e3a48;
         }
-        section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+
+        /* ── stats bar ── */
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 2rem;
+            background: #12181f;
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #232b36;
+            font-size: 0.9rem;
+        }
+        .stats .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .stats .stat .num {
+            font-weight: 600;
+            color: #e8edf4;
+        }
+        .stats .stat .lbl {
+            color: #8896a8;
+        }
+
+        /* ── file entry ── */
+        .file-entry {
+            background: #11171f;
+            border: 1px solid #1f2935;
+            border-radius: 14px;
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .file-entry:hover {
+            border-color: #33506a;
+        }
+
+        .file-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 1rem;
+            padding: 0.7rem 1.2rem;
+            background: #0e141c;
+            border-bottom: 1px solid #1a232e;
+            cursor: default;
+        }
+        .file-header .type-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.15rem 0.7rem;
+            border-radius: 12px;
+            background: #1f2a36;
+            color: #a0b8d0;
+            border: 1px solid #2d3b4a;
+        }
+        .file-header .type-badge.html {
+            background: #1e3a2a;
+            border-color: #2b5a3a;
+            color: #7fc9a0;
+        }
+        .file-header .type-badge.pdf {
+            background: #3a1e2a;
+            border-color: #5a2a3a;
+            color: #e8a0b0;
+        }
+        .file-header .type-badge.img {
+            background: #2a2a1e;
+            border-color: #4a4a2a;
+            color: #d4c87a;
+        }
+        .file-header .type-badge.audio {
+            background: #1e2a3a;
+            border-color: #2a4a5a;
+            color: #7ac8d4;
+        }
+        .file-header .type-badge.video {
+            background: #2a1e3a;
+            border-color: #4a2a5a;
+            color: #c87ad4;
+        }
+        .file-header .type-badge.text {
+            background: #1e222a;
+            border-color: #2e323a;
+            color: #b0b8c0;
+        }
+        .file-header .file-name {
+            font-weight: 500;
+            color: #e8edf4;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+        .file-header .file-size {
+            color: #6a7a8a;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+        .file-header .raw-link {
+            font-size: 0.8rem;
+            color: #6a8fc0;
+        }
+
+        /* ── file body ── */
+        .file-body {
+            padding: 0.8rem 1.2rem 1.2rem;
+            background: #0d131b;
+        }
+
+        /* ── HTML iframe ── */
+        .html-frame {
+            width: 100%;
+            height: 600px;
+            border: none;
             border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            background: #ffffff;
+            box-shadow: inset 0 0 0 1px #1f2935;
         }
-        h2 { color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
+        .html-frame.srcdoc {
+            background: #fff;
         }
-        .code-block {
-            background: #020617;
-            padding: 1rem;
+
+        /* ── PDF embed ── */
+        .pdf-embed {
+            width: 100%;
+            height: 700px;
+            border: none;
+            border-radius: 8px;
+            background: #1a1f26;
+            box-shadow: inset 0 0 0 1px #1f2935;
+        }
+
+        /* ── image ── */
+        .img-wrapper {
+            text-align: center;
+            background: #0a0e14;
+            border-radius: 8px;
+            padding: 0.5rem;
+            border: 1px solid #1a232e;
+        }
+        .img-wrapper img {
+            max-width: 100%;
+            max-height: 700px;
             border-radius: 6px;
-            font-family: monospace;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* ── audio ── */
+        .audio-wrapper {
+            padding: 0.5rem 0;
+            background: #0a0e14;
+            border-radius: 8px;
+            border: 1px solid #1a232e;
+        }
+        .audio-wrapper audio {
+            width: 100%;
+            display: block;
+        }
+
+        /* ── video ── */
+        .video-wrapper {
+            background: #0a0e14;
+            border-radius: 8px;
+            border: 1px solid #1a232e;
+            padding: 0.5rem;
+        }
+        .video-wrapper video {
+            width: 100%;
+            max-height: 700px;
+            border-radius: 6px;
+            display: block;
+        }
+
+        /* ── text preview ── */
+        .text-preview {
+            background: #0b1017;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            border: 1px solid #1a232e;
             overflow-x: auto;
-            border: 1px solid var(--border-color);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 700px;
+            overflow-y: auto;
+            color: #c8d0d8;
+        }
+        .text-preview .empty {
+            color: #5a6a7a;
+            font-style: italic;
+        }
+
+        /* ── markdown rendered ── */
+        .markdown-body {
+            background: #0f161e;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            border: 1px solid #1a232e;
+            color: #d0d7e0;
+            overflow-x: auto;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3 {
+            color: #e8edf4;
+            margin: 0.8rem 0 0.4rem;
+        }
+        .markdown-body p {
+            margin: 0.4rem 0;
+        }
+        .markdown-body code {
+            background: #1a232e;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .markdown-body pre {
+            background: #0b1017;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #1a232e;
+        }
+        .markdown-body ul,
+        .markdown-body ol {
+            padding-left: 1.5rem;
+            margin: 0.3rem 0;
+        }
+        .markdown-body a {
+            color: #7cb9ff;
+        }
+        .markdown-body blockquote {
+            border-left: 3px solid #2a4a6a;
+            padding-left: 1rem;
+            color: #9aabba;
+            margin: 0.5rem 0;
+        }
+
+        /* ── loading / error ── */
+        .file-loading,
+        .file-error {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: #6a7a8a;
+        }
+        .file-error {
+            color: #d47a7a;
+        }
+        .file-loading .spinner {
+            display: inline-block;
+            width: 1.8rem;
+            height: 1.8rem;
+            border: 2px solid #1f2935;
+            border-top-color: #6a8fc0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── footer ── */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #1f2935;
+            text-align: center;
+            color: #5a6a7a;
+            font-size: 0.85rem;
+        }
+
+        /* ── responsive ── */
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem 0.6rem;
+            }
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+            .file-header {
+                flex-wrap: wrap;
+            }
+            .file-header .file-size {
+                margin-left: 0;
+                width: 100%;
+            }
+            .html-frame,
+            .pdf-embed {
+                height: 400px;
+            }
+            .img-wrapper img {
+                max-height: 400px;
+            }
+        }
+        @media (max-width: 480px) {
+            .html-frame,
+            .pdf-embed {
+                height: 300px;
+            }
+            .img-wrapper img {
+                max-height: 280px;
+            }
+            .text-preview {
+                max-height: 400px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* ── scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0e14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a3a4a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a4a5a;
         }
     </style>
-
-    <!-- AI Agent Optimization Block (JSON-LD Structured Data) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "TechArticle",
-      "name": "Morphean Cosmology Framework (MCF) Master Synthesis",
-      "description": "Unified theoretical and empirical synthesis of the Morphean Cosmology Framework across Sections I through XIX.",
-      "about": [
-        {"@type": "Thing", "name": "Track 1: Established Physical Constants & Empirical Baselines"},
-        {"@type": "Thing", "name": "Track 2: Fasma Substrate & Polyhedral Vacuum Lattices"},
-        {"@type": "Thing", "name": "Wedge Pressure & Mechanical Gravitational Displacement"},
-        {"@type": "Thing", "name": "Polarization Cascade & Light Propagation"},
-        {"@type": "Thing", "name": "Earthotomy & Morpheon Electrogravitational Collision Point (MECP)"},
-        {"@type": "Thing", "name": "K-L-E-M-A-H Climate Theorem & EM Saturation"}
-      ]
-    }
-    </script>
 </head>
 <body>
+    <div class="container" id="app">
+        <!-- header -->
+        <header class="page-header">
+            <h1>◈ MCF <span>·</span> Full Repository Viewer</h1>
+            <div class="sub">The Morphean Cosmology Framework · all files rendered in sequence</div>
+            <div class="badge">⚡ Stage II Mechanical Science · 0% internal paradox</div>
+        </header>
 
-<div class="container">
-    <header>
-        <h1>Morphean Cosmology Framework (MCF)</h1>
-        <p><strong>Master Synthesis & Specification Repository (Sections I – XIX)</strong></p>
-        <span class="meta-tag">Track 1: Established Science</span>
-        <span class="meta-tag">Track 2: MCF Theoretical Proposals</span>
-    </header>
-
-    <section id="system-overview">
-        <h2>1. System Framework Overview</h2>
-        <p>The Morphean Cosmology Framework operates via a dual-track architecture designed to integrate standard empirical constants with a mechanical vacuum model[cite: 81]:</p>
-        <ul>
-            <li><strong>Track 1 (Empirical Baselines):</strong> Standard vacuum permittivity (&epsilon;₀), permeability (&mu;₀), wave impedance (Z₀), and CODATA/NIST experimental data[cite: 81].</li>
-            <li><strong>Track 2 (MCF Theory):</strong> Alternative mechanical models replacing spacetime curvature with medium displacement, polarization cascades, and electrogravitational field interactions.</li>
-        </ul>
-    </section>
-
-    <section id="core-constructs">
-        <h2>2. Core Theoretical Mechanics (Sections I – XII)</h2>
-        <div class="grid">
-            <div>
-                <h3>Fasma Substrate & Wedge Pressure</h3>
-                <p>Proposes space is filled with a polyhedral molecular fabric (Fasma)[cite: 81]. Mass displaces this medium, generating mechanical gradients ("Wedge Pressure") replacing GR spacetime curvature[cite: 81, 82].</p>
-            </div>
-            <div>
-                <h3>Polarization Cascade</h3>
-                <p>Re-evaluates photon propagation as a sequential reorientation of adjacent Fasma unit boundary surfaces rather than particle transmission in empty space[cite: 81].</p>
-            </div>
+        <!-- stats -->
+        <div class="stats" id="stats">
+            <div class="stat"><span class="num" id="totalFiles">…</span> <span class="lbl">files</span></div>
+            <div class="stat"><span class="num" id="totalHtml">…</span> <span class="lbl">HTML</span></div>
+            <div class="stat"><span class="num" id="totalPdf">…</span> <span class="lbl">PDF</span></div>
+            <div class="stat"><span class="num" id="totalImg">…</span> <span class="lbl">images</span></div>
+            <div class="stat"><span class="num" id="totalAudio">…</span> <span class="lbl">audio</span></div>
+            <div class="stat"><span class="num" id="totalVideo">…</span> <span class="lbl">video</span></div>
+            <div class="stat"><span class="num" id="totalText">…</span> <span class="lbl">text</span></div>
         </div>
-    </section>
 
-    <section id="earthotomy-mecp">
-        <h2>3. Earthotomy & MECP Dynamics</h2>
-        <p>Models the Earth-Sun-Moon system as an electrodynamic motor[cite: 81]. It defines the <strong>Morpheon Electrogravitational Collision Point (MECP)</strong> at approximately 408,262 km, where Earth's field pressure meets the solar electromagnetic pressure boundary[cite: 81].</p>
-    </section>
+        <!-- file list -->
+        <div id="fileList"></div>
 
-    <section id="climate-theorem">
-        <h2>4. K-L-E-M-A-H & EM Saturation Model</h2>
-        <p>Proposes that global electromagnetic infrastructure interacts with atmospheric metallic nanoparticles via Joule heating, proposing a structural correlation (r = 0.975) alongside greenhouse drivers[cite: 81].</p>
-    </section>
-
-    <section id="formal-specifications">
-        <h2>5. Appendix & Unified Specifications (Sections XIII – XIX)</h2>
-        <p>Contains the consolidated mathematical derivations, cross-model verification logs, predictive test specifications, and technical diagrams detailing the full system boundary conditions[cite: 82].</p>
-        <div class="code-block">
-            MECP Distance Formula Baseline: d_MECP = f(P_Earth, P_Sun, Z_0) ≈ 408,262 km[cite: 81]
+        <!-- footer -->
+        <div class="footer">
+            MCF · Morphean Cosmology Framework &mdash; <span id="footerDate"></span>
         </div>
-    </section>
-</div>
+    </div>
 
+    <script>
+        (function() {
+            'use strict';
+
+            // ── configuration ──
+            const REPO_OWNER = 'ChristosSotirelis';
+            const REPO_NAME = 'The-Morphean-Cosmology-Framework-MCF-';
+            const BRANCH = 'main';
+            const API_URL =
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/?ref=${BRANCH}`;
+            const RAW_BASE =
+                `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/`;
+
+            const container = document.getElementById('fileList');
+            const statsEls = {
+                total: document.getElementById('totalFiles'),
+                html: document.getElementById('totalHtml'),
+                pdf: document.getElementById('totalPdf'),
+                img: document.getElementById('totalImg'),
+                audio: document.getElementById('totalAudio'),
+                video: document.getElementById('totalVideo'),
+                text: document.getElementById('totalText'),
+            };
+
+            document.getElementById('footerDate').textContent = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+
+            // ── helpers ──
+            function ext(fname) {
+                const i = fname.lastIndexOf('.');
+                return i === -1 ? '' : fname.substring(i + 1).toLowerCase();
+            }
+
+            function fileType(fname) {
+                const e = ext(fname);
+                if (['html', 'htm'].includes(e)) return 'html';
+                if (e === 'pdf') return 'pdf';
+                if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'bmp', 'ico'].includes(e)) return 'img';
+                if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'].includes(e)) return 'audio';
+                if (['mp4', 'webm', 'ogv', 'mov', 'avi', 'mkv'].includes(e)) return 'video';
+                return 'text';
+            }
+
+            function formatSize(bytes) {
+                if (!bytes || bytes < 0) return '—';
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+
+            function isLikelyMarkdown(fname) {
+                const e = ext(fname);
+                return e === 'md' || e === 'markdown';
+            }
+
+            function isBinaryText(fname) {
+                const e = ext(fname);
+                const binaryText = ['json', 'js', 'css', 'py', 'c', 'cpp', 'h', 'hpp', 'java', 'rb', 'go', 'rs', 'sh', 'bash',
+                    'xml', 'yaml', 'yml', 'toml', 'ini', 'cfg', 'conf', 'txt', 'log', 'csv', 'tsv', 'sql', 'r', 'pl', 'lua',
+                    'swift', 'kt', 'scala', 'clj', 'cljs', 'elm', 'hs', 'lisp', 'scheme', 'dart', 'groovy', 'gradle', 'makefile',
+                    'cmake', 'dockerfile', 'nginx', 'conf'
+                ];
+                return binaryText.includes(e);
+            }
+
+            function sanitizeForSrcdoc(html) {
+                // basic sanitization to avoid breaking the iframe
+                return html.replace(/<\/?script[^>]*>/gi, '').replace(/on\w+\s*=/gi, 'data-removed-');
+            }
+
+            // ── renderers ──
+
+            function renderHtml(file, content) {
+                const div = document.createElement('div');
+                div.className = 'file-body';
+                const iframe = document.createElement('iframe');
+                iframe.className = 'html-frame srcdoc';
+                iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-modals');
+                iframe.setAttribute('loading', 'lazy');
+                // use srcdoc for safety and to avoid CORS issues
+                const safe = sanitizeForSrcdoc(content);
+                iframe.srcdoc = safe;
+                // also set a title
+                iframe.title = file.name;
+                div.appendChild(iframe);
+                return div;
+            }
+
+            function renderPdf(file) {
+                const div = document.createElement('div');
+                div.className = 'file-body';
+                const embed = document.createElement('embed');
+                embed.className = 'pdf-embed';
+                embed.src = RAW_BASE + encodeURIComponent(file.name);
+                embed.type = 'application/pdf';
+                embed.setAttribute('loading', 'lazy');
+                embed.title = file.name;
+                // fallback text
+                const fallback = document.createElement('p');
+                fallback.style.cssText = 'color:#6a7a8a;margin-top:0.5rem;font-size:0.85rem;';
+                fallback.textContent = 'PDF viewer not available. ';
+                const link = document.createElement('a');
+                link.href = RAW_BASE + encodeURIComponent(file.name);
+                link.textContent = 'Download PDF';
+                link.target = '_blank';
+                fallback.appendChild(link);
+                div.appendChild(embed);
+                div.appendChild(fallback);
+                return div;
+            }
+
+            function renderImg(file) {
+                const div = document.createElement('div');
+                div.className = 'file-body';
+                const wrap = document.createElement('div');
+                wrap.className = 'img-wrapper';
+                const img = document.createElement('img');
+                img.src = RAW_BASE + encodeURIComponent(file.name);
+                img.alt = file.name;
+                img.setAttribute('loading', 'lazy');
+                wrap.appendChild(img);
+                div.appendChild(wrap);
+                return div;
+            }
+
+            function renderAudio(file) {
+                const div = document.createElement('div');
+                div.className = 'file-body';
+                const wrap = document.createElement('div');
+                wrap.className = 'audio-wrapper';
+                const audio = document.createElement('audio');
+                audio.controls = true;
+                audio.preload = 'metadata';
+                audio.title = file.name;
+                const src = document.createElement('source');
+                src.src = RAW_BASE + encodeURIComponent(file.name);
+                src.type = 'audio/' + ext(file.name);
+                audio.appendChild(src);
+                wrap.appendChild(audio);
+                div.appendChild(wrap);
+                return div;
+            }
+
+            function renderVideo(file) {
+                const div = document.createElement('div');
+                div.className = 'file-body';
+                const wrap = document.createElement('div');
+                wrap.className = 'video-wrapper';
+                const video = document.createElement('video');
+                video.controls = true;
+                video.preload = 'metadata';
+                video.title = file.name;
+                video.style.maxWidth = '100%';
+                const src = document.createElement('source');
+                src.src = RAW_BASE + encodeURIComponent(file.name);
+                src.type = 'video/' + ext(file.name);
+                video.appendChild(src);
+                wrap.appendChild(video);
+                div.appendChild(wrap);
+                return div;
+            }
+
+            function renderText(file, content) {
+                const div = document.createElement('div');
+                div.className = 'file-body';
+
+                if (isLikelyMarkdown(file.name)) {
+                    // render markdown
+                    const mdDiv = document.createElement('div');
+                    mdDiv.className = 'markdown-body';
+                    try {
+                        // simple markdown to HTML (basic)
+                        const html = basicMarkdown(content);
+                        mdDiv.innerHTML = html;
+                    } catch (_) {
+                        mdDiv.textContent = content || '(empty)';
+                    }
+                    div.appendChild(mdDiv);
+                } else {
+                    const pre = document.createElement('pre');
+                    pre.className = 'text-preview';
+                    pre.textContent = content || '(empty)';
+                    div.appendChild(pre);
+                }
+                return div;
+            }
+
+            // ── very basic markdown ──
+            function basicMarkdown(text) {
+                if (!text) return '(empty)';
+                let html = text;
+                // code blocks
+                html = html.replace(/```([\s\S]*?)```/g, function(_, code) {
+                    return '<pre><code>' + escapeHtml(code.trim()) + '</code></pre>';
+                });
+                // inline code
+                html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+                // headers
+                html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+                html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+                html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+                // bold / italic
+                html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+                // links
+                html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+                // blockquote
+                html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+                // lists (simple)
+                html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+                html = html.replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>');
+                // paragraphs
+                html = html.replace(/\n\n/g, '</p><p>');
+                html = '<p>' + html + '</p>';
+                // clean up empty paragraphs
+                html = html.replace(/<p>\s*<\/p>/g, '');
+                return html;
+            }
+
+            function escapeHtml(text) {
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+                return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+            }
+
+            // ── build file entry ──
+
+            function buildFileEntry(file) {
+                const ftype = fileType(file.name);
+                const entry = document.createElement('div');
+                entry.className = 'file-entry';
+                entry.dataset.ftype = ftype;
+
+                // header
+                const header = document.createElement('div');
+                header.className = 'file-header';
+
+                const badge = document.createElement('span');
+                badge.className = 'type-badge ' + ftype;
+                badge.textContent = ftype.toUpperCase();
+                header.appendChild(badge);
+
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'file-name';
+                nameSpan.textContent = file.name;
+                header.appendChild(nameSpan);
+
+                const sizeSpan = document.createElement('span');
+                sizeSpan.className = 'file-size';
+                sizeSpan.textContent = formatSize(file.size);
+                header.appendChild(sizeSpan);
+
+                const rawLink = document.createElement('a');
+                rawLink.className = 'raw-link';
+                rawLink.href = RAW_BASE + encodeURIComponent(file.name);
+                rawLink.textContent = 'raw';
+                rawLink.target = '_blank';
+                header.appendChild(rawLink);
+
+                entry.appendChild(header);
+
+                // body (loading)
+                const body = document.createElement('div');
+                body.className = 'file-body';
+                body.id = 'body-' + file.name.replace(/[^a-zA-Z0-9]/g, '_');
+                const loading = document.createElement('div');
+                loading.className = 'file-loading';
+                loading.innerHTML = '<div class="spinner"></div><p style="margin-top:0.5rem;color:#5a6a7a;">loading …</p>';
+                body.appendChild(loading);
+                entry.appendChild(body);
+
+                return { entry, body, loading };
+            }
+
+            // ── fetch & render ──
+
+            async function fetchAndRender(file) {
+                const { entry, body, loading } = buildFileEntry(file);
+                container.appendChild(entry);
+
+                const ftype = fileType(file.name);
+
+                try {
+                    // For binary types, we don't need to fetch content — just use raw URL
+                    if (ftype === 'img' || ftype === 'audio' || ftype === 'video' || ftype === 'pdf') {
+                        let rendered;
+                        if (ftype === 'img') rendered = renderImg(file);
+                        else if (ftype === 'audio') rendered = renderAudio(file);
+                        else if (ftype === 'video') rendered = renderVideo(file);
+                        else if (ftype === 'pdf') rendered = renderPdf(file);
+                        body.replaceWith(rendered);
+                        return;
+                    }
+
+                    // For HTML and text, fetch content
+                    const resp = await fetch(RAW_BASE + encodeURIComponent(file.name));
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    const content = await resp.text();
+
+                    let rendered;
+                    if (ftype === 'html') {
+                        rendered = renderHtml(file, content);
+                    } else {
+                        rendered = renderText(file, content);
+                    }
+                    body.replaceWith(rendered);
+
+                } catch (err) {
+                    const errDiv = document.createElement('div');
+                    errDiv.className = 'file-body';
+                    const errMsg = document.createElement('div');
+                    errMsg.className = 'file-error';
+                    errMsg.innerHTML = '⚠️ failed to load: ' + escapeHtml(err.message || 'unknown error');
+                    errDiv.appendChild(errMsg);
+                    body.replaceWith(errDiv);
+                }
+            }
+
+            // ── main ──
+
+            async function main() {
+                try {
+                    const resp = await fetch(API_URL);
+                    if (!resp.ok) throw new Error('GitHub API: ' + resp.status + ' ' + resp.statusText);
+                    const data = await resp.json();
+
+                    // filter out directories and index.html
+                    const files = data
+                        .filter(item => item.type === 'file')
+                        .filter(item => item.name !== 'index.html' && item.name !== 'INDEX.html')
+                        .filter(item => item.name !== '.gitignore' && item.name !== '.nojekyll');
+
+                    // sort: HTML first, then PDF, then images, then audio, then video, then text
+                    const order = { html: 0, pdf: 1, img: 2, audio: 3, video: 4, text: 5 };
+                    files.sort((a, b) => {
+                        const ta = order[fileType(a.name)] ?? 99;
+                        const tb = order[fileType(b.name)] ?? 99;
+                        if (ta !== tb) return ta - tb;
+                        return a.name.localeCompare(b.name);
+                    });
+
+                    // update stats
+                    const counts = { total: files.length, html: 0, pdf: 0, img: 0, audio: 0, video: 0, text: 0 };
+                    files.forEach(f => {
+                        const t = fileType(f.name);
+                        if (counts[t] !== undefined) counts[t]++;
+                    });
+                    statsEls.total.textContent = counts.total;
+                    statsEls.html.textContent = counts.html;
+                    statsEls.pdf.textContent = counts.pdf;
+                    statsEls.img.textContent = counts.img;
+                    statsEls.audio.textContent = counts.audio;
+                    statsEls.video.textContent = counts.video;
+                    statsEls.text.textContent = counts.text;
+
+                    // render each file with a small delay to avoid overwhelming the browser
+                    for (let i = 0; i < files.length; i++) {
+                        await fetchAndRender(files[i]);
+                        // yield to the event loop
+                        if (i % 5 === 0) {
+                            await new Promise(r => setTimeout(r, 10));
+                        }
+                    }
+
+                } catch (err) {
+                    container.innerHTML =
+                        `<div class="file-error" style="padding:3rem;text-align:center;background:#11171f;border-radius:14px;border:1px solid #2a1a1a;">
+                            <h2 style="color:#d47a7a;">⚠️ Failed to load repository</h2>
+                            <p style="color:#8a7a7a;margin-top:0.5rem;">${escapeHtml(err.message)}</p>
+                            <p style="color:#5a6a7a;margin-top:1rem;font-size:0.9rem;">
+                                Make sure the repository is public and the GitHub API is accessible.
+                            </p>
+                        </div>`;
+                }
+            }
+
+            main();
+
+        })();
+    </script>
 </body>
 </html>
