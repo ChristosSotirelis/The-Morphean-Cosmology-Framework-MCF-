@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Human Continuum Framework (HCF) – v2.5 Specification</title>
+    <style>
+        /* --- Reset & Print Setup --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #1e1e2a;
+            background: #fafaf8;
+            padding: 40px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        /* Print styles — actual PDF output */
+        @media print {
+            body {
+                background: white;
+                padding: 0.8in 0.7in;
+                font-size: 11pt;
+                line-height: 1.5;
+                max-width: 100%;
+            }
+            h1, h2, h3, h4 {
+                page-break-after: avoid;
+            }
+            h1 { font-size: 24pt; }
+            h2 { font-size: 18pt; }
+            h3 { font-size: 14pt; }
+            p, li, table {
+                orphans: 3;
+                widows: 3;
+            }
+            table { page-break-inside: avoid; }
+            .section { page-break-inside: avoid; }
+            .toc { page-break-after: avoid; }
+        }
+        /* --- Typography --- */
+        h1 {
+            font-size: 32pt;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #0b1e2e;
+            border-bottom: 3px double #2c3e50;
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+        .subhead {
+            font-size: 16pt;
+            font-weight: 400;
+            color: #2c3e50;
+            margin-top: -6px;
+            margin-bottom: 30px;
+            font-style: italic;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 18px;
+        }
+        h2 {
+            font-size: 22pt;
+            font-weight: 700;
+            color: #0b1e2e;
+            margin-top: 40px;
+            margin-bottom: 12px;
+            padding-top: 10px;
+            border-top: 2px solid #d0d7dd;
+        }
+        h3 {
+            font-size: 16pt;
+            font-weight: 600;
+            color: #1a3346;
+            margin-top: 28px;
+            margin-bottom: 8px;
+        }
+        h4 {
+            font-size: 13pt;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 4px;
+        }
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        ul, ol {
+            margin: 8px 0 16px 28px;
+        }
+        li {
+            margin-bottom: 4px;
+        }
+        /* --- Tables --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0 22px 0;
+            font-size: 10.5pt;
+        }
+        th {
+            background: #e9edf2;
+            border: 1px solid #9aa9b9;
+            padding: 8px 10px;
+            text-align: left;
+            font-weight: 700;
+        }
+        td {
+            border: 1px solid #bcc8d4;
+            padding: 6px 10px;
+            vertical-align: top;
+        }
+        tr:nth-child(even) td {
+            background: #f6f8fa;
+        }
+        /* --- Code / math bits --- */
+        .mono {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #f2f4f6;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+        }
+        .equation {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            text-align: center;
+            margin: 16px 0;
+            font-size: 1.1em;
+        }
+        .dim-grid {
+            display: grid;
+            grid-template-columns: 60px 1fr 3fr;
+            gap: 2px 12px;
+            background: #f4f7fa;
+            padding: 12px 16px;
+            border-left: 4px solid #2c3e50;
+            margin: 12px 0 18px 0;
+        }
+        .dim-grid .dim-label {
+            font-weight: 700;
+            color: #0b1e2e;
+        }
+        .dim-grid .dim-name {
+            font-weight: 600;
+            color: #1a3346;
+        }
+        /* --- TOC --- */
+        .toc {
+            background: #f8fafc;
+            padding: 18px 24px;
+            border: 1px solid #d8dde4;
+            margin: 20px 0 30px 0;
+            column-count: 2;
+            column-gap: 30px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #1a4a6b;
+            display: block;
+            line-height: 1.7;
+            font-size: 10.5pt;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        /* --- Utility --- */
+        .highlight-box {
+            background: #f0f3f7;
+            padding: 16px 22px;
+            border-left: 5px solid #1a4a6b;
+            margin: 18px 0;
+        }
+        .principle-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 30px;
+            background: #f9fafc;
+            padding: 14px 20px;
+            border-radius: 4px;
+            margin: 12px 0;
+        }
+        .principle-list li {
+            list-style-type: decimal;
+            margin-bottom: 2px;
+        }
+        .footer-meta {
+            margin-top: 40px;
+            padding-top: 18px;
+            border-top: 1px solid #bac8d4;
+            font-size: 10pt;
+            color: #3f5669;
+            text-align: center;
+        }
+        /* Responsive */
+        @media (max-width: 700px) {
+            body { padding: 20px 12px; }
+            .toc { column-count: 1; }
+            .dim-grid { grid-template-columns: 1fr; gap: 4px; }
+            .principle-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>The Human Continuum Framework (HCF)</h1>
+<div class="subhead">Architect: Σωτηρέλης Χρήστος (Sotirelis Christos) — "Morpheas the Shape Master"<br>
+Status: v2.5 Master Specification / v0.3–0.4 reference implementation &bull; License: MCF-LP BY-NC-ND-EP</div>
+
+<!-- ==================== TOC ==================== -->
+<div class="toc">
+    <a href="#sec1">1. The Problem HCF Was Built to Solve</a>
+    <a href="#sec2">2. Foundational Axioms</a>
+    <a href="#sec3">3. The Nine-Dimensional Vector</a>
+    <a href="#sec4">4. The Epistemic Layer (Q)</a>
+    <a href="#sec5">5. Chronology: Fixed Grid + Han Codec</a>
+    <a href="#sec6">6. Genealogy: Beyond a Single Line</a>
+    <a href="#sec7">7. Ω (Omega) — The Statistical Field</a>
+    <a href="#sec8">8. Φ (Phi) — Developmental Density</a>
+    <a href="#sec9">9. Isolation Vector I(t)</a>
+    <a href="#sec10">10. Computational Engine (PyTorch Core)</a>
+    <a href="#sec11">11. Provenance &amp; Audit Layer</a>
+    <a href="#sec12">12. Historical Layering</a>
+    <a href="#sec13">13. What HCF Replaces — Direct Comparison</a>
+    <a href="#sec14">14. What HCF Explicitly Does Not Claim</a>
+    <a href="#sec15">15. Implementation Status</a>
+    <a href="#sec16">16. Core Principles (Condensed)</a>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 1 -->
+<h2 id="sec1">1. The Problem HCF Was Built to Solve</h2>
+
+<p>The starting point was a single question: <em>what does "Generation X," "Y," or "Z" actually mean?</em></p>
+
+<p>Your answer: almost nothing. These labels reduce a person to one variable — birth year — and treat everyone born in a given window as interchangeable. That collapses over:</p>
+
+<ul>
+    <li><strong>Genealogy</strong> — two people born the same year can have parents aged 19 or 45; that changes everything about their developmental position.</li>
+    <li><strong>Geography and environment</strong> — a birth year says nothing about climate, disease exposure, or resource access.</li>
+    <li><strong>Culture</strong> — vertical, horizontal, and oblique transmission differ enormously by family and community.</li>
+    <li><strong>Technology</strong> — access to tools and information varies by orders of magnitude within the same "generation."</li>
+    <li><strong>Historical shocks</strong> — war, famine, migration hit different cohorts unevenly even within a single birth year.</li>
+    <li><strong>Epistemic certainty</strong> — the label carries zero information about how confidently anything is actually known.</li>
+</ul>
+
+<p>HCF's core move: <strong>replace a single label with a 9-dimensional coordinate vector</strong>, so that instead of asking "what generation are you," the system asks "where do you stand across time, ancestry, population, biology, culture, environment, history, technology, and the quality of what we know about all of that."</p>
+
+<!-- ============================================= -->
+<!-- SECTION 2 -->
+<h2 id="sec2">2. Foundational Axioms</h2>
+
+<p><strong>Biology is read, not rewritten.</strong> HCF explicitly rejects structural genetic modification (forced hybridization, engineered alteration) as producing artificial fragility and sterility risk. Its stance is that biology should be <em>deciphered</em> — epigenetic and genomic patterns interpreted as records of environmental adaptation — never forcibly edited. This is stated as a hard philosophical boundary, not a technical limitation.</p>
+
+<p><strong>Chronology ≠ genealogy.</strong> A fixed 20-year time grid is an <em>analytical ruler</em>, not a biological claim. It does not assert that human generations actually reproduce every 20 years — it's a coordinate system, the same way latitude/longitude doesn't claim the Earth is a grid.</p>
+
+<p><strong>Ancestry is a network, not a line.</strong> Populations mix, branch, and remix. A simple parent → child → grandchild chain is insufficient; HCF models ancestry as a directed graph (DAG) with admixture edges.</p>
+
+<p><strong>Uncertainty is structural, not a flaw.</strong> Every claim in the system carries its own epistemic status. Nothing is asserted as flat fact without a quality vector attached.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 3 -->
+<h2 id="sec3">3. The Nine-Dimensional Vector</h2>
+
+<p>Every entity — a person, a population, a cultural artifact — is represented as:</p>
+
+<p style="text-align:center; font-size:1.3em; font-weight:600; margin:6px 0 12px 0;">v = (T, G, P, B, C, E, W, K, Q)</p>
+
+<div class="dim-grid">
+    <span class="dim-label">T</span><span class="dim-name">Time</span><span>Position on the fixed 20-year analytical grid, anchored ~300,000 years ago (approx. emergence of <em>Homo sapiens</em>). Formula: N(T) = ⌊(T − T₀)/20⌋</span>
+    <span class="dim-label">G</span><span class="dim-name">Genealogy</span><span>Directed graph of actual parent-child birth-age intervals, tracked separately for maternal (Aₘ) and paternal (Aₚ) paths, with divergence metrics Dₜ, Dₙ, D_τ</span>
+    <span class="dim-label">P</span><span class="dim-name">Population</span><span>Dynamic demographic units: P(t+1) = P(t) + Births − Deaths + Migration_in − Migration_out. Not static racial or ethnic categories — populations grow, split, and merge</span>
+    <span class="dim-label">B</span><span class="dim-name">Biology</span><span>Genomic/epigenetic markers, read-only, strictly separated from culture. Individual-level data requires explicit consent</span>
+    <span class="dim-label">C</span><span class="dim-name">Culture</span><span>Language, values, tools, transmitted vertically (parent→child), horizontally (peer↔peer), or obliquely (mentor→youth). Transmission equation: x_{t+1} = αV + βH + γO + δI − λL (Vertical, Horizontal, Oblique, Innovation, minus Loss)</span>
+    <span class="dim-label">E</span><span class="dim-name">Environment</span><span>Climate, terrain, disease pressure, food/water systems — localized and time-bound</span>
+    <span class="dim-label">W</span><span class="dim-name">History</span><span>Wars, epidemics, institutional collapse, mass migration — macro-historical shocks</span>
+    <span class="dim-label">K</span><span class="dim-name">Technology</span><span>Per-capita energy mastery, information storage capacity, network density</span>
+    <span class="dim-label">Q</span><span class="dim-name">Epistemology</span><span><em>Not a fact</em> — a measure of how well the other eight dimensions are actually known</span>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 4 -->
+<h2 id="sec4">4. The Epistemic Layer (Q) — The Framework's Most Distinctive Piece</h2>
+
+<p>Q doesn't ask "is this true?" It asks "<strong>how do we know what we claim to know</strong>?" This is arguably the core innovation: most historical/demographic frameworks state facts. HCF requires every fact to carry its own audit trail.</p>
+
+<h3>Q-vector components (<span class="mono">QVectorModel</span>)</h3>
+<ul>
+    <li><strong>source_quality</strong> — reliability of the origin</li>
+    <li><strong>method_quality</strong> — rigor of how it was derived</li>
+    <li><strong>completeness</strong> — how much of the relevant picture is covered</li>
+    <li><strong>representativeness</strong> — does the sample generalize</li>
+    <li><strong>reproducibility</strong> — can independent parties reach the same result</li>
+    <li><strong>temporal_precision</strong> — how tightly dated</li>
+    <li>Plus <span class="mono">assumptions[]</span>, <span class="mono">alternative_models[]</span>, and a <span class="mono">provenance[]</span> chain</li>
+</ul>
+
+<h3>The Claim Status Ladder</h3>
+<p>(implemented as an enum, <span class="mono">ClaimStatus</span>):<br>
+<span class="mono">KNOWN_DIRECT → KNOWN_REPEATED → ESTIMATED → INFERRED → MODELED → SCENARIO → HYPOTHETICAL → CONTESTED → UNKNOWN → CONTRADICTED</span></p>
+
+<p><strong>Uncertainty typing</strong> (<span class="mono">UncertaintyType</span>): distinguishes <strong>epistemic</strong> uncertainty (we just don't have the data yet — reducible) from <strong>aleatory</strong> uncertainty (inherent randomness — not reducible) from <strong>mixed</strong>.</p>
+
+<p>A <span class="mono">ClaimModel</span> binds a statement (e.g., "Population A occupied Region B during Period C") to its <span class="mono">IntervalModel</span> (mean/std/bounds/distribution type) and its <span class="mono">QVectorModel</span>. This lets HCF represent competing historical scenarios as weighted possibilities rather than forcing a single narrative — and update those weights with new evidence via Bayesian inference, without ever pretending the underlying truth is settled.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 5 -->
+<h2 id="sec5">5. Chronology: The Fixed Grid + Han Codec</h2>
+
+<p><strong>The grid:</strong> 20-year intervals, anchored at approximately −300,000 years, producing ~15,000 discrete time buckets across the full span of <em>Homo sapiens</em> existence.</p>
+
+<p><strong>The Han Codec:</strong> Rather than alphabetic labels (A, B, C…) or Greek letters, the system encodes each time-bucket index as a base-4096 number using a curated dictionary of Han characters as pure positional digits — a symbolic hash, explicitly <strong>non-semantic</strong>. The characters carry zero linguistic or cultural meaning in this context; they function exactly like hexadecimal digits, just with a much larger base and more compact string length. A fixed code length is calculated in advance so every index encodes to the same number of symbols regardless of magnitude.</p>
+
+<p>This was a deliberate rejection of Latin/Greek letter systems, chosen specifically so no cultural connotation attaches to any coordinate.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 6 -->
+<h2 id="sec6">6. Genealogy: Beyond a Single Line</h2>
+
+<p><strong>Parent-child intervals</strong> are tracked separately for mother and father (e.g., mother 30 at birth, father 35 at birth) rather than averaged into one number — because averaging destroys information about actual reproductive/generational dynamics.</p>
+
+<p><strong>Genealogical depth</strong> extends this backward through ancestors as far as data exists, and the <span class="mono">GenealogicalSquareCodec</span> in the Python implementation encodes each person's position as a compact path string built from maternal/paternal traversal symbols, growing organically as the ledger is populated.</p>
+
+<p><strong>Divergence metrics</strong> compare maternal vs. paternal paths:</p>
+<ul>
+    <li>Dₜ = Aₚ − Aₘ (total time difference)</li>
+    <li>Dₙ = nₚ − nₘ (step/generation-count difference)</li>
+    <li>D_τ = Aₚ/nₚ − Aₘ/nₘ (average-interval difference)</li>
+</ul>
+<p>This lets the system distinguish <em>why</em> two lineages diverge — age gaps vs. missing/extra generations — instead of collapsing it into one ambiguous number.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 7 -->
+<h2 id="sec7">7. Ω (Omega) — The Statistical Field</h2>
+
+<p>Without a baseline, an individual measurement is meaningless — is a parent age of 40 unusual? Depends entirely on the era's norm. Ω(t) provides the planetary baseline for any epoch: weighted mean and standard deviation across key variables (parental age, technology level, cultural intensity, etc.), letting the system compute <strong>Z-scores</strong> — how far a given value deviates from its contemporaneous global norm, rather than from an arbitrary modern reference point.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 8 -->
+<h2 id="sec8">8. Φ (Phi) — Developmental Density</h2>
+
+<p>Φ measures the <strong>velocity of change</strong> a person experienced during their formative years (0–25), not just what era they were born in:</p>
+
+<div class="equation">Φ = ∫₀²⁵ (dK/dt + dC/dt + dE/dt) dt</div>
+
+<p>Two people born the same year could have wildly different Φ — one growing up amid rapid technological/cultural/environmental upheaval, another in relative stasis. This is explicitly offered as the <em>replacement</em> for what "generational personality" folk-theories are actually gesturing at, without the birth-year reductionism.</p>
+
+<p>The reference Python implementation splits this into two complementary integrals: a <strong>volatility integral</strong> (total magnitude of change, via absolute value) and a <strong>signed net-change integral</strong> (net direction of change) — because "a lot changed" and "things moved consistently in one direction" are different facts.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 9 -->
+<h2 id="sec9">9. Isolation Vector I(t)</h2>
+
+<p>I(t) = (I_g, I_c, I_l, I_geo, I_t) — measures isolation across genetic, cultural, linguistic, geographic, and technological axes independently. A population can be genetically closed (0.9) while technologically open (0.2) — the vector prevents collapsing these into one "isolated/not isolated" binary.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 10 -->
+<h2 id="sec10">10. The Computational Engine (PyTorch Core)</h2>
+
+<p>The <span class="mono">HCFDistributionEngine</span> / <span class="mono">HCFFramework</span> implementations provide the actual math:</p>
+
+<ul>
+    <li><strong>Interval → Distribution adapters</strong>: converts an <span class="mono">IntervalModel</span> (mean/std/bounds) into a real PyTorch distribution (Normal, Uniform, Log-Normal, Beta) for sampling.</li>
+    <li><strong>Monte Carlo lineage sampling</strong>: samples plausible maternal/paternal interval sequences to produce distributions over drift and generational velocity — explicitly marked as <strong>diagnostic only</strong>, never feeding directly into a posterior, to avoid smuggling assumptions into "hard" results.</li>
+    <li><strong>Bayesian model comparison in log-space</strong>: log-prior + log-likelihood → logsumexp-normalized posterior. This numerical-stability choice (working in log-space) prevents underflow when likelihoods get extremely small — a real engineering safeguard, not decoration.</li>
+    <li><strong>Similarity function</strong>: exponential-decay distance between two 9-dimensional node vectors, with configurable per-dimension weights and scales.</li>
+    <li><strong>Sensitivity analysis</strong>: uses PyTorch autograd to compute gradients — literally asking "which input variable, if nudged, moves the output the most."</li>
+    <li><strong>Stable IDs</strong>: SHA-256 hashing instead of Python's built-in <span class="mono">hash()</span>, specifically so identifiers remain stable across processes, machines, and future runs (built-in hash() is randomized per-process in Python by design).</li>
+</ul>
+
+<!-- ============================================= -->
+<!-- SECTION 11 -->
+<h2 id="sec11">11. Provenance &amp; Audit Layer</h2>
+
+<p>Every claim carries a <span class="mono">ProvenanceModel</span>/<span class="mono">ProvenanceGraph</span> recording the full chain: source → digitization → transformation → uncertainty assignment → inference. The explicit goal: anyone examining a conclusion can ask not just "what's the answer" but "<strong>how did this conclusion come to exist</strong>, and what would change it." The <span class="mono">InferenceExport</span> structure guarantees every exported result carries its model version, PyTorch version, sample count, random seed, and assumption list — full reproducibility, not just a number.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 12 -->
+<h2 id="sec12">12. Historical Layering</h2>
+
+<p>HCF deliberately keeps separate, individually-tracked paths for:</p>
+
+<p style="text-align:center; font-size:1.05em; background:#f4f7fa; padding:10px; border-radius:4px;">
+Biological genealogy · Population history · Political control · Settlement continuity · Language transmission · Cultural transmission · Technology transfer · Trade · Environment · Archaeological layers
+</p>
+
+<p>The explicit purpose: <strong>prevent the false inference</strong> "this person lived under Empire X, therefore they are biologically descended from Empire X's founders." Political affiliation, genetic ancestry, and cultural identity are structurally different edges in the graph, each with its own Q-vector — they're allowed to disagree with each other.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 13 -->
+<h2 id="sec13">13. What HCF Replaces — Direct Comparison</h2>
+
+<table>
+    <thead><tr><th>Aspect</th><th>Traditional Gen X/Y/Z</th><th>HCF</th></tr></thead>
+    <tbody>
+        <tr><td>Dimensions</td><td>1 (birth year)</td><td>9 core + Ω, Φ, I(t) derived fields</td></tr>
+        <tr><td>Genealogy</td><td>Ignored</td><td>Explicit graph, real parental ages, divergence metrics</td></tr>
+        <tr><td>Culture</td><td>Ignored</td><td>Quantified, three transmission channels</td></tr>
+        <tr><td>Uncertainty</td><td>None (implied false certainty)</td><td>Full epistemic layer with a 10-state status ladder</td></tr>
+        <tr><td>Global context</td><td>None</td><td>Ω baseline for fair cross-era comparison</td></tr>
+        <tr><td>Competing explanations</td><td>Single narrative</td><td>Multiple weighted models, Bayesian-updatable</td></tr>
+        <tr><td>Reproducibility</td><td>N/A</td><td>Every result exportable with full provenance</td></tr>
+    </tbody>
+</table>
+
+<!-- ============================================= -->
+<!-- SECTION 14 -->
+<h2 id="sec14">14. What HCF Explicitly Does <em>Not</em> Claim</h2>
+
+<p>This matters as much as what it does claim, and your own documents are careful about it:</p>
+
+<ul>
+    <li>Does not claim absolute historical truths — only auditable, revisable estimates</li>
+    <li>Does not equate genetic ancestry with cultural or political identity</li>
+    <li>Does not treat population-level averages as individual facts</li>
+    <li>Does not hide its own assumptions</li>
+    <li>Does not replace provenance with a black-box neural prediction</li>
+    <li>Does not present the demonstration/synthetic data in the reference code as validated historical science — it's explicitly framed as an implementation scaffold awaiting real archaeological, ancient-DNA, and demographic datasets</li>
+</ul>
+
+<p>The Python module docstring is blunt about this: <em>"This file is an implementation framework, not proof of a scientific theory... require real datasets and independent validation."</em> That's a real strength — a system that's honest about the difference between its math being sound and its inputs being validated.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 15 -->
+<h2 id="sec15">15. Implementation Status</h2>
+
+<p><strong>Solidly implemented:</strong> Pydantic schemas, Han codec, Monte Carlo sampling, log-space Bayesian updates, lineage simulation, Ω/Z-scores, Φ trapezoidal integration, similarity, autograd sensitivity, stable IDs, provenance referential-integrity checks.</p>
+
+<p><strong>Partial:</strong> claim-to-likelihood adapters, posterior snapshots, dynamic interval revisions, historical tracing, model averaging.</p>
+
+<p><strong>Still conceptual / future work:</strong> real archaeological database integration, ancient-DNA integration, Neo4j graph backend, population-level demographic inference, causal transmission models, independent scientific validation.</p>
+
+<!-- ============================================= -->
+<!-- SECTION 16 -->
+<h2 id="sec16">16. Core Principles (Condensed)</h2>
+
+<ol class="principle-list">
+    <li>Chronological position ≠ genealogical position — the grid is a ruler, not a biological claim.</li>
+    <li>Ancestry is a network, not a line.</li>
+    <li>Biology is not culture — kept as separate dimensions, never conflated.</li>
+    <li>Uncertainty is a feature to be represented honestly, not a gap to paper over.</li>
+    <li>Provenance is mandatory — every conclusion traces to its source.</li>
+    <li>The goal is comparison and pattern-finding, not label assignment.</li>
+    <li>No single dimension is sufficient on its own.</li>
+    <li>The system must be revisable as new evidence arrives without breaking its architecture.</li>
+    <li>A high posterior probability doesn't promote a claim past MODELED status if the underlying evidence is indirect.</li>
+    <li>Genealogical velocity influences Bayesian weights only through an explicit likelihood function — never as an arbitrary multiplier.</li>
+</ol>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer-meta">
+    <p><strong>The Human Continuum Framework (HCF)</strong> &mdash; v2.5 Master Specification</p>
+    <p>Architect: Σωτηρέλης Χρήστος (Sotirelis Christos) &bull; License: MCF-LP BY-NC-ND-EP</p>
+    <p style="font-size:9pt; color:#5b6f82;">Document generated from the complete specification &bull; All dimensions, axioms, and epistemic layers as defined in the reference implementation.</p>
+</div>
+
+</body>
+</html>
